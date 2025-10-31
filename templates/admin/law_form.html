@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if law %}Edit Law{% else %}Add New Law{% endif %}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>{% if law %}✏️ Edit Law{% else %}➕ Add New Law{% endif %}</h2>
+    <a href="{{ url_for('admin_laws') }}" class="btn btn-primary">← Back to Laws</a>
+</div>
+
+<div class="content-box">
+    <form method="POST">
+        {% if not law %}
+        <div class="form-group">
+            <label for="filename">Filename *</label>
+            <input type="text" id="filename" name="filename" required placeholder="example.txt">
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">Must end with .txt</small>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="law_name">Law Name (Georgian) *</label>
+            <input type="text" id="law_name" name="law_name" required
+                   value="{% if law %}{{ law.law_name }}{% endif %}"
+                   placeholder="საქართველოს კანონი...">
+        </div>
+
+        <div class="form-group">
+            <label for="content">Law Content (Georgian) *</label>
+            <textarea id="content" name="content" required rows="20"
+                      placeholder="Full law text in Georgian...">{% if law %}{{ law.content }}{% endif %}</textarea>
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">Paste the full Georgian law text here</small>
+        </div>
+
+        <div class="form-group">
+            <label for="summary_en">Summary (English) *</label>
+            <textarea id="summary_en" name="summary_en" required rows="5"
+                      placeholder="Brief summary of the law in English...">{% if law %}{{ law.summary_en }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="keywords_en">Keywords (English) *</label>
+            <input type="text" id="keywords_en" name="keywords_en" required
+                   value="{% if law %}{{ law.keywords_en }}{% endif %}"
+                   placeholder="keyword1, keyword2, keyword3">
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">Comma-separated keywords for search</small>
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" class="btn btn-success">💾 Save Law</button>
+            <a href="{{ url_for('admin_laws') }}" class="btn btn-danger">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% if law %}
+<div class="content-box" style="margin-top: 20px; background: #f8f9fa;">
+    <h4>ℹ️ File Information</h4>
+    <p><strong>Filename:</strong> <code>{{ law.filename }}</code></p>
+    <p><strong>Content Length:</strong> {{ law.content|length }} characters</p>
+</div>
+{% endif %}
+{% endblock %}

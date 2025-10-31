@@ -4,14 +4,17 @@ Nexus Assistant - Georgian Law Database with AI Assistant
 Main Flask Application
 """
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from law_parser import LawParser
 from gemini_helper import GeminiHelper
 from database import QuizDatabase
 from config import Config
+from admin_helper import check_admin_auth, login_required, get_admin_stats
 import os
 from datetime import datetime
 import uuid
+import json
+import codecs
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -404,6 +407,314 @@ def api_quiz_stats():
     stats = quiz_db.get_user_stats(session['quiz_session_id'])
     return jsonify(stats)
 
+
+# ============================================================================
+# ADMIN PANEL ROUTES
+# ============================================================================
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login page"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if check_admin_auth(username, password):
+            session['admin_logged_in'] = True
+            session['admin_username'] = username
+            flash('Successfully logged in!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid credentials', 'error')
+
+    return render_template('admin/login.html')
+
+
+@app.route('/admin/logout')
+def admin_logout():
+    """Admin logout"""
+    session.pop('admin_logged_in', None)
+    session.pop('admin_username', None)
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('admin_login'))
+
+
+@app.route('/admin')
+@app.route('/admin/dashboard')
+@login_required
+def admin_dashboard():
+    """Admin dashboard"""
+    stats = get_admin_stats(law_parser, quiz_db)
+    return render_template('admin/dashboard.html', stats=stats)
+
+
+@app.route('/admin/laws')
+@login_required
+def admin_laws():
+    """Manage laws"""
+    laws = law_parser.laws
+    return render_template('admin/laws.html', laws=laws)
+
+
+@app.route('/admin/laws/add', methods=['GET', 'POST'])
+@login_required
+def admin_add_law():
+    """Add new law"""
+    if request.method == 'POST':
+        try:
+            filename = request.form.get('filename')
+            law_name = request.form.get('law_name')
+            content = request.form.get('content')
+            summary_en = request.form.get('summary_en')
+            keywords_en = request.form.get('keywords_en')
+
+            # Create law file
+            law_path = os.path.join(Config.LAWS_DIRECTORY, filename)
+
+            with codecs.open(law_path, 'w', encoding='utf-8') as f:
+                f.write(f"{law_name}\n")
+                f.write(f"{content}\n\n")
+                f.write(f"{Config.METADATA_SEPARATOR}\n")
+                f.write(f"SUMMARY_EN: {summary_en}\n")
+                f.write(f"KEYWORDS_EN: {keywords_en}\n")
+
+            # Reload laws
+            law_parser.load_all_laws()
+
+            flash(f'Law "{law_name}" added successfully!', 'success')
+            return redirect(url_for('admin_laws'))
+
+        except Exception as e:
+            flash(f'Error adding law: {str(e)}', 'error')
+
+    return render_template('admin/law_form.html', law=None)
+
+
+@app.route('/admin/laws/edit/<filename>', methods=['GET', 'POST'])
+@login_required
+def admin_edit_law(filename):
+    """Edit existing law"""
+    law = law_parser.get_law_by_filename(filename)
+
+    if not law:
+        flash('Law not found', 'error')
+        return redirect(url_for('admin_laws'))
+
+    if request.method == 'POST':
+        try:
+            law_name = request.form.get('law_name')
+            content = request.form.get('content')
+            summary_en = request.form.get('summary_en')
+            keywords_en = request.form.get('keywords_en')
+
+            # Update law file
+            law_path = os.path.join(Config.LAWS_DIRECTORY, filename)
+
+            with codecs.open(law_path, 'w', encoding='utf-8') as f:
+                f.write(f"{law_name}\n")
+                f.write(f"{content}\n\n")
+                f.write(f"{Config.METADATA_SEPARATOR}\n")
+                f.write(f"SUMMARY_EN: {summary_en}\n")
+                f.write(f"KEYWORDS_EN: {keywords_en}\n")
+
+            # Reload laws
+            law_parser.load_all_laws()
+
+            flash(f'Law "{law_name}" updated successfully!', 'success')
+            return redirect(url_for('admin_laws'))
+
+        except Exception as e:
+            flash(f'Error updating law: {str(e)}', 'error')
+
+    return render_template('admin/law_form.html', law=law)
+
+
+@app.route('/admin/laws/delete/<filename>', methods=['POST'])
+@login_required
+def admin_delete_law(filename):
+    """Delete a law"""
+    try:
+        law_path = os.path.join(Config.LAWS_DIRECTORY, filename)
+
+        if os.path.exists(law_path):
+            os.remove(law_path)
+            law_parser.load_all_laws()
+            flash('Law deleted successfully!', 'success')
+        else:
+            flash('Law file not found', 'error')
+
+    except Exception as e:
+        flash(f'Error deleting law: {str(e)}', 'error')
+
+    return redirect(url_for('admin_laws'))
+
+
+@app.route('/admin/questions')
+@login_required
+def admin_questions():
+    """Manage quiz questions"""
+    import sqlite3
+
+    conn = sqlite3.connect(quiz_db.db_path)
+    cursor = conn.cursor()
+
+    page = request.args.get('page', 1, type=int)
+    per_page = 50
+    offset = (page - 1) * per_page
+
+    cursor.execute('''
+        SELECT id, question_text, category, difficulty, is_approved, law_reference
+        FROM quiz_questions
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?
+    ''', (per_page, offset))
+
+    questions = []
+    for row in cursor.fetchall():
+        questions.append({
+            'id': row[0],
+            'question_text': row[1],
+            'category': row[2],
+            'difficulty': row[3],
+            'is_approved': row[4],
+            'law_reference': row[5]
+        })
+
+    cursor.execute('SELECT COUNT(*) FROM quiz_questions')
+    total_questions = cursor.fetchone()[0]
+
+    conn.close()
+
+    total_pages = (total_questions + per_page - 1) // per_page
+
+    return render_template('admin/questions.html',
+                         questions=questions,
+                         page=page,
+                         total_pages=total_pages,
+                         total_questions=total_questions)
+
+
+@app.route('/admin/questions/edit/<int:question_id>', methods=['GET', 'POST'])
+@login_required
+def admin_edit_question(question_id):
+    """Edit a quiz question"""
+    import sqlite3
+
+    conn = sqlite3.connect(quiz_db.db_path)
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        try:
+            question_text = request.form.get('question_text')
+            options = json.dumps({
+                'A': request.form.get('option_a'),
+                'B': request.form.get('option_b'),
+                'C': request.form.get('option_c'),
+                'D': request.form.get('option_d')
+            })
+            correct_answer = request.form.get('correct_answer')
+            explanation = request.form.get('explanation')
+            category = request.form.get('category')
+            difficulty = request.form.get('difficulty')
+
+            cursor.execute('''
+                UPDATE quiz_questions
+                SET question_text = ?, options = ?, correct_answer = ?,
+                    explanation = ?, category = ?, difficulty = ?
+                WHERE id = ?
+            ''', (question_text, options, correct_answer, explanation,
+                  category, difficulty, question_id))
+
+            conn.commit()
+            conn.close()
+
+            flash('Question updated successfully!', 'success')
+            return redirect(url_for('admin_questions'))
+
+        except Exception as e:
+            conn.close()
+            flash(f'Error updating question: {str(e)}', 'error')
+
+    cursor.execute('''
+        SELECT question_text, options, correct_answer, explanation,
+               category, difficulty, law_reference
+        FROM quiz_questions
+        WHERE id = ?
+    ''', (question_id,))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        flash('Question not found', 'error')
+        return redirect(url_for('admin_questions'))
+
+    question = {
+        'id': question_id,
+        'question_text': row[0],
+        'options': json.loads(row[1]),
+        'correct_answer': row[2],
+        'explanation': row[3],
+        'category': row[4],
+        'difficulty': row[5],
+        'law_reference': row[6]
+    }
+
+    return render_template('admin/question_form.html', question=question)
+
+
+@app.route('/admin/questions/delete/<int:question_id>', methods=['POST'])
+@login_required
+def admin_delete_question(question_id):
+    """Delete a quiz question"""
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect(quiz_db.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('DELETE FROM quiz_questions WHERE id = ?', (question_id,))
+        conn.commit()
+        conn.close()
+
+        flash('Question deleted successfully!', 'success')
+
+    except Exception as e:
+        flash(f'Error deleting question: {str(e)}', 'error')
+
+    return redirect(url_for('admin_questions'))
+
+
+@app.route('/admin/questions/toggle/<int:question_id>', methods=['POST'])
+@login_required
+def admin_toggle_question(question_id):
+    """Toggle question approval status"""
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect(quiz_db.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE quiz_questions
+            SET is_approved = NOT is_approved
+            WHERE id = ?
+        ''', (question_id,))
+
+        conn.commit()
+        conn.close()
+
+        flash('Question status updated!', 'success')
+
+    except Exception as e:
+        flash(f'Error updating question: {str(e)}', 'error')
+
+    return redirect(url_for('admin_questions'))
+
+
+# ============================================================================
+# ERROR HANDLERS
+# ============================================================================
 
 @app.errorhandler(404)
 def not_found(error):

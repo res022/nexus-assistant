@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Questions{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>❓ Manage Quiz Questions</h2>
+    <div style="color: #7f8c8d;">
+        <strong>Total:</strong> {{ total_questions }} questions
+    </div>
+</div>
+
+<div class="content-box">
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>Question</th>
+                    <th>Category</th>
+                    <th>Difficulty</th>
+                    <th>Law Reference</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.question_text[:100] }}{% if question.question_text|length > 100 %}...{% endif %}</td>
+                    <td><span class="badge badge-info">{{ question.category }}</span></td>
+                    <td>
+                        {% if question.difficulty == 'easy' %}
+                            <span class="badge badge-success">Easy</span>
+                        {% elif question.difficulty == 'medium' %}
+                            <span class="badge badge-warning">Medium</span>
+                        {% else %}
+                            <span class="badge badge-danger">Hard</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size: 12px;">{{ question.law_reference[:30] }}...</td>
+                    <td>
+                        {% if question.is_approved %}
+                            <span class="badge badge-success">✓ Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">✗ Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="{{ url_for('admin_edit_question', question_id=question.id) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
+                            <form method="POST" action="{{ url_for('admin_toggle_question', question_id=question.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    {% if question.is_approved %}🔒 Disable{% else %}✅ Enable{% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin_delete_question', question_id=question.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure?');">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('admin_questions', page=page-1) }}">← Previous</a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+                <span class="active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+                <a href="{{ url_for('admin_questions', page=p) }}">{{ p }}</a>
+            {% elif p == page - 3 or p == page + 3 %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('admin_questions', page=page+1) }}">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

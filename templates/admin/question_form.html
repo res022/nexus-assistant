@@ -1,0 +1,83 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Question{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>✏️ Edit Question #{{ question.id }}</h2>
+    <a href="{{ url_for('admin_questions') }}" class="btn btn-primary">← Back to Questions</a>
+</div>
+
+<div class="content-box">
+    <form method="POST">
+        <div class="form-group">
+            <label for="question_text">Question Text (Georgian) *</label>
+            <textarea id="question_text" name="question_text" required rows="4">{{ question.question_text }}</textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="option_a">Option A *</label>
+                <input type="text" id="option_a" name="option_a" required value="{{ question.options.A }}">
+            </div>
+
+            <div class="form-group">
+                <label for="option_b">Option B *</label>
+                <input type="text" id="option_b" name="option_b" required value="{{ question.options.B }}">
+            </div>
+
+            <div class="form-group">
+                <label for="option_c">Option C *</label>
+                <input type="text" id="option_c" name="option_c" required value="{{ question.options.C }}">
+            </div>
+
+            <div class="form-group">
+                <label for="option_d">Option D *</label>
+                <input type="text" id="option_d" name="option_d" required value="{{ question.options.D }}">
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="correct_answer">Correct Answer *</label>
+                <select id="correct_answer" name="correct_answer" required>
+                    <option value="A" {% if question.correct_answer == 'A' %}selected{% endif %}>A</option>
+                    <option value="B" {% if question.correct_answer == 'B' %}selected{% endif %}>B</option>
+                    <option value="C" {% if question.correct_answer == 'C' %}selected{% endif %}>C</option>
+                    <option value="D" {% if question.correct_answer == 'D' %}selected{% endif %}>D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">Difficulty *</label>
+                <select id="difficulty" name="difficulty" required>
+                    <option value="easy" {% if question.difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                    <option value="medium" {% if question.difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="hard" {% if question.difficulty == 'hard' %}selected{% endif %}>Hard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <input type="text" id="category" name="category" required value="{{ question.category }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="explanation">Explanation (Georgian) *</label>
+            <textarea id="explanation" name="explanation" required rows="4">{{ question.explanation }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" class="btn btn-success">💾 Save Changes</button>
+            <a href="{{ url_for('admin_questions') }}" class="btn btn-danger">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-box" style="margin-top: 20px; background: #f8f9fa;">
+    <h4>ℹ️ Question Information</h4>
+    <p><strong>Question ID:</strong> {{ question.id }}</p>
+    <p><strong>Law Reference:</strong> {{ question.law_reference }}</p>
+</div>
+{% endblock %}

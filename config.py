@@ -32,6 +32,10 @@ class Config:
     DEFAULT_LANGUAGE = 'ka'  # Georgian
     SUPPORTED_LANGUAGES = ['ka', 'en']
 
+    # Admin Panel settings
+    ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'changeme')  # Change in .env!
+
     @staticmethod
     def validate():
         """Validate configuration"""

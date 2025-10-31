@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>📊 Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card blue">
+        <h3>Total Laws</h3>
+        <div class="number">{{ stats.total_laws }}</div>
+    </div>
+
+    <div class="stat-card green">
+        <h3>Quiz Questions</h3>
+        <div class="number">{{ stats.total_questions }}</div>
+    </div>
+
+    <div class="stat-card orange">
+        <h3>Laws with Metadata</h3>
+        <div class="number">{{ stats.laws_with_metadata }}</div>
+    </div>
+
+    <div class="stat-card purple">
+        <h3>Coverage</h3>
+        <div class="number">{{ "%.1f" | format((stats.laws_with_metadata / stats.total_laws * 100) if stats.total_laws > 0 else 0) }}%</div>
+    </div>
+</div>
+
+<!-- Questions by Category -->
+<div class="content-box">
+    <h3>📁 Questions by Category</h3>
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, count in stats.questions_by_category.items() %}
+                <tr>
+                    <td>{{ category }}</td>
+                    <td>{{ count }}</td>
+                    <td>{{ "%.1f" | format(count / stats.total_questions * 100) }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Questions by Difficulty -->
+<div class="content-box">
+    <h3>🎯 Questions by Difficulty</h3>
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Difficulty</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for difficulty in ['easy', 'medium', 'hard'] %}
+                    {% set count = stats.questions_by_difficulty.get(difficulty, 0) %}
+                    <tr>
+                        <td style="text-transform: capitalize;">{{ difficulty }}</td>
+                        <td>{{ count }}</td>
+                        <td>{{ "%.1f" | format(count / stats.total_questions * 100) if stats.total_questions > 0 else 0 }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="content-box">
+    <h3>⚡ Quick Actions</h3>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <a href="{{ url_for('admin_add_law') }}" class="btn btn-primary">➕ Add New Law</a>
+        <a href="{{ url_for('admin_laws') }}" class="btn btn-success">📚 Manage Laws</a>
+        <a href="{{ url_for('admin_questions') }}" class="btn btn-warning">❓ Manage Questions</a>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">🌐 View Website</a>
+    </div>
+</div>
+{% endblock %}
