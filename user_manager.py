@@ -28,7 +28,7 @@ class UserManager:
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
-                email TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE,
                 password_hash TEXT NOT NULL,
                 display_name TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -94,6 +94,8 @@ class UserManager:
         try:
             password_hash = self.hash_password(password)
             display_name = display_name or username
+            # Email is optional, use None if not provided
+            email = email if email else None
 
             cursor.execute('''
                 INSERT INTO users (username, email, password_hash, display_name)
@@ -108,11 +110,11 @@ class UserManager:
         except sqlite3.IntegrityError as e:
             conn.close()
             if 'username' in str(e):
-                return {'success': False, 'error': 'Username already exists'}
+                return {'success': False, 'error': 'მომხმარებლის სახელი უკვე არსებობს'}
             elif 'email' in str(e):
-                return {'success': False, 'error': 'Email already exists'}
+                return {'success': False, 'error': 'ელ. ფოსტა უკვე გამოყენებულია'}
             else:
-                return {'success': False, 'error': 'Registration failed'}
+                return {'success': False, 'error': 'რეგისტრაცია ვერ მოხერხდა'}
 
     def authenticate_user(self, username, password):
         """Authenticate user with username and password"""

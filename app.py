@@ -463,18 +463,18 @@ def user_register():
 
         # Validation
         if not username or len(username) < 3:
-            flash('Username must be at least 3 characters', 'error')
-        elif not email or '@' not in email:
-            flash('Valid email is required', 'error')
+            flash('მომხმარებლის სახელი უნდა იყოს მინიმუმ 3 სიმბოლო', 'error')
+        elif email and '@' not in email:
+            flash('არასწორი ელ. ფოსტა', 'error')
         elif not password or len(password) < 6:
-            flash('Password must be at least 6 characters', 'error')
+            flash('პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო', 'error')
         elif password != confirm_password:
-            flash('Passwords do not match', 'error')
+            flash('პაროლები არ ემთხვევა', 'error')
         else:
             result = user_manager.create_user(username, email, password, display_name)
 
             if result['success']:
-                flash('Account created successfully! Please log in.', 'success')
+                flash('ანგარიში წარმატებით შეიქმნა! გთხოვთ შეხვიდეთ', 'success')
                 return redirect(url_for('user_login'))
             else:
                 flash(result['error'], 'error')
