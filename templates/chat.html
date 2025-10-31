@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}AI ასისტენტი{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>AI სამართლებრივი ასისტენტი</h1>
+        <p class="page-subtitle">დაუსვით კითხვები ქართულ ენაზე კანონების შესახებ</p>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            {% if conversation_history %}
+                {% for entry in conversation_history %}
+                <div class="message user-message">
+                    <div class="message-content">{{ entry.question }}</div>
+                </div>
+                <div class="message ai-message">
+                    <div class="message-content">{{ entry.answer }}</div>
+                    {% if entry.sources %}
+                    <div class="message-sources">
+                        <strong>გამოყენებული კანონები:</strong>
+                        <ul>
+                            {% for source in entry.sources %}
+                            <li>{{ source }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-chat">
+                <p>გამარჯობა! დამისვით კითხვა კანონების შესახებ.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="chat-input-container">
+            <form id="chatForm">
+                <div class="input-wrapper">
+                    <textarea
+                        id="questionInput"
+                        name="question"
+                        rows="5"
+                        placeholder="დაწერეთ თქვენი კითხვა აქ... (Enter - გაგზავნა, Shift+Enter - ახალი ხაზი)"
+                        required
+                    ></textarea>
+                </div>
+                <div class="chat-form-actions">
+                    <button type="button" id="clearHistoryBtn" class="btn btn-secondary">🗑️ ისტორიის წაშლა</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">📤 გაგზავნა</button>
+                </div>
+            </form>
+            <div id="loadingIndicator" class="loading-indicator">
+                <span class="spinner"></span> AI ფიქრობს და ეძებს რელევანტურ კანონებს...
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}?v=3"></script>
+{% endblock %}

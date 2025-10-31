@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Nexus Assistant{% endblock %} - სან ანდრეასის კანონთა ბაზა</title>
+    
+    <!-- Georgian Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">🏛️ Nexus Assistant</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">მთავარი</a></li>
+                <li><a href="/browse" class="{% if request.path == '/browse' %}active{% endif %}">კანონები</a></li>
+                <li><a href="/chat" class="{% if request.path == '/chat' %}active{% endif %}">AI ასისტენტი</a></li>
+                <li><a href="/quiz" class="{% if request.path == '/quiz' %}active{% endif %}">🎯 Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Nexus Assistant | სან ანდრეასის შტატის კანონთა ბაზა</p>
+            <p class="footer-note">🤖 AI-ით გამდიდრებული სამართლებრივი ასისტენტი</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=3"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

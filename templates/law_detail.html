@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ law.law_name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="law-detail-header">
+        <a href="/browse" class="back-link">← უკან კანონების სიაში</a>
+        <h1>{{ law.law_name }}</h1>
+        <div class="law-meta">
+            <span class="meta-item">📄 {{ law.filename }}</span>
+        </div>
+    </div>
+
+    <div class="law-detail-content">
+        <div class="english-summary">
+            <h3>Summary (English):</h3>
+            <p>{{ law.summary_en }}</p>
+            <div class="keywords">
+                {% for kw in law.keywords_en.split(',') %}
+                <span class="keyword-tag">{{ kw.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="georgian-text">
+            <h3>სრული ტექსტი (ქართული):</h3>
+            <div class="law-text-content">
+                {{ law.georgian_text | replace('
+', '<br>') | safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

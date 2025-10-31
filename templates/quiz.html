@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Mode{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>🎯 Quiz Mode - ტესტირება</h1>
+        <p class="page-subtitle">შეამოწმეთ თქვენი ცოდნა საქართველოს კანონებში</p>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="quiz-stats-container">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_answered }}</div>
+            <div class="stat-label">პასუხი გაცემული</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_correct }}</div>
+            <div class="stat-label">სწორი პასუხი</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ "%.1f"|format(stats.accuracy) }}%</div>
+            <div class="stat-label">სიზუსტე</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ question_count }}</div>
+            <div class="stat-label">ხელმისაწვდომი კითხვები</div>
+        </div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div class="quiz-container" id="quizContainer">
+        <!-- Start Screen -->
+        <div class="quiz-start-screen" id="startScreen">
+            <div class="quiz-welcome">
+                <h2>მზად ხართ ტესტისთვის?</h2>
+                <p>AI-გენერირებული კითხვები რეალურ კანონებიდან</p>
+
+                <div class="quiz-options">
+                    <label for="numQuestions">კითხვების რაოდენობა:</label>
+                    <select id="numQuestions">
+                        <option value="5">5 კითხვა (სწრაფი)</option>
+                        <option value="10" selected>10 კითხვა (სტანდარტული)</option>
+                        <option value="15">15 კითხვა (გრძელი)</option>
+                        <option value="20">20 კითხვა (სრული)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary btn-large" id="startQuizBtn">
+                    🎯 ტესტის დაწყება
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen" style="display:none;">
+            <div class="quiz-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">კითხვა 1 / 10</div>
+            </div>
+
+            <!-- Next Question Button Container -->
+            <div class="next-button-container" id="nextButtonContainer" style="display:none;">
+                <button class="next-question-btn" id="nextQuestionBtn"></button>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-category" id="questionCategory"></div>
+                <div class="question-difficulty" id="questionDifficulty"></div>
+                <h3 class="question-text" id="questionText"></h3>
+
+                <div class="question-options" id="questionOptions">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+
+            <div class="quiz-feedback" id="quizFeedback" style="display:none;">
+                <!-- Feedback will be shown here -->
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="quiz-results-screen" id="resultsScreen" style="display:none;">
+            <div class="results-card">
+                <h2>🎉 ტესტი დასრულდა!</h2>
+                <div class="results-score" id="resultsScore"></div>
+                <div class="results-details" id="resultsDetails"></div>
+
+                <div class="results-actions">
+                    <button class="btn btn-primary" id="retakeQuizBtn">🔄 თავიდან</button>
+                    <a href="/chat" class="btn btn-secondary">💬 AI ასისტენტი</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if stats.by_category %}
+    <!-- Category Performance -->
+    <div class="category-performance">
+        <h3>შესრულება კატეგორიების მიხედვით</h3>
+        <div class="category-grid">
+            {% for category, cat_stats in stats.by_category.items() %}
+            <div class="category-card">
+                <div class="category-name">{{ category }}</div>
+                <div class="category-stats">
+                    <span>{{ cat_stats.correct }} / {{ cat_stats.total }}</span>
+                    <span class="category-accuracy">{{ "%.0f"|format(cat_stats.accuracy) }}%</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}?v=2"></script>
+{% endblock %}

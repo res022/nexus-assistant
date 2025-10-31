@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}მთავარი{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1>🏛️ Nexus Assistant</h1>
+        <p class="hero-subtitle">სან ანდრეასის შტატის კანონთა ბაზა AI ასისტენტით</p>
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_laws }}</div>
+                <div class="stat-label">კანონი</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">🤖</div>
+                <div class="stat-label">AI ასისტენტი</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">⚡</div>
+                <div class="stat-label">სწრაფი ძიება</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>დაათვალიერეთ კანონები</h3>
+            <p>ნახეთ ყველა {{ total_laws }} კანონი ქართულ ენაზე სრული ტექსტით და ინგლისური აღწერილობით</p>
+            <a href="/browse" class="btn btn-primary">კანონების ნახვა</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>AI ასისტენტი</h3>
+            <p>დაუსვით კითხვები ქართულ ენაზე და მიიღეთ ზუსტი პასუხები კანონების საფუძველზე</p>
+            <a href="/chat" class="btn btn-primary">ჩათის დაწყება</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>სწრაფი ძიება</h3>
+            <p>იპოვეთ საჭირო კანონები საკვანძო სიტყვებით ქართულ ან ინგლისურ ენაზე</p>
+            <a href="/browse?q=" class="btn btn-primary" onclick="event.preventDefault(); document.getElementById('search-input').focus();">ძიების დაწყება</a>
+        </div>
+    </div>
+
+    <div class="how-it-works">
+        <h2>როგორ მუშაობს?</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>დასვით კითხვა</h4>
+                <p>ჩაწერეთ თქვენი კითხვა ქართულ ენაზე AI ასისტენტში</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>AI აანალიზებს</h4>
+                <p>სისტემა ეძებს შესაბამის კანონებს ინგლისური მეტადატით</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>მიიღეთ პასუხი</h4>
+                <p>AI გიპასუხებთ ქართულ ენაზე კონკრეტული კანონების მითითებით</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

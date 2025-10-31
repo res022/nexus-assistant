@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}კანონები{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📚 ყველა კანონი</h1>
+        <p class="page-subtitle">სულ: {{ laws|length }} კანონი</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="search-box">
+        <form action="/browse" method="get" class="search-form">
+            <input 
+                type="text" 
+                name="q" 
+                id="search-input"
+                placeholder="მოძებნეთ კანონი (ქართული ან ინგლისური)..." 
+                value="{{ search_query }}"
+                class="search-input"
+            >
+            <button type="submit" class="btn btn-primary">🔍 ძიება</button>
+        </form>
+        {% if search_query %}
+        <p class="search-results-info">
+            ძიების შედეგები: "{{ search_query }}" - ნაპოვნია {{ laws|length }} კანონი
+            <a href="/browse" class="clear-search">✕ ძიების გასუფთავება</a>
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Laws Grid -->
+    <div class="laws-grid">
+        {% for law in laws %}
+        <div class="law-card">
+            <div class="law-card-header">
+                <h3 class="law-title">{{ law.law_name }}</h3>
+            </div>
+            <div class="law-card-body">
+                <p class="law-summary">{{ law.summary_en }}</p>
+                <div class="law-keywords">
+                    {% for keyword in law.keywords_en.split(',')[:5] %}
+                    <span class="keyword-tag">{{ keyword.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="law-card-footer">
+                <a href="/law/{{ law.filename }}" class="btn btn-secondary">სრული ტექსტი →</a>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not laws %}
+        <div class="no-results">
+            <p>😕 კანონები ვერ მოიძებნა</p>
+            {% if search_query %}
+            <p>სცადეთ სხვა საძიებო სიტყვები</p>
+            <a href="/browse" class="btn btn-primary">ყველა კანონის ნახვა</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
