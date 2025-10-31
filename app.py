@@ -10,6 +10,7 @@ from gemini_helper import GeminiHelper
 from database import QuizDatabase
 from config import Config
 from admin_helper import check_admin_auth, login_required, get_admin_stats
+from user_manager import UserManager, user_login_required
 import os
 from datetime import datetime
 import uuid
@@ -23,6 +24,7 @@ app.secret_key = Config.SECRET_KEY
 law_parser = LawParser()
 gemini_helper = GeminiHelper()
 quiz_db = QuizDatabase()
+user_manager = UserManager()
 
 # Load all laws on startup
 print("[INFO] Loading all law documents...")
@@ -257,11 +259,19 @@ def api_quiz_start():
                 'message': 'კითხვები ჯერ არ არის გენერირებული. გაუშვით quiz_generator.py'
             }), 400
 
+        # If user is logged in, start a user quiz session
+        user_quiz_session_id = None
+        if session.get('user_id'):
+            user_quiz_session_id = user_manager.start_quiz_session(session['user_id'])
+            print(f"[DEBUG] Started user quiz session: {user_quiz_session_id}")
+
         # Store only question IDs in session (to keep session cookie small)
         session['current_quiz'] = {
             'question_ids': [q['id'] for q in questions],
             'current_index': 0,
-            'start_time': datetime.now().isoformat()
+            'start_time': datetime.now().isoformat(),
+            'correct_count': 0,
+            'user_session_id': user_quiz_session_id
         }
         session.modified = True
 
@@ -328,22 +338,48 @@ def api_quiz_answer():
         conn.close()
         is_correct = (user_answer == correct_answer)
 
-        # Record answer
-        quiz_db.record_answer(
-            session['quiz_session_id'],
-            question_id,
-            user_answer,
-            is_correct
-        )
+        # Record answer for logged-in users
+        if session.get('user_id'):
+            user_session_id = session['current_quiz'].get('user_session_id')
+            user_manager.record_quiz_answer(
+                session['user_id'],
+                user_session_id,
+                question_id,
+                user_answer,
+                is_correct
+            )
+            print(f"[DEBUG] Recorded answer for user {session['user_id']}")
+
+        # Also record for session-based stats (for non-logged-in users)
+        if not session.get('user_id'):
+            quiz_db.record_answer(
+                session['quiz_session_id'],
+                question_id,
+                user_answer,
+                is_correct
+            )
+
+        # Update correct count
+        quiz = session['current_quiz']
+        if is_correct:
+            quiz['correct_count'] = quiz.get('correct_count', 0) + 1
 
         # Move to next question
-        quiz = session['current_quiz']
         quiz['current_index'] += 1
         session.modified = True
 
         # Check if quiz is complete
         total_questions = len(quiz['question_ids'])
         if quiz['current_index'] >= total_questions:
+            # Complete user quiz session if logged in
+            if session.get('user_id') and quiz.get('user_session_id'):
+                user_manager.complete_quiz_session(
+                    quiz['user_session_id'],
+                    total_questions,
+                    quiz.get('correct_count', 0)
+                )
+                print(f"[DEBUG] Completed user quiz session")
+
             next_question = None
             is_complete = True
         else:
@@ -406,6 +442,111 @@ def api_quiz_stats():
 
     stats = quiz_db.get_user_stats(session['quiz_session_id'])
     return jsonify(stats)
+
+
+# ============================================================================
+# USER ACCOUNT ROUTES
+# ============================================================================
+
+@app.route('/register', methods=['GET', 'POST'])
+def user_register():
+    """User registration page"""
+    if session.get('user_id'):
+        return redirect(url_for('user_dashboard'))
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        display_name = request.form.get('display_name', '').strip()
+
+        # Validation
+        if not username or len(username) < 3:
+            flash('Username must be at least 3 characters', 'error')
+        elif not email or '@' not in email:
+            flash('Valid email is required', 'error')
+        elif not password or len(password) < 6:
+            flash('Password must be at least 6 characters', 'error')
+        elif password != confirm_password:
+            flash('Passwords do not match', 'error')
+        else:
+            result = user_manager.create_user(username, email, password, display_name)
+
+            if result['success']:
+                flash('Account created successfully! Please log in.', 'success')
+                return redirect(url_for('user_login'))
+            else:
+                flash(result['error'], 'error')
+
+    return render_template('user/register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def user_login():
+    """User login page"""
+    if session.get('user_id'):
+        return redirect(url_for('user_dashboard'))
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+
+        if not username or not password:
+            flash('Username and password are required', 'error')
+        else:
+            result = user_manager.authenticate_user(username, password)
+
+            if result['success']:
+                user = result['user']
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                session['display_name'] = user['display_name']
+
+                flash(f'Welcome back, {user["display_name"]}!', 'success')
+                return redirect(url_for('user_dashboard'))
+            else:
+                flash(result['error'], 'error')
+
+    return render_template('user/login.html')
+
+
+@app.route('/logout')
+def user_logout():
+    """User logout"""
+    session.pop('user_id', None)
+    session.pop('username', None)
+    session.pop('display_name', None)
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('index'))
+
+
+@app.route('/dashboard')
+@user_login_required
+def user_dashboard():
+    """User dashboard with statistics"""
+    user_id = session.get('user_id')
+    user_info = user_manager.get_user_by_id(user_id)
+    stats = user_manager.get_user_stats(user_id)
+
+    return render_template('user/dashboard.html', user=user_info, stats=stats)
+
+
+@app.route('/profile')
+@user_login_required
+def user_profile():
+    """User profile page"""
+    user_id = session.get('user_id')
+    user_info = user_manager.get_user_by_id(user_id)
+
+    return render_template('user/profile.html', user=user_info)
+
+
+@app.route('/leaderboard')
+def leaderboard():
+    """Public leaderboard"""
+    leaders = user_manager.get_leaderboard(limit=20)
+    return render_template('user/leaderboard.html', leaders=leaders)
 
 
 # ============================================================================

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}შესვლა - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 80px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 30px;">🔐 შესვლა</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="padding: 12px; border-radius: 5px; margin-bottom: 20px; {% if category == 'error' %}background: #e74c3c; color: white;{% else %}background: #2ecc71; color: white;{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('user_login') }}">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">მომხმარებლის სახელი ან ელ. ფოსტა</label>
+            <input type="text" name="username" required autofocus
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px;"
+                   placeholder="username ან email@example.com">
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">პაროლი</label>
+            <input type="password" name="password" required
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px;"
+                   placeholder="••••••••">
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer;">
+            შესვლა
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <p style="color: #7f8c8d;">არ გაქვთ ანგარიში? <a href="{{ url_for('user_register') }}" style="color: #2ecc71; text-decoration: none;">რეგისტრაცია</a></p>
+    </div>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="{{ url_for('index') }}" style="color: #95a5a6; text-decoration: none; font-size: 14px;">← უკან მთავარზე</a>
+    </div>
+</div>
+{% endblock %}

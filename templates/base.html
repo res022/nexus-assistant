@@ -27,9 +27,33 @@
                 <li><a href="/browse" class="{% if request.path == '/browse' %}active{% endif %}">კანონები</a></li>
                 <li><a href="/chat" class="{% if request.path == '/chat' %}active{% endif %}">AI ასისტენტი</a></li>
                 <li><a href="/quiz" class="{% if request.path == '/quiz' %}active{% endif %}">🎯 Quiz</a></li>
+                <li><a href="/leaderboard" class="{% if request.path == '/leaderboard' %}active{% endif %}">🏆 ლიდერბორდი</a></li>
+                {% if session.get('user_id') %}
+                <li style="position: relative;">
+                    <a href="#" style="display: flex; align-items: center; gap: 5px;">
+                        👤 {{ session.display_name }}
+                    </a>
+                    <ul style="position: absolute; top: 100%; right: 0; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 5px; padding: 10px 0; min-width: 150px; display: none;">
+                        <li><a href="/dashboard" style="display: block; padding: 8px 15px; color: #2c3e50; text-decoration: none;">📊 Dashboard</a></li>
+                        <li><a href="/profile" style="display: block; padding: 8px 15px; color: #2c3e50; text-decoration: none;">👤 პროფილი</a></li>
+                        <li style="border-top: 1px solid #eee; margin-top: 5px; padding-top: 5px;">
+                            <a href="/logout" style="display: block; padding: 8px 15px; color: #e74c3c; text-decoration: none;">გასვლა</a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="/login" class="{% if request.path == '/login' %}active{% endif %}">შესვლა</a></li>
+                <li><a href="/register" style="background: #2ecc71; padding: 8px 15px; border-radius: 5px;">რეგისტრაცია</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
+
+    <style>
+        .nav-menu li:hover > ul {
+            display: block !important;
+        }
+    </style>
 
     <!-- Main Content -->
     <main class="main-content">

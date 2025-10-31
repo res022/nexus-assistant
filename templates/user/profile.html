@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}პროფილი - {{ user.display_name }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 50px auto; padding: 30px;">
+    <h1>👤 პროფილი</h1>
+
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 30px;">
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 20px;">
+            <div style="text-align: center;">
+                <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                    <span style="font-size: 64px; color: white;">{{ user.display_name[0].upper() }}</span>
+                </div>
+            </div>
+
+            <div>
+                <h2 style="margin-top: 0;">{{ user.display_name }}</h2>
+                <p style="color: #7f8c8d; margin: 5px 0;"><strong>მომხმარებელი:</strong> {{ user.username }}</p>
+                <p style="color: #7f8c8d; margin: 5px 0;"><strong>ელ. ფოსტა:</strong> {{ user.email }}</p>
+                <p style="color: #7f8c8d; margin: 5px 0;"><strong>რეგისტრაცია:</strong> {{ user.created_at[:10] if user.created_at else 'N/A' }}</p>
+                <p style="color: #7f8c8d; margin: 5px 0;"><strong>ბოლო შესვლა:</strong> {{ user.last_login[:16] if user.last_login else 'N/A' }}</p>
+
+                <div style="margin-top: 20px;">
+                    <a href="{{ url_for('user_dashboard') }}" style="display: inline-block; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px;">← Dashboard</a>
+                    <a href="{{ url_for('user_logout') }}" style="display: inline-block; padding: 10px 20px; background: #e74c3c; color: white; text-decoration: none; border-radius: 5px;">გასვლა</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;">
+        <h3>📊 სტატისტიკა</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+            <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 32px; font-weight: bold; color: #3498db;">{{ user.total_quizzes }}</div>
+                <div style="color: #7f8c8d; margin-top: 5px;">სულ ქვიზები</div>
+            </div>
+
+            <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 32px; font-weight: bold; color: #2ecc71;">{{ user.total_correct }}</div>
+                <div style="color: #7f8c8d; margin-top: 5px;">სწორი პასუხები</div>
+            </div>
+
+            <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 32px; font-weight: bold; color: #f39c12;">{{ user.accuracy }}%</div>
+                <div style="color: #7f8c8d; margin-top: 5px;">სიზუსტე</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

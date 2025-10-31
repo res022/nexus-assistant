@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}🏆 ლიდერბორდი - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 50px auto; padding: 20px;">
+    <h1 style="text-align: center; margin-bottom: 40px;">🏆 ლიდერბორდი</h1>
+
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        {% if leaders %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <th style="padding: 15px; text-align: center; border-radius: 8px 0 0 0;">ადგილი</th>
+                    <th style="padding: 15px; text-align: left;">მომხმარებელი</th>
+                    <th style="padding: 15px; text-align: center;">ქვიზები</th>
+                    <th style="padding: 15px; text-align: center;">კითხვები</th>
+                    <th style="padding: 15px; text-align: center;">სწორი</th>
+                    <th style="padding: 15px; text-align: center; border-radius: 0 8px 0 0;">სიზუსტე</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leader in leaders %}
+                <tr style="border-bottom: 1px solid #dee2e6; {% if loop.index <= 3 %}background: #fff3e0;{% endif %}">
+                    <td style="padding: 15px; text-align: center; font-weight: bold; font-size: 20px;">
+                        {% if loop.index == 1 %}🥇
+                        {% elif loop.index == 2 %}🥈
+                        {% elif loop.index == 3 %}🥉
+                        {% else %}{{ loop.index }}{% endif %}
+                    </td>
+                    <td style="padding: 15px;">
+                        <div style="font-weight: 600; font-size: 16px;">{{ leader.display_name }}</div>
+                        <div style="color: #7f8c8d; font-size: 14px;">@{{ leader.username }}</div>
+                    </td>
+                    <td style="padding: 15px; text-align: center;">{{ leader.total_quizzes }}</td>
+                    <td style="padding: 15px; text-align: center;">{{ leader.total_questions }}</td>
+                    <td style="padding: 15px; text-align: center; color: #2ecc71; font-weight: 600;">{{ leader.total_correct }}</td>
+                    <td style="padding: 15px; text-align: center;">
+                        <span style="padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 16px;
+                                     {% if leader.accuracy >= 90 %}background: #d4edda; color: #155724;
+                                     {% elif leader.accuracy >= 80 %}background: #d1ecf1; color: #0c5460;
+                                     {% elif leader.accuracy >= 70 %}background: #fff3cd; color: #856404;
+                                     {% else %}background: #f8d7da; color: #721c24;{% endif %}">
+                            {{ leader.accuracy }}%
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="text-align: center; padding: 50px; color: #7f8c8d;">
+            <p style="font-size: 18px;">ჯერ არ არის მომხმარებლები ლიდერბორდზე</p>
+            <p>დაიწყეთ ქვიზის გავლა და გახდით პირველი! 🎯</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <p style="color: #7f8c8d;">მინიმუმ 10 კითხვაზე უნდა გიპასუხოთ ლიდერბორდზე მოსახვედრად</p>
+        {% if session.get('user_id') %}
+        <a href="{{ url_for('user_dashboard') }}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">← თქვენი Dashboard</a>
+        {% else %}
+        <a href="{{ url_for('user_register') }}" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #2ecc71; color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">დარეგისტრირდი ახლავე!</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
