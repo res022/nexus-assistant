@@ -1,0 +1,701 @@
+{% extends "admin/base.html" %}
+
+{% block title %}შექმენით გაზიარებადი ქვიზი{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <h2>🎯 შექმენით გაზიარებადი ქვიზი</h2>
+    <p>შექმენით ქვიზი არსებული ან ახალი კითხვებით</p>
+</div>
+
+<!-- Quiz Info Form -->
+<div class="quiz-builder-container">
+    <div class="quiz-info-section">
+        <h3>📋 ქვიზის ინფორმაცია</h3>
+        <form id="quizInfoForm">
+            <div class="form-group">
+                <label for="quizTitle">სათაური *</label>
+                <input type="text" id="quizTitle" name="title" required
+                       placeholder="მაგ: საპროცესო სამართლის ტესტი">
+            </div>
+            <div class="form-group">
+                <label for="quizDescription">აღწერა</label>
+                <textarea id="quizDescription" name="description" rows="3"
+                          placeholder="ქვიზის მოკლე აღწერა..."></textarea>
+            </div>
+        </form>
+    </div>
+
+    <!-- Question Selection Tabs -->
+    <div class="question-selection-section">
+        <h3>❓ კითხვების არჩევა</h3>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('existing')">
+                📚 არსებული კითხვები
+            </button>
+            <button class="tab-btn" onclick="switchTab('custom')">
+                ✏️ ახალი კითხვა
+            </button>
+        </div>
+
+        <!-- Existing Questions Tab -->
+        <div id="existingTab" class="tab-content active">
+            <div class="filters-row">
+                <select id="filterSource" onchange="loadQuestions()">
+                    <option value="laws">📜 კანონები</option>
+                    <option value="rules">🎮 წესები</option>
+                </select>
+                <select id="filterDifficulty" onchange="loadQuestions()">
+                    <option value="">ყველა სირთულე</option>
+                    <option value="easy">მარტივი</option>
+                    <option value="medium">საშუალო</option>
+                    <option value="hard">რთული</option>
+                </select>
+                <input type="text" id="searchQuestions" placeholder="🔍 ძებნა..."
+                       onkeyup="filterQuestions()">
+            </div>
+
+            <div class="questions-list" id="questionsList">
+                <!-- Questions will be loaded here -->
+                <div class="loading">იტვირთება...</div>
+            </div>
+        </div>
+
+        <!-- Custom Question Tab -->
+        <div id="customTab" class="tab-content" style="display:none;">
+            <form id="customQuestionForm" class="custom-question-form">
+                <div class="form-group">
+                    <label for="customQuestion">კითხვა *</label>
+                    <textarea id="customQuestion" name="question" rows="3" required
+                              placeholder="შეიყვანეთ კითხვის ტექსტი..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>პასუხის ვარიანტები *</label>
+                    <div id="optionsContainer">
+                        <input type="text" class="option-input" placeholder="ვარიანტი 1" required>
+                        <input type="text" class="option-input" placeholder="ვარიანტი 2" required>
+                        <input type="text" class="option-input" placeholder="ვარიანტი 3" required>
+                        <input type="text" class="option-input" placeholder="ვარიანტი 4" required>
+                    </div>
+                    <button type="button" class="btn-add-option" onclick="addOption()">+ დაამატეთ ვარიანტი</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="correctAnswer">სწორი პასუხი *</label>
+                    <select id="correctAnswer" name="correct_answer" required>
+                        <option value="">აირჩიეთ სწორი პასუხი</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="explanation">განმარტება *</label>
+                    <textarea id="explanation" name="explanation" rows="3" required
+                              placeholder="ახსენით რატომ არის ეს პასუხი სწორი..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lawReference">კანონის მითითება</label>
+                    <input type="text" id="lawReference" name="law_reference"
+                           placeholder="მაგ: მუხლი 15, ნაწილი 3">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customCategory">კატეგორია *</label>
+                        <input type="text" id="customCategory" name="category" required
+                               placeholder="მაგ: procedures">
+                    </div>
+                    <div class="form-group">
+                        <label for="customDifficulty">სირთულე *</label>
+                        <select id="customDifficulty" name="difficulty" required>
+                            <option value="easy">მარტივი</option>
+                            <option value="medium">საშუალო</option>
+                            <option value="hard">რთული</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customSource">წყარო *</label>
+                        <select id="customSource" name="source_type" required>
+                            <option value="laws">კანონები</option>
+                            <option value="rules">წესები</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="addCustomQuestion()">
+                    ➕ დაამატეთ ქვიზს
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Selected Questions -->
+    <div class="selected-questions-section">
+        <h3>✅ არჩეული კითხვები (<span id="selectedCount">0</span>)</h3>
+        <div id="selectedQuestions" class="selected-questions-list">
+            <p class="empty-state">კითხვები არ არის არჩეული</p>
+        </div>
+    </div>
+
+    <!-- Create Quiz Button -->
+    <div class="quiz-actions">
+        <button class="btn btn-primary btn-large" onclick="createQuiz()" id="createQuizBtn" disabled>
+            🚀 შექმენით ქვიზი და მიიღეთ ბმული
+        </button>
+    </div>
+</div>
+
+<!-- Quiz Link Modal -->
+<div id="quizLinkModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3>🎉 ქვიზი შეიქმნა!</h3>
+        <p>გააზიარეთ ეს ბმული მომხმარებლებთან:</p>
+        <div class="quiz-link-container">
+            <input type="text" id="quizLink" readonly>
+            <button class="btn btn-secondary" onclick="copyLink()">📋 კოპირება</button>
+        </div>
+        <button class="btn btn-primary" onclick="closeModal()">გასაგებია</button>
+    </div>
+</div>
+
+<style>
+.quiz-builder-container {
+    max-width: 1200px;
+}
+
+.quiz-info-section, .question-selection-section, .selected-questions-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.quiz-info-section h3, .question-selection-section h3, .selected-questions-section h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a1f36;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #f4b740;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #1a1f36;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    background: #1a1f36;
+    color: white;
+    border-color: #1a1f36;
+}
+
+.tab-btn:hover:not(.active) {
+    border-color: #f4b740;
+}
+
+.filters-row {
+    display: grid;
+    grid-template-columns: 200px 200px 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.questions-list {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+}
+
+.question-item {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #f4b740;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.question-item:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.question-item.selected {
+    background: #e6f3ff;
+    border-left-color: #1a1f36;
+}
+
+.question-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.question-item-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.badge {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+.badge-easy { background: #d4edda; color: #155724; }
+.badge-medium { background: #fff3cd; color: #856404; }
+.badge-hard { background: #f8d7da; color: #721c24; }
+
+.question-text-preview {
+    font-size: 14px;
+    color: #2d3748;
+    line-height: 1.5;
+}
+
+.option-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e2e8f0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.btn-add-option {
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid #f4b740;
+    color: #f4b740;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-add-option:hover {
+    background: #f4b740;
+    color: #1a1f36;
+}
+
+.selected-questions-list {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.empty-state {
+    text-align: center;
+    color: #718096;
+    padding: 40px;
+    font-style: italic;
+}
+
+.selected-question-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #1a1f36;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-remove {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+}
+
+.quiz-actions {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.btn-large {
+    padding: 18px 48px;
+    font-size: 18px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+    border-top: 4px solid #f4b740;
+    text-align: center;
+}
+
+.modal-content h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.quiz-link-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.quiz-link-container input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #f4b740;
+    font-size: 14px;
+    font-family: monospace;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #718096;
+}
+</style>
+
+<script>
+let selectedQuestions = [];
+let allQuestions = [];
+
+// Load questions on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadQuestions();
+    updateOptionsDropdown();
+    attachOptionListeners(); // Attach event listeners once
+});
+
+// Load questions from database
+async function loadQuestions() {
+    const source = document.getElementById('filterSource').value;
+    const difficulty = document.getElementById('filterDifficulty').value;
+
+    try {
+        const response = await fetch(`/admin/api/questions?source=${source}&difficulty=${difficulty}`);
+        const data = await response.json();
+        allQuestions = data.questions;
+        displayQuestions(allQuestions);
+    } catch (error) {
+        console.error('Error loading questions:', error);
+    }
+}
+
+// Display questions
+function displayQuestions(questions) {
+    const container = document.getElementById('questionsList');
+
+    if (questions.length === 0) {
+        container.innerHTML = '<div class="empty-state">კითხვები ვერ მოიძებნა</div>';
+        return;
+    }
+
+    container.innerHTML = questions.map(q => `
+        <div class="question-item ${isSelected(q.id) ? 'selected' : ''}"
+             onclick="toggleQuestion(${q.id})">
+            <div class="question-item-header">
+                <div class="question-item-badges">
+                    <span class="badge badge-${q.difficulty}">${q.difficulty}</span>
+                    <span class="badge">${q.category}</span>
+                </div>
+                <span>${isSelected(q.id) ? '✅' : '⭕'}</span>
+            </div>
+            <div class="question-text-preview">${q.question_text}</div>
+        </div>
+    `).join('');
+}
+
+// Filter questions by search
+function filterQuestions() {
+    const search = document.getElementById('searchQuestions').value.toLowerCase();
+    const filtered = allQuestions.filter(q =>
+        q.question_text.toLowerCase().includes(search)
+    );
+    displayQuestions(filtered);
+}
+
+// Toggle question selection
+function toggleQuestion(id) {
+    const question = allQuestions.find(q => q.id === id);
+    if (!question) return;
+
+    const index = selectedQuestions.findIndex(q => q.id === id);
+    if (index > -1) {
+        selectedQuestions.splice(index, 1);
+    } else {
+        selectedQuestions.push(question);
+    }
+
+    updateSelectedQuestions();
+    displayQuestions(allQuestions.filter(q =>
+        document.getElementById('searchQuestions').value === '' ||
+        q.question_text.toLowerCase().includes(document.getElementById('searchQuestions').value.toLowerCase())
+    ));
+}
+
+// Check if question is selected
+function isSelected(id) {
+    return selectedQuestions.some(q => q.id === id);
+}
+
+// Update selected questions display
+function updateSelectedQuestions() {
+    const container = document.getElementById('selectedQuestions');
+    const count = document.getElementById('selectedCount');
+    const createBtn = document.getElementById('createQuizBtn');
+
+    count.textContent = selectedQuestions.length;
+    createBtn.disabled = selectedQuestions.length === 0;
+
+    if (selectedQuestions.length === 0) {
+        container.innerHTML = '<p class="empty-state">კითხვები არ არის არჩეული</p>';
+        return;
+    }
+
+    container.innerHTML = selectedQuestions.map((q, index) => `
+        <div class="selected-question-card">
+            <div>
+                <strong>${index + 1}.</strong> ${q.question_text.substring(0, 80)}...
+                <span class="badge badge-${q.difficulty}">${q.difficulty}</span>
+            </div>
+            <button class="btn-remove" onclick="removeQuestion(${q.id})">🗑️</button>
+        </div>
+    `).join('');
+}
+
+// Remove question from selected
+function removeQuestion(id) {
+    selectedQuestions = selectedQuestions.filter(q => q.id !== id);
+    updateSelectedQuestions();
+    loadQuestions();
+}
+
+// Switch tabs
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+
+    if (tab === 'existing') {
+        document.querySelector('.tab-btn:first-child').classList.add('active');
+        document.getElementById('existingTab').style.display = 'block';
+    } else {
+        document.querySelector('.tab-btn:last-child').classList.add('active');
+        document.getElementById('customTab').style.display = 'block';
+    }
+}
+
+// Add option to custom question
+function addOption() {
+    const container = document.getElementById('optionsContainer');
+    const count = container.querySelectorAll('.option-input').length + 1;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'option-input';
+    input.placeholder = `ვარიანტი ${count}`;
+    container.appendChild(input);
+    updateOptionsDropdown();
+}
+
+// Update correct answer dropdown
+function updateOptionsDropdown() {
+    const inputs = document.querySelectorAll('.option-input');
+    const dropdown = document.getElementById('correctAnswer');
+
+    const currentValue = dropdown.value;
+    dropdown.innerHTML = '<option value="">აირჩიეთ სწორი პასუხი</option>';
+
+    inputs.forEach((input, index) => {
+        if (input.value.trim()) {
+            const option = document.createElement('option');
+            option.value = input.value;
+            option.textContent = `${index + 1}. ${input.value}`;
+            dropdown.appendChild(option);
+        }
+    });
+
+    if (currentValue) dropdown.value = currentValue;
+}
+
+// Attach input event listeners to option inputs (only once)
+function attachOptionListeners() {
+    const container = document.getElementById('optionsContainer');
+    container.addEventListener('input', function(e) {
+        if (e.target.classList.contains('option-input')) {
+            updateOptionsDropdown();
+        }
+    });
+}
+
+// Add custom question
+function addCustomQuestion() {
+    const options = Array.from(document.querySelectorAll('.option-input'))
+        .map(input => input.value.trim())
+        .filter(val => val !== '');
+
+    if (options.length < 2) {
+        alert('გთხოვთ დაამატოთ მინიმუმ 2 ვარიანტი');
+        return;
+    }
+
+    const customQuestion = {
+        id: 'custom_' + Date.now(),
+        question_text: document.getElementById('customQuestion').value,
+        options: options,
+        correct_answer: document.getElementById('correctAnswer').value,
+        explanation: document.getElementById('explanation').value,
+        law_reference: document.getElementById('lawReference').value || 'N/A',
+        category: document.getElementById('customCategory').value,
+        difficulty: document.getElementById('customDifficulty').value,
+        source_type: document.getElementById('customSource').value,
+        is_custom: true
+    };
+
+    if (!customQuestion.correct_answer) {
+        alert('გთხოვთ აირჩიოთ სწორი პასუხი');
+        return;
+    }
+
+    selectedQuestions.push(customQuestion);
+    updateSelectedQuestions();
+
+    // Reset form
+    document.getElementById('customQuestionForm').reset();
+    document.getElementById('optionsContainer').innerHTML = `
+        <input type="text" class="option-input" placeholder="ვარიანტი 1" required>
+        <input type="text" class="option-input" placeholder="ვარიანტი 2" required>
+        <input type="text" class="option-input" placeholder="ვარიანტი 3" required>
+        <input type="text" class="option-input" placeholder="ვარიანტი 4" required>
+    `;
+    updateOptionsDropdown();
+
+    alert('✅ კითხვა დაემატა ქვიზს!');
+}
+
+// Create quiz
+async function createQuiz() {
+    const title = document.getElementById('quizTitle').value.trim();
+    const description = document.getElementById('quizDescription').value.trim();
+
+    if (!title) {
+        alert('გთხოვთ შეიყვანოთ ქვიზის სათაური');
+        return;
+    }
+
+    if (selectedQuestions.length === 0) {
+        alert('გთხოვთ აირჩიოთ ან შექმნათ მინიმუმ 1 კითხვა');
+        return;
+    }
+
+    const quizData = {
+        title: title,
+        description: description,
+        questions: selectedQuestions
+    };
+
+    try {
+        const response = await fetch('/admin/api/quiz/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(quizData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showQuizLink(data.quiz_id, data.quiz_url);
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა ქვიზის შექმნისას: ' + error.message);
+    }
+}
+
+// Show quiz link modal
+function showQuizLink(quizId, quizUrl) {
+    document.getElementById('quizLink').value = quizUrl;
+    document.getElementById('quizLinkModal').style.display = 'flex';
+}
+
+// Copy link
+function copyLink() {
+    const input = document.getElementById('quizLink');
+    input.select();
+    document.execCommand('copy');
+    alert('📋 ბმული დაკოპირდა!');
+}
+
+// Close modal
+function closeModal() {
+    document.getElementById('quizLinkModal').style.display = 'none';
+    window.location.href = '/admin/quizzes';
+}
+</script>
+{% endblock %}

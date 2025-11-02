@@ -4,43 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel{% endblock %} - Nexus Assistant</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ecf0f1; }
+        body { font-family: 'Inter', sans-serif; background: #fafafa; }
 
         /* Admin Header */
         .admin-header {
-            background: #2c3e50;
+            background: #1a1f36;
             color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 3px solid #f4b740;
         }
-        .admin-header h1 { font-size: 24px; }
+        .admin-header h1 { font-size: 24px; font-family: 'Playfair Display', Georgia, serif; color: #f4b740; }
         .admin-header .user-info { display: flex; gap: 20px; align-items: center; }
-        .admin-header a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; transition: background 0.3s; }
-        .admin-header a:hover { background: #34495e; }
+        .admin-header a { color: white; text-decoration: none; padding: 8px 15px; transition: color 0.3s; font-weight: 500; }
+        .admin-header a:hover { color: #f4b740; }
 
         /* Admin Navigation */
         .admin-nav {
-            background: #34495e;
+            background: #1a1f36;
             padding: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #2d3748;
         }
         .admin-nav ul { list-style: none; display: flex; }
-        .admin-nav li { border-right: 1px solid #2c3e50; }
+        .admin-nav li { border-right: 1px solid #2d3748; }
         .admin-nav a {
             display: block;
             padding: 15px 25px;
             color: white;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-weight: 500;
         }
         .admin-nav a:hover,
-        .admin-nav a.active { background: #2c3e50; }
+        .admin-nav a.active { background: #2d3748; color: #f4b740; }
 
         /* Admin Content */
         .admin-container {
@@ -75,63 +78,67 @@
         .stat-card {
             background: white;
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #f4b740;
+            box-shadow: none;
         }
-        .stat-card h3 { color: #7f8c8d; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
-        .stat-card .number { font-size: 36px; font-weight: bold; color: #2c3e50; }
-        .stat-card.blue { border-left: 4px solid #3498db; }
-        .stat-card.green { border-left: 4px solid #2ecc71; }
-        .stat-card.orange { border-left: 4px solid #e67e22; }
-        .stat-card.purple { border-left: 4px solid #9b59b6; }
+        .stat-card h3 { color: #718096; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card .number { font-size: 36px; font-weight: bold; color: #1a1f36; font-family: 'Playfair Display', Georgia, serif; }
+        .stat-card.blue { border-top-color: #f4b740; }
+        .stat-card.green { border-top-color: #f4b740; }
+        .stat-card.orange { border-top-color: #f4b740; }
+        .stat-card.purple { border-top-color: #f4b740; }
 
         /* Content Box */
         .content-box {
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            border-top: 3px solid #f4b740;
             margin-bottom: 30px;
         }
-        .content-box h2 { margin-bottom: 20px; color: #2c3e50; }
+        .content-box h2 { margin-bottom: 20px; color: #1a1f36; font-family: 'Playfair Display', Georgia, serif; }
 
         /* Tables */
         .data-table {
             width: 100%;
             border-collapse: collapse;
+            border: 1px solid #e2e8f0;
         }
         .data-table th,
         .data-table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid #e2e8f0;
         }
         .data-table th {
-            background: #34495e;
+            background: #1a1f36;
             color: white;
             font-weight: 600;
         }
-        .data-table tr:hover { background: #f8f9fa; }
+        .data-table tr:hover { background: #fafafa; }
 
         /* Buttons */
         .btn {
             padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid #f4b740;
+            background: transparent;
+            color: #f4b740;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s;
             font-size: 14px;
+            font-weight: 600;
         }
-        .btn-primary { background: #3498db; color: white; }
-        .btn-primary:hover { background: #2980b9; }
-        .btn-success { background: #2ecc71; color: white; }
-        .btn-success:hover { background: #27ae60; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-danger:hover { background: #c0392b; }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-warning:hover { background: #e67e22; }
+        .btn-primary { background: transparent; border-color: #f4b740; color: #f4b740; }
+        .btn-primary:hover { background: #f4b740; color: #1a1f36; }
+        .btn-success { background: #2ecc71; color: white; border-color: #2ecc71; }
+        .btn-success:hover { background: #27ae60; border-color: #27ae60; }
+        .btn-danger { background: #e74c3c; color: white; border-color: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; border-color: #c0392b; }
+        .btn-warning { background: #f39c12; color: white; border-color: #f39c12; }
+        .btn-warning:hover { background: #e67e22; border-color: #e67e22; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
 
         /* Forms */
@@ -142,16 +149,22 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #34495e;
+            color: #1a1f36;
         }
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 2px solid #e2e8f0;
             font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f4b740;
         }
         .form-group textarea {
             min-height: 150px;
@@ -193,7 +206,7 @@
 <body>
     <!-- Admin Header -->
     <div class="admin-header">
-        <h1>⚡ Nexus Assistant - Admin Panel</h1>
+        <h1>⚖️ Nexus Assistant - Admin Panel</h1>
         <div class="user-info">
             <span>👤 {{ session.admin_username }}</span>
             <a href="{{ url_for('index') }}">View Site</a>
@@ -207,6 +220,7 @@
             <li><a href="{{ url_for('admin_dashboard') }}" {% if request.endpoint == 'admin_dashboard' %}class="active"{% endif %}>📊 Dashboard</a></li>
             <li><a href="{{ url_for('admin_laws') }}" {% if 'laws' in request.endpoint %}class="active"{% endif %}>📚 Laws</a></li>
             <li><a href="{{ url_for('admin_questions') }}" {% if 'questions' in request.endpoint %}class="active"{% endif %}>❓ Questions</a></li>
+            <li><a href="{{ url_for('admin_quizzes') }}" {% if 'quiz' in request.endpoint %}class="active"{% endif %}>🎯 Shared Quizzes</a></li>
         </ul>
     </nav>
 

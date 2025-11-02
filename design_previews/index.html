@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Assistant - Design Preview Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .design-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .design-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .design-preview {
+            height: 300px;
+            background-size: cover;
+            background-position: top center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .design-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .design-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .design-info {
+            padding: 1.5rem;
+        }
+
+        .design-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .design-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .design-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .btn-preview {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-preview:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Color previews for each design */
+        .option1 .design-preview {
+            background: linear-gradient(135deg, #1a1f36 0%, #f4b740 100%);
+        }
+
+        .option2 .design-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        .option3 .design-preview {
+            background: linear-gradient(135deg, #0f1419 0%, #58a6ff 50%, #bc8cff 100%);
+        }
+
+        .option4 .design-preview {
+            background: linear-gradient(135deg, #8b1538 0%, #b8860b 100%);
+        }
+
+        .option5 .design-preview {
+            background: linear-gradient(135deg, #3f51b5 0%, #009688 50%, #ff5722 100%);
+        }
+
+        .comparison {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .comparison h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .star {
+            color: #f4b740;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .instructions h2 {
+            margin-bottom: 1rem;
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .designs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Nexus Assistant Design Gallery</h1>
+            <p class="subtitle">Choose your favorite design concept</p>
+        </header>
+
+        <div class="instructions">
+            <h2>📋 How to Choose:</h2>
+            <ol>
+                <li>Click on any design card below to preview the full design in your browser</li>
+                <li>Review the comparison table to see which design fits your needs</li>
+                <li>Once you've decided, let me know which option you prefer (1-5)</li>
+                <li>I'll implement the chosen design across your entire website</li>
+            </ol>
+        </div>
+
+        <div class="designs-grid">
+            <!-- Option 1 -->
+            <div class="design-card option1" onclick="window.open('option1_minimalist_legal.html', '_blank')">
+                <div class="design-preview">
+                    <div class="design-overlay">
+                        <div class="design-number">01</div>
+                    </div>
+                </div>
+                <div class="design-info">
+                    <div class="design-title">Modern Minimalist Legal</div>
+                    <div class="design-description">
+                        Clean, professional design with serif typography and gold accents. Perfect for serious legal professionals.
+                    </div>
+                    <div class="design-tags">
+                        <span class="tag">Professional</span>
+                        <span class="tag">Serif Fonts</span>
+                        <span class="tag">Navy & Gold</span>
+                        <span class="tag">Minimal</span>
+                    </div>
+                    <a href="option1_minimalist_legal.html" target="_blank" class="btn-preview">Preview Design →</a>
+                </div>
+            </div>
+
+            <!-- Option 2 -->
+            <div class="design-card option2" onclick="window.open('option2_vibrant_gradient.html', '_blank')">
+                <div class="design-preview">
+                    <div class="design-overlay">
+                        <div class="design-number">02</div>
+                    </div>
+                </div>
+                <div class="design-info">
+                    <div class="design-title">Vibrant Gradient Modern</div>
+                    <div class="design-description">
+                        Bold, energetic design with glassmorphism effects and animated gradients. Great for engaging students.
+                    </div>
+                    <div class="design-tags">
+                        <span class="tag">Energetic</span>
+                        <span class="tag">Glassmorphism</span>
+                        <span class="tag">Animated</span>
+                        <span class="tag">Student-Friendly</span>
+                    </div>
+                    <a href="option2_vibrant_gradient.html" target="_blank" class="btn-preview">Preview Design →</a>
+                </div>
+            </div>
+
+            <!-- Option 3 -->
+            <div class="design-card option3" onclick="window.open('option3_dark_mode_premium.html', '_blank')">
+                <div class="design-preview">
+                    <div class="design-overlay">
+                        <div class="design-number">03</div>
+                    </div>
+                </div>
+                <div class="design-info">
+                    <div class="design-title">Dark Mode Premium</div>
+                    <div class="design-description">
+                        Sophisticated dark theme with neon accents and glow effects. Ideal for tech-savvy users and long sessions.
+                    </div>
+                    <div class="design-tags">
+                        <span class="tag">Dark Mode</span>
+                        <span class="tag">Neon Glow</span>
+                        <span class="tag">Eye-Friendly</span>
+                        <span class="tag">Modern</span>
+                    </div>
+                    <a href="option3_dark_mode_premium.html" target="_blank" class="btn-preview">Preview Design →</a>
+                </div>
+            </div>
+
+            <!-- Option 4 -->
+            <div class="design-card option4" onclick="window.open('option4_classic_academic.html', '_blank')">
+                <div class="design-preview">
+                    <div class="design-overlay">
+                        <div class="design-number">04</div>
+                    </div>
+                </div>
+                <div class="design-info">
+                    <div class="design-title">Classic Academic</div>
+                    <div class="design-description">
+                        Traditional, university-style design with burgundy and gold colors. Perfect for formal institutions.
+                    </div>
+                    <div class="design-tags">
+                        <span class="tag">Traditional</span>
+                        <span class="tag">Institutional</span>
+                        <span class="tag">Burgundy & Gold</span>
+                        <span class="tag">Timeless</span>
+                    </div>
+                    <a href="option4_classic_academic.html" target="_blank" class="btn-preview">Preview Design →</a>
+                </div>
+            </div>
+
+            <!-- Option 5 -->
+            <div class="design-card option5" onclick="window.open('option5_flat_material.html', '_blank')">
+                <div class="design-preview">
+                    <div class="design-overlay">
+                        <div class="design-number">05</div>
+                    </div>
+                </div>
+                <div class="design-info">
+                    <div class="design-title">Flat Material Design</div>
+                    <div class="design-description">
+                        Google-inspired design with bold colors and familiar patterns. Easy to use and intuitive for everyone.
+                    </div>
+                    <div class="design-tags">
+                        <span class="tag">Clean</span>
+                        <span class="tag">Familiar</span>
+                        <span class="tag">Material Icons</span>
+                        <span class="tag">Intuitive</span>
+                    </div>
+                    <a href="option5_flat_material.html" target="_blank" class="btn-preview">Preview Design →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <h2>📊 Design Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Design</th>
+                        <th>Professionalism</th>
+                        <th>Playfulness</th>
+                        <th>Complexity</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Option 1: Minimalist Legal</strong></td>
+                        <td><span class="star">★★★★★</span></td>
+                        <td><span class="star">★☆☆☆☆</span></td>
+                        <td>Low</td>
+                        <td>Lawyers, Professionals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Option 2: Vibrant Gradient</strong></td>
+                        <td><span class="star">★★★☆☆</span></td>
+                        <td><span class="star">★★★★★</span></td>
+                        <td>High</td>
+                        <td>Students, Younger Audience</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Option 3: Dark Mode</strong></td>
+                        <td><span class="star">★★★★☆</span></td>
+                        <td><span class="star">★★★☆☆</span></td>
+                        <td>Medium</td>
+                        <td>Tech Users, Long Sessions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Option 4: Classic Academic</strong></td>
+                        <td><span class="star">★★★★★</span></td>
+                        <td><span class="star">★☆☆☆☆</span></td>
+                        <td>Medium</td>
+                        <td>Institutions, Traditional</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Option 5: Flat Material</strong></td>
+                        <td><span class="star">★★★★☆</span></td>
+                        <td><span class="star">★★★☆☆</span></td>
+                        <td>Low</td>
+                        <td>General Audience, Ease of Use</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

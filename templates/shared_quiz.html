@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="shared-quiz-header">
+        <h1>🎯 {{ quiz.title }}</h1>
+        {% if quiz.description %}
+        <p class="quiz-description">{{ quiz.description }}</p>
+        {% endif %}
+        <div class="quiz-meta">
+            <span class="meta-badge">❓ {{ questions|length }} კითხვა</span>
+            <span class="meta-badge">📅 {{ quiz.created_at.split('T')[0] if 'T' in quiz.created_at else quiz.created_at.split()[0] }}</span>
+        </div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div class="shared-quiz-container" id="quizContainer">
+        <!-- Start Screen -->
+        <div class="quiz-start-screen" id="startScreen">
+            <div class="quiz-welcome">
+                <h2>მზად ხართ დასაწყებად?</h2>
+                <p>ეს არის ერთჯერადი ტესტი. თქვენ შეგიძლიათ გაიაროთ მხოლოდ ერთხელ.</p>
+
+                <div class="quiz-rules">
+                    <h3>📋 წესები:</h3>
+                    <ul>
+                        <li>✅ {{ questions|length }} კითხვა უნდა უპასუხოთ</li>
+                        <li>❌ არ შეგიძლიათ დაბრუნება წინა კითხვაზე</li>
+                        <li>⏱️ დროის ლიმიტი არ არის</li>
+                        <li>🔒 ერთჯერადი მცდელობა (ადმინის ნებართვით შეიძლება თავიდან)</li>
+                        <li>📊 თქვენი შედეგები ხილული იქნება ადმინისთვის</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="startQuiz()">
+                    🎯 ტესტის დაწყება
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen" style="display:none;">
+            <div class="quiz-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">კითხვა 1 / {{ questions|length }}</div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-header">
+                    <span class="question-difficulty" id="questionDifficulty"></span>
+                </div>
+                <h3 class="question-text" id="questionText"></h3>
+
+                <div class="question-options" id="questionOptions">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+
+            <div class="quiz-feedback" id="quizFeedback" style="display:none;">
+                <!-- Feedback will be shown here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="btn btn-secondary" id="nextBtn" onclick="nextQuestion()" style="display:none;">
+                    შემდეგი კითხვა →
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="quiz-results-screen" id="resultsScreen" style="display:none;">
+            <div class="results-card">
+                <h2>🎉 ტესტი დასრულდა!</h2>
+                <div class="results-score" id="resultsScore"></div>
+                <div class="results-message" id="resultsMessage"></div>
+
+                <div class="results-actions">
+                    <a href="/" class="btn btn-primary">🏠 მთავარი გვერდი</a>
+                    <a href="/chat" class="btn btn-secondary">💬 AI ასისტენტი</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.shared-quiz-header {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.shared-quiz-header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 15px;
+}
+
+.quiz-description {
+    color: #718096;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.quiz-meta {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.meta-badge {
+    background: #f4b740;
+    color: #1a1f36;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.shared-quiz-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 40px;
+    min-height: 500px;
+}
+
+.quiz-welcome {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.quiz-welcome h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 15px;
+}
+
+.quiz-rules {
+    background: #fafafa;
+    border: 2px solid #f4b740;
+    padding: 25px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.quiz-rules h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 15px;
+}
+
+.quiz-rules ul {
+    list-style: none;
+    padding: 0;
+}
+
+.quiz-rules li {
+    padding: 10px 0;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+.quiz-progress {
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    background: #e2e8f0;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    background: #f4b740;
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.progress-text {
+    text-align: center;
+    color: #718096;
+    font-weight: 600;
+}
+
+.question-card {
+    background: #fafafa;
+    border: 2px solid #e2e8f0;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.question-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.question-difficulty {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff3cd;
+    color: #856404;
+}
+
+.question-text {
+    color: #1a1f36;
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option-btn {
+    background: white;
+    border: 2px solid #e2e8f0;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    color: #2d3748;
+}
+
+.option-btn:hover:not(:disabled) {
+    border-color: #f4b740;
+    background: #fffbf0;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.option-btn.selected {
+    background: #f4b740;
+    color: #1a1f36;
+    border-color: #f4b740;
+    font-weight: 600;
+}
+
+.option-btn.option-correct {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.option-btn.option-wrong {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.quiz-feedback {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.feedback-correct {
+    background: #d4edda;
+    border: 2px solid #28a745;
+    color: #155724;
+}
+
+.feedback-wrong {
+    background: #f8d7da;
+    border: 2px solid #dc3545;
+    color: #721c24;
+}
+
+.feedback-neutral {
+    background: #e3f2fd;
+    border: 2px solid #1976d2;
+    color: #0d47a1;
+}
+
+.feedback-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.feedback-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.feedback-explanation {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    line-height: 1.6;
+}
+
+.quiz-navigation {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.results-card {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 40px;
+}
+
+.results-card h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 30px;
+}
+
+.results-score {
+    font-size: 72px;
+    font-weight: 700;
+    color: #f4b740;
+    margin-bottom: 20px;
+}
+
+.results-message {
+    font-size: 18px;
+    color: #718096;
+    margin-bottom: 30px;
+}
+
+.results-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .shared-quiz-header {
+        padding: 30px 20px;
+    }
+
+    .shared-quiz-container {
+        padding: 25px 15px;
+    }
+
+    .question-text {
+        font-size: 18px;
+    }
+
+    .results-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+const questions = {{ questions_json|safe }};
+let currentQuestionIndex = 0;
+let userAnswers = [];
+let score = 0;
+
+function startQuiz() {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    showQuestion(0);
+}
+
+function showQuestion(index) {
+    const question = questions[index];
+    currentQuestionIndex = index;
+
+    // Update progress
+    const progress = ((index + 1) / questions.length) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `კითხვა ${index + 1} / ${questions.length}`;
+
+    // Update question
+    document.getElementById('questionDifficulty').textContent = question.difficulty;
+    document.getElementById('questionText').textContent = question.question_text;
+
+    // Update options
+    const optionsContainer = document.getElementById('questionOptions');
+    optionsContainer.innerHTML = question.options.map(option => `
+        <button class="option-btn" onclick="selectAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>
+    `).join('');
+
+    // Hide feedback and next button
+    document.getElementById('quizFeedback').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(answer) {
+    const question = questions[currentQuestionIndex];
+    const isCorrect = (answer === question.correct_answer);
+
+    if (isCorrect) {
+        score++;
+    }
+
+    // Save answer
+    userAnswers.push({
+        question_id: question.id,
+        question: question.question_text,
+        user_answer: answer,
+        correct_answer: question.correct_answer,
+        is_correct: isCorrect
+    });
+
+    // Disable all options and highlight selected answer (no correct/wrong indication)
+    const optionBtns = document.querySelectorAll('.option-btn');
+    optionBtns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === answer) {
+            btn.classList.add('selected');
+        }
+    });
+
+    // Show simple confirmation message (no correct/wrong feedback)
+    const feedback = document.getElementById('quizFeedback');
+    feedback.className = 'quiz-feedback feedback-neutral';
+    feedback.innerHTML = `
+        <div class="feedback-icon">✓</div>
+        <div class="feedback-title">პასუხი მიღებულია</div>
+    `;
+    feedback.style.display = 'block';
+
+    // Show next button
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.textContent = (currentQuestionIndex + 1) < questions.length ? 'შემდეგი კითხვა →' : 'დასრულება';
+    nextBtn.style.display = 'block';
+}
+
+function showFeedback(question, isCorrect) {
+    const feedback = document.getElementById('quizFeedback');
+
+    feedback.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-wrong');
+    feedback.innerHTML = `
+        <div class="feedback-icon">${isCorrect ? '✅' : '❌'}</div>
+        <div class="feedback-title">${isCorrect ? 'სწორია!' : 'არასწორია'}</div>
+        ${question.law_reference || question.explanation ? `
+            <div class="feedback-explanation">
+                ${question.law_reference ? `<strong>${question.law_reference}</strong><br>` : ''}
+                ${question.explanation || ''}
+            </div>
+        ` : ''}
+    `;
+    feedback.style.display = 'block';
+}
+
+function nextQuestion() {
+    if ((currentQuestionIndex + 1) < questions.length) {
+        showQuestion(currentQuestionIndex + 1);
+    } else {
+        submitQuiz();
+    }
+}
+
+async function submitQuiz() {
+    try {
+        const response = await fetch('/api/quiz/shared/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                quiz_id: '{{ quiz.quiz_id }}',
+                answers: userAnswers,
+                score: score,
+                total_questions: questions.length
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showResults();
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+function showResults() {
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('resultsScreen').style.display = 'block';
+
+    // Hide score from user - only admin can see results
+    document.getElementById('resultsScore').textContent = '✓';
+    document.getElementById('resultsMessage').textContent = 'გმადლობთ! თქვენი პასუხები წარმატებით გაიგზავნა. ადმინისტრატორს შეუძლია ნახოს თქვენი შედეგები.';
+}
+</script>
+{% endblock %}

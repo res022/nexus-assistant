@@ -1,0 +1,22 @@
+Weazel News წესები:​
+
+1.1 News თანამშრომლები ვალდებულები არიან განცხადებებს გაუკეთონ რედაქტირება
+1.2 News თანამშრომლებს ეკრძალებათ OOC ინფორმაციის გამოყენება პირდაპირი ეთერის, სიახლეების, განცხადებების დროს. | ჩათის ბანი 120 წუთიდან - 240 წუთამდე + გაფრთხილება.
+1.3 თუ განცხადება რომელიც არღვევს სერვერის წესებს და გამოქვეყნდება საჯაროდ, დაისჯება ამ განცხადების რედაქტორი. | სპეც.ციხე 240 წუთი + გაფრთხილება.
+1.4 News თანამშრომლები ვალდებულები არიან დაარედაქტირონ განცხადებები წესების მიხედვით. | ჩათის ბანი 120 წუთიდან - 240 წუთამდე + გაფრთხილება.
+1.5 News-ის თანამშრომლებს ეკრძალებათ ნებისმიერი კრიმინალური ქმედების ჩადენა. | სპეც.ციხე 180 წუთი + გაფრთხილება
+აკრძალულია უცენზურო, რასისტული ლექსიკის გამოყენება
+აკრძალულია პირდაპირი რეკლამა კრიმინალურ ორგანიზაციაში მიღებაზე
+აკრძალულია Caps-Lock გამოყენება
+აკრძალულია აზარდული თამაშების რეკლავა
+აკრძალულია რეკლამა იარაღის, ბრონის, მედიკამენტების, ტყვიების ყიდვა/გაყიდვაზე
+აკრძალულია ბიზნესების ანტი რეკლამა
+აკრძალულია რეკლამა რომელშიც არ დევს აზრი
+აკრძალულია NSFW (Not Safe For Work) კონტენტი
+1.6 News ვალდებულია გუბერნიის მიერ მოთხოვნილ კანონის გავრცელებას შეუწყოს ხელი დაუყონებლივ
+გამონაკლისი: სახელმწიფო ორგანიზაციების წესები 3.11.1
+
+---METADATA---
+SUMMARY_EN: Rules for news organization and journalists: journalist conduct (professional behavior, unbiased reporting), reporting guidelines (fact-checking, sources), live streaming rules (when can stream, privacy), event coverage (access to scenes, police cooperation), journalist protections (cannot harm journalist on duty - spec jail 180 min + warning), interview procedures, camera crew rules, press credentials, restricted areas (where journalists cannot go), ethical standards.
+
+KEYWORDS_EN: Weazel News, news, journalist, reporter, media, press, conduct, reporting, unbiased, fact-checking, sources, live stream, streaming, privacy, event coverage, access, police cooperation, journalist immunity, cannot harm journalist, interview, camera crew, press credentials, restricted areas, ethics, professional

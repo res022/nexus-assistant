@@ -5,10 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 **Nexus Assistant** is a Flask-based web application that provides AI-powered assistance and quiz testing for Georgian law documents. It features:
-- AI chat assistant using Google Gemini 2.0 Flash API
+- AI chat assistant using Google Gemini 2.0 Flash API (sources hidden from users)
 - AI-generated quiz questions from 38 Georgian law documents
 - Statistics tracking for quiz performance
-- 1,012+ pre-generated quiz questions
+- 1,348+ pre-generated quiz questions
+- **Minimalist Legal Design**: Professional navy (#1a1f36) and gold (#f4b740) color scheme with serif typography
+- **Secure Quiz System**: Correct answers not sent to frontend to prevent cheating
+- **Shared Quiz System**: Admins can create shareable quizzes with one-time attempt restrictions
 
 **Critical Language Note:** All source documents are in Georgian language (ქართული ენა). Always handle UTF-8 encoding properly when reading, processing, and outputting Georgian text.
 
@@ -259,3 +262,355 @@ python app.py
 **Problem:** API rate limit errors (429)
 - **Cause:** Too many requests to Gemini API
 - **Fix:** Add delays between requests (10 seconds), use paid tier
+
+**Problem:** Quiz explanations not showing
+- **Cause:** Security fix removed explanations for correct answers
+- **Fix:** Always send explanation and law_reference, only hide correct_answer when user answers correctly
+
+## Recent Changes & Updates (2025-11-01)
+
+### Design System Overhaul - Minimalist Legal Theme
+
+The entire application has been redesigned with a professional minimalist legal aesthetic:
+
+**Color Scheme:**
+- Primary Navy: `#1a1f36` - Headers, navigation, admin panel
+- Accent Gold: `#f4b740` - Borders, hover states, CTAs
+- Light Background: `#fafafa` - Page backgrounds
+- White: `#ffffff` - Cards, forms, content areas
+- Text Dark: `#2d3748` - Body text
+- Text Muted: `#718096` - Secondary text
+
+**Typography:**
+- **Headings**: 'Playfair Display' (serif) - Professional, legal feel
+- **Body**: 'Inter' (sans-serif) - Clean, modern readability
+- **Georgian Support**: 'Noto Sans Georgian', 'Sylfaen', 'BPG Arial'
+
+**Files Updated:**
+- `static/css/style.css` - Complete redesign (v7)
+- `templates/base.html` - Added new font imports, reorganized navigation
+- `templates/admin/base.html` - Matching admin panel design
+- `templates/user/login.html` - Applied minimalist legal design
+- `templates/user/register.html` - Applied minimalist legal design
+
+### Security Enhancements
+
+**1. Quiz Answer Security (Prevent Cheating)**
+
+Problem: Users could inspect element to see correct answers before submitting.
+
+Solution: Server-side conditional data sending
+- Correct answer is ONLY sent to frontend when user answers incorrectly
+- When user answers correctly, only `is_correct: true` is sent
+- Explanations and law references are ALWAYS sent for learning purposes
+- Frontend cannot access correct answer through inspect element when answering correctly
+
+**Files Modified:**
+- `app.py:466-481` - Modified `/api/quiz/answer` endpoint response logic
+- `static/js/quiz.js:135-161` - Updated feedback display to handle conditional data
+
+**Implementation:**
+```python
+# Backend (app.py)
+response_data = {
+    'is_correct': is_correct,
+    'user_answer': user_answer,
+    'explanation': explanation,  # Always send for learning
+    'law_reference': law_reference,  # Always send for context
+    # ... other fields
+}
+
+# Only include correct_answer if answered incorrectly
+if not is_correct:
+    response_data['correct_answer'] = correct_answer
+```
+
+**2. AI Chat Sources Hidden**
+
+Sources from laws/rules are no longer displayed in chat responses to provide cleaner UX.
+
+**Files Modified:**
+- `templates/chat.html` - Removed source citation display
+- `static/js/chat.js` - Removed source rendering logic
+
+### Content Display Changes
+
+**1. Georgian-Only Law Display**
+
+All law browsing and detail pages now display only Georgian text, removing English summaries and keywords.
+
+**Files Modified:**
+- `templates/browse.html` - Removed English summary and keywords from law cards
+- `templates/law_detail.html` - Removed English summary section, shows only Georgian text
+
+**2. Navigation Reorganization**
+
+Navigation has been split into two sections:
+- **Left**: Main navigation links (მთავარი, კანონები, ჩატი, ქვიზი, etc.)
+- **Right**: Authentication links (შესვლა, რეგისტრაცია)
+
+**Files Modified:**
+- `templates/base.html:32-60` - Reorganized navbar structure with flex layout
+
+### Database Expansion - Shared Quiz System
+
+**New Tables Added:**
+
+1. **shared_quizzes**:
+   - `id` - Primary key
+   - `quiz_id` - Unique quiz identifier (TEXT)
+   - `title` - Quiz title
+   - `description` - Quiz description
+   - `question_ids` - JSON array of question IDs
+   - `created_by_admin` - Admin username
+   - `created_at` - Creation timestamp
+   - `is_active` - Active/inactive status
+
+2. **shared_quiz_attempts**:
+   - `id` - Primary key
+   - `quiz_id` - Foreign key to shared_quizzes
+   - `user_id` - User who attempted quiz
+   - `score` - Number of correct answers
+   - `total_questions` - Total questions in quiz
+   - `answers_json` - JSON of user's answers
+   - `completed_at` - Completion timestamp
+   - `can_retake` - Admin-controlled retake permission
+   - **UNIQUE constraint**: (quiz_id, user_id) - Prevents multiple attempts
+
+**New Database Methods:**
+
+Added 10 new methods to `database.py` for shared quiz management:
+- `create_shared_quiz()` - Create new shareable quiz
+- `get_shared_quiz()` - Get quiz details by ID
+- `get_shared_quiz_questions()` - Get all questions for a quiz
+- `check_user_attempt()` - Check if user already attempted quiz
+- `record_shared_quiz_attempt()` - Record quiz completion
+- `allow_retake()` - Admin allows user to retake
+- `get_quiz_attempts()` - View all attempts (admin view)
+- `get_all_shared_quizzes()` - List all shared quizzes
+- `toggle_quiz_active()` - Activate/deactivate quiz
+
+**Files Modified:**
+- `database.py:74-441` - Added shared quiz infrastructure
+
+### UI Component Updates
+
+**Buttons:**
+- Primary buttons: Transparent with gold border, fills gold on hover
+- Secondary buttons: White with border, subtle hover effects
+- Disabled state: Grayed out with cursor not-allowed
+
+**Cards:**
+- White background with light gray border
+- Gold top border (4px) for emphasis
+- Subtle box shadow on hover
+
+**Forms:**
+- Clean input fields with gold focus border
+- Consistent padding and spacing
+- Validation hints in muted text
+
+**Tables (Admin):**
+- Navy header with white text
+- Alternating row colors for readability
+- Gold hover highlight on rows
+
+### File Structure Updates
+
+**New Files Created:**
+None - all changes were modifications to existing files
+
+**Files Modified Summary:**
+1. `static/css/style.css` - Complete design overhaul
+2. `templates/base.html` - Navigation reorganization, font imports
+3. `templates/admin/base.html` - Admin panel redesign
+4. `templates/user/login.html` - New minimalist legal design
+5. `templates/user/register.html` - New minimalist legal design
+6. `templates/chat.html` - Removed source citations
+7. `templates/browse.html` - Georgian-only display
+8. `templates/law_detail.html` - Georgian-only display
+9. `static/js/chat.js` - Removed source rendering
+10. `static/js/quiz.js` - Updated feedback display logic
+11. `app.py` - Quiz security enhancements
+12. `database.py` - Shared quiz system infrastructure
+
+### Updated Statistics
+
+- **Total Questions**: 1,348 (increased from 1,012)
+- **Total Laws**: 38 Georgian law documents
+- **Total Server Rules**: 22 documents
+- **Design Version**: v7 (minimalist legal theme)
+- **Security Level**: Enhanced (quiz answer protection)
+
+### Shared Quiz System - Complete Implementation
+
+**Status**: ✅ Fully Functional
+
+The shareable quiz system allows admins to create custom quizzes with specific questions and share them with users via unique URLs.
+
+#### Features:
+
+1. **Admin Quiz Creation** (`/admin/quiz/create`):
+   - Select existing questions from database with filters (source type, difficulty)
+   - Create fully custom questions on-the-fly with:
+     - Question text
+     - Multiple options (2-10 options)
+     - Correct answer selection
+     - Explanation and law reference
+     - Category and difficulty
+     - Source type (laws/rules)
+   - Mix existing and custom questions in single quiz
+   - Set quiz title and description
+   - Generate shareable link automatically
+
+2. **Quiz Management Dashboard** (`/admin/quizzes`):
+   - View all created quizzes with stats
+   - See attempt count for each quiz
+   - Toggle quiz active/inactive status
+   - Copy shareable links
+   - Access results dashboard
+   - Statistics overview (total quizzes, attempts, average scores)
+
+3. **Public Quiz Interface** (`/quiz/shared/<quiz_id>`):
+   - Users must register/login to access
+   - Start screen with quiz rules
+   - Progress bar showing current question
+   - Question display with category and difficulty badges
+   - Neutral answer feedback (no correct/wrong indication)
+   - One-time attempt enforcement (database UNIQUE constraint)
+   - Results hidden from users (only admin sees scores)
+   - Automatic redirect to quiz after login/registration
+
+4. **Admin Results Dashboard** (`/admin/quiz/<quiz_id>/results`):
+   - Quiz information and statistics
+   - All user attempts with scores
+   - Detailed answer viewing for each attempt
+   - Allow retake permission management
+   - Average score, pass rate calculations
+   - Timestamp tracking
+
+#### Security Features:
+
+1. **Answer Privacy**:
+   - Users don't see if answers are correct/wrong during quiz
+   - Users don't see final scores
+   - Only "პასუხი მიღებულია" (Answer received) confirmation shown
+   - Prevents collaborative cheating
+
+2. **Attempt Restrictions**:
+   - Database UNIQUE constraint on (quiz_id, user_id)
+   - One attempt per user by default
+   - Admin can allow retakes via dashboard
+   - Prevents multiple submissions
+
+3. **Authentication Requirements**:
+   - Unauthenticated users redirected to login
+   - `next` parameter preserves quiz URL
+   - After login/register, user returns to quiz automatically
+
+#### Implementation Details:
+
+**Files Created:**
+- `templates/admin/create_quiz.html` - Quiz creation interface (732 lines)
+- `templates/admin/quizzes.html` - Quiz management dashboard (432 lines)
+- `templates/admin/quiz_results.html` - Results viewing interface (388 lines)
+- `templates/shared_quiz.html` - Public quiz-taking interface (518 lines)
+
+**Files Modified:**
+- `app.py` - Added 10 new routes:
+  - `/admin/quizzes` - Quiz list
+  - `/admin/quiz/create` - Create quiz page
+  - `/admin/api/questions` - Question API
+  - `/admin/api/quiz/create` - Create quiz API
+  - `/admin/api/quiz/toggle` - Toggle active status
+  - `/admin/quiz/<quiz_id>/results` - Results page
+  - `/admin/api/quiz/allow-retake` - Allow retake
+  - `/admin/api/quiz/attempt/<attempt_id>` - Get attempt details
+  - `/quiz/shared/<quiz_id>` - Public quiz page
+  - `/api/quiz/shared/submit` - Submit quiz
+- `database.py` - Added `question_ids` to `get_all_shared_quizzes()`
+- `templates/user/login.html` - Added `next` parameter handling
+- `templates/user/register.html` - Added `next` parameter handling
+- `templates/admin/base.html` - Added "🎯 Shared Quizzes" navigation link
+
+**Key Technical Fixes:**
+
+1. **Event Listener Performance** (create_quiz.html:664-677):
+   - Problem: Event listeners being added repeatedly causing lag
+   - Solution: Event delegation on parent container
+   - Impact: Eliminated lag when typing in option fields
+
+2. **Login Redirect Preservation** (app.py:544-577):
+   - Problem: Users redirected to dashboard instead of quiz after login
+   - Solution: `next` parameter handling in login/register routes
+   - Impact: Seamless authentication flow
+
+3. **User Feedback Privacy** (shared_quiz.html:417-450):
+   - Problem: Users seeing correct/wrong answers
+   - Solution: Neutral feedback only, no correctness indication
+   - Impact: Prevents answer sharing, maintains quiz integrity
+
+4. **Score Privacy** (shared_quiz.html:508-515):
+   - Problem: Users seeing their scores
+   - Solution: Hide score, show only thank you message
+   - Impact: Only admin can view results
+
+#### Database Schema:
+
+**shared_quizzes table:**
+```sql
+CREATE TABLE shared_quizzes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quiz_id TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    question_ids TEXT NOT NULL,  -- JSON array
+    created_by_admin TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active INTEGER DEFAULT 1
+)
+```
+
+**shared_quiz_attempts table:**
+```sql
+CREATE TABLE shared_quiz_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quiz_id TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    score INTEGER NOT NULL,
+    total_questions INTEGER NOT NULL,
+    answers_json TEXT NOT NULL,
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    can_retake INTEGER DEFAULT 0,
+    FOREIGN KEY (quiz_id) REFERENCES shared_quizzes(quiz_id),
+    UNIQUE(quiz_id, user_id)  -- One attempt per user
+)
+```
+
+#### Usage Flow:
+
+1. Admin creates quiz at `/admin/quiz/create`
+2. Admin shares quiz URL: `/quiz/shared/<quiz_id>`
+3. User visits URL (may need to login/register)
+4. User takes quiz (answers hidden, one attempt)
+5. User sees thank you message (no score)
+6. Admin views results at `/admin/quiz/<quiz_id>/results`
+7. Admin can allow retake if needed
+
+#### Performance Optimizations:
+
+- Event delegation for dynamic option inputs
+- Database indexes on quiz_id and user_id
+- JSON storage for flexible question/answer data
+- Session-based state management
+- Minimal data sent to frontend (security + performance)
+
+#### Error Handling:
+
+- Quiz not found → 404 page
+- Already attempted → Redirect with error message
+- Not logged in → Redirect to login with `next` parameter
+- Invalid quiz_id → Error page
+- Database errors → Graceful error messages
+
+**Last Updated:** 2025-11-01 (Session: Shared Quiz System Implementation)

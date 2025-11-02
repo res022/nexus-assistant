@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block title %}მატჩის შედეგები - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="results-header">
+        <h1>📊 მატჩის შედეგები</h1>
+    </div>
+
+    <!-- Winner Announcement -->
+    <div class="winner-announcement">
+        {% if results|length == 2 %}
+            {% set player1 = results[0] %}
+            {% set player2 = results[1] %}
+
+            {% if player1.score > player2.score %}
+                <div class="winner-card">
+                    <div class="trophy">🏆</div>
+                    <h2>{{ player1.display_name or player1.username }} გაიმარჯვა!</h2>
+                    <p class="score">{{ player1.score }} / {{ player1.score + (questions|length - player1.score) }}</p>
+                </div>
+            {% elif player2.score > player1.score %}
+                <div class="winner-card">
+                    <div class="trophy">🏆</div>
+                    <h2>{{ player2.display_name or player2.username }} გაიმარჯვა!</h2>
+                    <p class="score">{{ player2.score }} / {{ player2.score + (questions|length - player2.score) }}</p>
+                </div>
+            {% else %}
+                {# Tied on score, check time #}
+                {% if player1.total_time < player2.total_time %}
+                    <div class="winner-card">
+                        <div class="trophy">🏆</div>
+                        <h2>{{ player1.display_name or player1.username }} გაიმარჯვა!</h2>
+                        <p class="score">{{ player1.score }} / {{ questions|length }} (უფრო სწრაფად)</p>
+                    </div>
+                {% elif player2.total_time < player1.total_time %}
+                    <div class="winner-card">
+                        <div class="trophy">🏆</div>
+                        <h2>{{ player2.display_name or player2.username }} გაიმარჯვა!</h2>
+                        <p class="score">{{ player2.score }} / {{ questions|length }} (უფრო სწრაფად)</p>
+                    </div>
+                {% else %}
+                    <div class="winner-card tie">
+                        <div class="trophy">🤝</div>
+                        <h2>ფრე!</h2>
+                        <p class="score">ორივემ {{ player1.score }} / {{ questions|length }}</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Player Comparison -->
+    <div class="comparison-section">
+        <div class="player-results">
+            {% for result in results %}
+            <div class="player-result-card">
+                <div class="player-header">
+                    <h3>{{ result.display_name or result.username }}</h3>
+                    {% if loop.index0 == 0 and results|length == 2 %}
+                        {% if results[0].score > results[1].score or (results[0].score == results[1].score and results[0].total_time < results[1].total_time) %}
+                            <span class="badge winner">🏆 გამარჯვებული</span>
+                        {% elif results[0].score == results[1].score and results[0].total_time == results[1].total_time %}
+                            <span class="badge tie">🤝 ფრე</span>
+                        {% else %}
+                            <span class="badge loser">❌</span>
+                        {% endif %}
+                    {% elif loop.index0 == 1 %}
+                        {% if results[1].score > results[0].score or (results[1].score == results[0].score and results[1].total_time < results[0].total_time) %}
+                            <span class="badge winner">🏆 გამარჯვებული</span>
+                        {% elif results[0].score == results[1].score and results[0].total_time == results[1].total_time %}
+                            <span class="badge tie">🤝 ფრე</span>
+                        {% else %}
+                            <span class="badge loser">❌</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">ქულა</div>
+                        <div class="stat-value">{{ result.score }} / {{ questions|length }}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">სიზუსტე</div>
+                        <div class="stat-value">{{ "%.1f"|format((result.score / questions|length * 100) if questions|length > 0 else 0) }}%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">სულ დრო</div>
+                        <div class="stat-value">{{ result.total_time }}წმ</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">საშუალო დრო</div>
+                        <div class="stat-value">{{ "%.1f"|format(result.total_time / questions|length if questions|length > 0 else 0) }}წმ</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Question by Question Comparison -->
+    <div class="questions-comparison">
+        <h2>📝 კითხვების შედარება</h2>
+        {% for i in range(questions|length) %}
+        <div class="question-comparison-card">
+            <div class="question-header">
+                <span class="question-number">კითხვა {{ i + 1 }}</span>
+                <span class="question-difficulty">{{ questions[i].difficulty }}</span>
+            </div>
+            <p class="question-text">{{ questions[i].question }}</p>
+
+            <div class="answers-comparison">
+                {% for result in results %}
+                {% set user_answer = result.answers_json|from_json %}
+                {% set user_times = result.times_json|from_json %}
+                <div class="user-answer-box">
+                    <div class="user-name">{{ result.display_name or result.username }}</div>
+                    <div class="answer-info">
+                        <span class="answer {% if user_answer[i] == questions[i].correct_answer %}correct{% else %}incorrect{% endif %}">
+                            {{ user_answer[i] }}
+                        </span>
+                        <span class="time">⏱️ {{ user_times[i] }}წმ</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="correct-answer">
+                <strong>✅ სწორი პასუხი:</strong> {{ questions[i].correct_answer }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Actions -->
+    <div class="results-actions">
+        <a href="/multiplayer" class="btn btn-primary">🎮 თავიდან თამაში</a>
+        <a href="/dashboard" class="btn btn-secondary">🏠 მთავარი</a>
+    </div>
+</div>
+
+<style>
+.results-header {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.results-header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+}
+
+.winner-announcement {
+    margin-bottom: 30px;
+}
+
+.winner-card {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    border: 3px solid #f4b740;
+    padding: 40px;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.winner-card.tie {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-color: #1976d2;
+}
+
+.trophy {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.winner-card h2 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.winner-card .score {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.comparison-section {
+    margin-bottom: 30px;
+}
+
+.player-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.player-result-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.player-header h3 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin: 0;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.winner {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge.loser {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge.tie {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1f36;
+}
+
+.questions-comparison {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.questions-comparison h2 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.question-comparison-card {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #f4b740;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.question-number {
+    font-weight: 700;
+    color: #1a1f36;
+}
+
+.question-difficulty {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #fff3cd;
+    color: #856404;
+}
+
+.question-text {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.answers-comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.user-answer-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1a1f36;
+    margin-bottom: 8px;
+}
+
+.answer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.answer {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.answer.correct {
+    background: #d4edda;
+    color: #155724;
+}
+
+.answer.incorrect {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.time {
+    font-size: 12px;
+    color: #718096;
+}
+
+.correct-answer {
+    background: #d4edda;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #155724;
+    font-size: 14px;
+}
+
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .answers-comparison {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+// Helper to parse JSON from Jinja
+window.from_json = function(str) {
+    try {
+        return JSON.parse(str);
+    } catch {
+        return [];
+    }
+};
+</script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+ლიდერის წესები
+
+ლიდერის წესები:​
+
+1.0 ლიდერს უდნა ქონდეს ახლო კონტაქტი და კარგი დამოკიდებულება თავისი ფრაქციის კურატორტან.
+1.0.1 ყველანაირი გადაწვეტილება უნდა შეტანმხდეს ფრაქციის კურატორთან და მთავარ კურატორთან.
+
+ზოგადი წესები:​
+
+1.1 ლიდერს ეკრძალება ფრაქციის მატერიალის პირადი მიზნებისთვის გამოყენება. | მკაცრი გაფრთხილება / მოხსნა.
+Note: ბალანსი, მატერიალები.
+1.2 ლიდერი იკავებს თავის პოზიციას 30 დღით.
+განმარტება: თუ კი ლიდერი თავის პოზიციას დატოვებს 30 დღით ნაკლებ ვადაში ან ვერ გაუმკავდება თავის პოზიციას დაისჯება სერვერის გათვალისწინებული სასჯელით. | BAN 31 დღე + ლიდერობის შავი სია. (კურატორის გადაწყვეტილებით)
+შენიშვნა: ისეთი RP სიტუაციის მიზანმიმართულად თამაში რომელიც გამოიწვევს ლიდერის პოსტის დატოვებას RP სიტუაციის გათამაშებით აკრძალულია. | HARD BAN 60 დღე + სამუდამო ლიდერობის შავი სია.
+1.3 კურატორის გადაწყვეტილებით თუ ლიდერს აქვს ამოწურული თავისი ვადა მას შეუძლია გადააგრძელოს ლიდეორბის ვადა კიდევ 1 თვით.
+1.4 ლიდერის შემცვლელების რაოდენობა ფრაქციებზე:
+კრიმინალური ორგანიზაციის ლიდერს შეუძლია ყავდეს 3 ლიდერის შემცვლელი.
+სახელმწიფო ორგანიზაციის ლიდერს შეუძლია ყავდეს 2 ლიდერის შემცვლელი.
+გუბერნატორს შეუძლია ყავდეს მხოლოდ 1 შემცვლელი.
+1.5 ლიდერი პასუხისმგებელია ორგანიზაციის ყველა მონაწილეზე. | კურატორის გადაწყვეტილებით.
+1.6 ლიდერი ვალდებულია დაიცვას სერვერის ყველა წესი. | კურატორის გადაწყვეტილებით.
+1.7 3 გაფრთხილებაზე იხსნება სახელმწიფო/კრაიმ ლიდერი. | 2 სიტყვიერი გაფრთხილება = 1 გაფრთხილებას.
+1.8 გაფრთხილების მოხსნა არის მხოლოდ შესაძლებელი ყოველ 7 დღეში. | კურატორის გადაწყვეტილებით.
+1.8.1 გაფრთხილების მოხსნა არის ასევე შესაძლებელი ფრაქციის აქტიურობით და მასიური RP ღონიზძიების ჩატარებით. | კურატორის გადაწყვეტილებით.
+1.9 ფრაქციის წევრების მასიურ დარღვევის შემთხვევაში ლიდერი იღებს 1 მკაცრ გაფრთხილებას!
+მითითება:
+კრიმინალური ორგანიზაციაზე მინიმუმ: 4 ნებისმიერი რანგის წევრის დარღვევა.
+სახელმწიფო სტრუქტურაზე მინიმუმ: 3 ნებისმიერი რანგის დარღვევა.
+1.10 ლიდერს სერვერის წესების დარღვევაზე ეწერება. | მკაცრი გაფრთხილება.
+განმარტება: ლიდერი რომელიც თამაშობს მე-2 ან მე-3 პერსონაჟით და დაარღვევს სერვერის წესებს ავტომატურად გაფრთხილება მიუვა ლიდერის ექაუნთზე!
+1.11 ლიდერის პოსტის 1.2 პუნქტის სასჯელით დატოვების შემთხვევაში ამნისტია არ მოქმედებს.
+1.12 აკრძალულია ლიდერობის სხვა პირისთვის გადაბარება.
+1.13 ლიდერის შემცვლელის დარღვევაზე ლიდერი იღებს | მკაცრ გაფრთხილებას
+
+ლიდერის ვალდებულებები:​
+
+2.1 ლიდერმა უნდა დაიცვას სერვერის ყველა წესი. | კურატორის გადაწყვეტილებით.
+2.2 ლიდერმა მოდერაცია უნდა გაუწიოს ფორუმს და დისკორდ სერვერს. | კურატორის გადაწყვეტილებით.
+2.3 ლიდერის ონლაინი დღეში მინიმუმ უნდა შეადგენდეს 3 საათს. | კურატორის გადაწყვეტილებით.
+2.4 ლიდერი ვალდებულია შიდა სამზარეულოში კამათის მიზეზი აღმოფქვრას და გადაჭრას. | კურატორის გადაწყვეტილებით.
+2.5 ლიდერი ვალდებულია დაემორჩილოს და შეასრულოს კურატორის ყველა მოთხოვნა. | კურატორის გადაწყვეტილებით.
+
+ლიდერის აკრძალვები:​
+
+3.1 ლიდერს ეკრძალება სხვა GTA 5 RP პროექტებზე ლიდერობა/ თამაში. | ჩახსნა პოსტიდან. > ლიდერის წესები 1.2
+3.2 ლიდერს ეკრძალება ფრაქცისი მატერიალების პირადი მიზნებისთვის გამოყენება. | კურატორის გადაწყვეტილებით.
+3.3 ბანდის ან მაფიის ლიდერს შეუძლია ყავდეს ფრაქციაში არაუმეტეს 100 მოთამაშეზე | მკაცრი გაფრთხილება ლიდერს
+
+---METADATA---
+SUMMARY_EN: Rules for faction leaders: recruitment responsibilities (interview process, background checks, training new members), member management (rank system, promotions, demotions, kicks), faction funds management (deposits, withdrawals, budgeting, cannot embezzle), storage management (arsenal, materials, supplies), activity requirements (leader must be active, delegation when absent), faction rules creation (internal regulations, punishment system), meeting requirements (regular meetings with members), reporting to administration (faction reports, incident reports), leader replacement procedure (resignation, removal for inactivity), cannot kick member without IC reason (if you recruit someone you're responsible - cannot kick without IC cause: warning for violation), rank editing (leader can ONLY edit permissions, CANNOT edit rank names or locations - warning for violation). Leader can be fired for not following General Prosecutor orders (Prosecutor rules 14.1).
+
+KEYWORDS_EN: leader, leadership, faction leader, gang leader, mafia leader, recruitment, hiring, interview, member management, ranks, promotions, demotions, kick, cannot kick without IC reason, faction funds, budget, embezzlement, storage, arsenal management, materials, activity requirement, delegation, internal rules, meetings, reports, admin reports, resignation, removal, inactivity, rank editing, permissions, cannot edit rank names, cannot edit locations, faction responsibility

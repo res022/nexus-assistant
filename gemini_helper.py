@@ -28,16 +28,17 @@ class GeminiHelper:
                 print(f"[ERROR] Failed to initialize Gemini API: {str(e)}")
                 self.model = None
 
-    def answer_question(self, georgian_question, relevant_laws):
+    def answer_question(self, georgian_question, relevant_laws, context="საქართველოს კანონები"):
         """
-        Answer a Georgian question based on relevant laws
-        
+        Answer a Georgian question based on relevant laws or rules
+
         Args:
             georgian_question: User's question in Georgian
-            relevant_laws: List of LawDocument objects (2-5 most relevant)
-        
+            relevant_laws: List of LawDocument/Rule objects (2-5 most relevant)
+            context: Context string indicating whether answering about laws or rules
+
         Returns:
-            dict with 'answer' (Georgian text) and 'sources' (list of law names)
+            dict with 'answer' (Georgian text) and 'sources' (list of law/rule names)
         """
         if not self.model:
             return {
@@ -48,24 +49,24 @@ class GeminiHelper:
 
         if not relevant_laws:
             return {
-                'answer': "ბოდიში, ვერ ვიპოვე შესაბამისი კანონები თქვენი კითხვისთვის.",
+                'answer': "ბოდიში, ვერ ვიპოვე შესაბამისი დოკუმენტები თქვენი კითხვისთვის.",
                 'sources': [],
                 'error': False
             }
 
         try:
             # Build the prompt for Gemini
-            prompt = self._build_prompt(georgian_question, relevant_laws)
-            
+            prompt = self._build_prompt(georgian_question, relevant_laws, context)
+
             # Call Gemini API
             response = self.model.generate_content(prompt)
-            
+
             # Extract answer
             answer_text = response.text.strip()
-            
+
             # Extract sources
             sources = [law.law_name for law in relevant_laws]
-            
+
             return {
                 'answer': answer_text,
                 'sources': sources,
@@ -82,34 +83,84 @@ class GeminiHelper:
                 'error': True
             }
 
-    def _build_prompt(self, georgian_question, relevant_laws):
-        """Build the prompt for Gemini with law context"""
-        
-        prompt = """თქვენ ხართ გამოცდილი იურიდიული ასისტენტი სან ანდრეასის შტატის პოლიციისთვის და პროკურატურისთვის.
+    def _build_prompt(self, georgian_question, relevant_laws, context="საქართველოს კანონები"):
+        """Build the prompt for Gemini with law/rule context"""
+
+        # Different prompts for laws vs rules
+        if "სერვერის წესები" in context:
+            # Server rules prompt - ENHANCED for better accuracy
+            prompt = """თქვენ ხართ გამოცდილი სერვერის ადმინისტრატორი და როლპლეი ექსპერტი San Andreas Roleplay სერვერისთვის.
+თქვენი როლია დაეხმაროთ მოთამაშეებს და ადმინისტრატორებს სწორად გამოიყენონ სერვერის წესები.
+
+**CRITICAL: როგორ უპასუხოთ კითხვებს (გაძლიერებული ინსტრუქციები):**
+
+**ეტაპი 1: კითხვის ᲦᲠᲛᲐ ანალიზი (დაუთმეთ დრო!)**
+   - წაიკითხეთ კითხვა რამდენჯერმე და გაიაზრეთ რა ᲖᲣᲡᲢᲐᲓ გეკითხებიან
+   - გამოყავით კითხვის მთავარი თემა (მაგ. პოლიგრაფი, დაკითხვა, სიცრუის აღმოჩენა)
+   - გამოყავით კითხვის კონტექსტი (მაგ. "რა ვქნა როცა...", "როგორ ვაკეთო...", "რა არის...")
+   - თუ კითხვა არის სიტუაციური (მაგ. "გავაკეთე X, ახლა რა ვქნა?"), იპოვეთ სწორედ იმ სიტუაციის შემდეგი ნაბიჯები
+
+**ეტაპი 2: წესების ᲡᲠᲣᲚᲘ და ᲧᲣᲠᲐᲓᲦᲔᲑᲘᲗ წაკითხვა**
+   - წაიკითხეთ ᲗᲘᲗᲝᲔᲣᲚᲘ მოცემული წესის ტექსტი ᲡᲠᲣᲚᲐᲓ, ᲮᲐᲖ-ბა-ხაზ
+   - ნუ გამოტოვებთ არცერთ წესს, არცერთ ნომერს
+   - იპოვეთ ᲧᲕᲔᲚᲐ რელევანტური ნაწილი რომელიც ეხება კითხვას
+   - განსაკუთრებით ყურადღება მიაქციეთ "განმარტება:", "შენიშვნა:", "მითითება:" სექციებს
+   - იპოვეთ როგორც მთავარი წესი, ასევე დამატებითი დეტალები
+
+**ეტაპი 3: პასუხის ᲡᲠᲣᲚᲘ ᲙᲝᲜᲡᲢᲠᲣᲥᲪᲘᲐ**
+   - დაიწყეთ მთავარი პასუხით (მაგ. "დიახ, შეგიძლიათ...", "არა, აკრძალულია...", "ამ შემთხვევაში უნდა...")
+   - დაასახელეთ კონკრეტული წესი და ნომერი
+   - გააკეთეთ ᲞᲘᲠᲓᲐᲞᲘᲠ ᲪᲘᲢᲘᲠᲔᲑᲐ რელევანტური ნაწილის (" " ნიშნებში)
+   - თუ არის "განმარტება:" სექცია, ᲐᲣᲪᲘᲚᲔᲑᲚᲐᲓ ჩართეთ იგი
+   - თუ კითხვა არის "რა ვქნა შემდეგ?", მიუთითეთ კონკრეტული ნაბიჯები
+   - მიუთითეთ სასჯელი თუ წესი დარღვეულია (BAN, სპეც.ციხე, MUTE და ა.შ.)
+
+**ეტაპი 4: პასუხის ᲓᲐᲓᲐᲡᲢᲣᲠᲔᲑᲐ**
+   - კიდევ ერთხელ შეამოწმეთ: ეხება თუ არა თქვენი პასუხი კითხვას?
+   - დარწმუნდით რომ არ გამოგრჩათ მნიშვნელოვანი დეტალები
+   - თუ ვერ პოულობთ პასუხს, უთხარით "ვერ ვიპოვე ამის შესახებ ინფორმაცია წესებში"
+
+**ფორმატირება:**
+   - 🚫 აკრძალულია
+   - ✅ დაშვებულია/სავალდებულოა
+   - ⏱️ ვადები
+   - ⚠️ სასჯელები
+
+**პასუხობთ მხოლოდ ქართულ ენაზე**"""
+        else:
+            # Georgian laws prompt - ENHANCED for better accuracy
+            prompt = """თქვენ ხართ გამოცდილი იურიდიული ასისტენტი სან ანდრეასის შტატის პოლიციისთვის და პროკურატურისთვის.
 თქვენი როლია დაეხმაროთ ოფიცრებს სწორად გამოიყენონ კანონები პრაქტიკაში.
 
-**CRITICAL: როგორ უპასუხოთ კითხვებს:**
+**CRITICAL: როგორ უპასუხოთ კითხვებს (გაძლიერებული ინსტრუქციები):**
 
-1. **ᲞᲘᲠᲕᲔᲚᲘ, გაიაზრეთ კითხვა ზუსტად:**
-   - წაიკითხეთ კითხვა ᲧᲣᲠᲐᲓᲦᲔᲑᲘᲗ და გაიაზრეთ რა ᲖᲣᲡᲢᲐᲓ გეკითხებიან
+**ეტაპი 1: კითხვის ᲦᲠᲛᲐ ანალიზი (დაუთმეთ დრო!)**
+   - წაიკითხეთ კითხვა რამდენჯერმე და გაიაზრეთ რა ᲖᲣᲡᲢᲐᲓ გეკითხებიან
    - არ აურიოთ მსგავსი მაგრამ განსხვავებული ცნებები:
      * "შეურაცხყოფა" (insult/disrespect) ≠ "თავდასხმა" (attack/assault)
      * "დაკავება" (arrest) ≠ "დაკითხვა" (interrogation)
      * "ჩხრეკა" (search) ≠ "შემოსვლა" (entry)
-   - თუ კითხვა არის "შეურაცხყოფა", მოძებნეთ სწორედ "შეურაცხყოფის" შესახებ, არა "თავდასხმის" შესახებ
-   - თუ ვერ პოულობთ ზუსტ პასუხს, უთხარით მომხმარებელს რომ ვერ იპოვეთ, არ მისცეთ არასწორი პასუხი
+   - გამოყავით კითხვის მთავარი თემა და კონტექსტი
+   - თუ კითხვა არის სიტუაციური (მაგ. "გავაკეთე X, ახლა რა ვქნა?"), იპოვეთ სწორედ იმ სიტუაციის შემდეგი ნაბიჯები
 
-2. **მეორე, მოძებნეთ ზუსტი მუხლი:**
-   - წაიკითხეთ კანონების ტექსტი ᲡᲠᲣᲚᲐᲓ და ყურადღებით
+**ეტაპი 2: კანონების ᲡᲠᲣᲚᲘ და ᲧᲣᲠᲐᲓᲦᲔᲑᲘᲗ წაკითხვა**
+   - წაიკითხეთ ᲗᲘᲗᲝᲔᲣᲚᲘ მოცემული კანონის ტექსტი ᲡᲠᲣᲚᲐᲓ, ხაზ-ბა-ხაზ
+   - ნუ გამოტოვებთ არცერთ მუხლს, არცერთ ნაწილს
    - იპოვეთ ᲖᲣᲡᲢᲘ მუხლი რომელიც პასუხობს კითხვას
-   - დარწმუნდით რომ მუხლი პასუხობს სწორედ იმას რაც კითხულობენ
-   - არ გამოტოვოთ არცერთი მნიშვნელოვანი დეტალი კანონში
+   - იპოვეთ ᲧᲕᲔᲚᲐ რელევანტური ნაწილი რომელიც ეხება კითხვას
+   - არ გამოტოვოთ არცერთი მნიშვნელოვანი დეტალი
 
-3. **გააცით ᲛᲝᲙᲚᲔ და ᲙᲝᲜᲙᲠᲔᲢᲣᲚᲘ პასუხი:**
+**ეტაპი 3: პასუხის ᲡᲠᲣᲚᲘ ᲙᲝᲜᲡᲢᲠᲣᲥᲪᲘᲐ**
    - დაიწყეთ მთავარი პასუხით (მაგ. "დიახ, შეგიძლიათ" ან "არა, არ შეგიძლიათ")
    - დაასახელეთ კონკრეტული კანონი და მუხლის ნომერი
    - ᲞᲘᲠᲓᲐᲞᲘᲠ ᲪᲘᲢᲘᲠᲔᲑᲐ გააკეთეთ რელევანტური ნაწილის (" " ნიშნებში)
+   - თუ კითხვა არის "რა ვქნა შემდეგ?", მიუთითეთ კონკრეტული ნაბიჯები
    - ნუ დაამატებთ ზედმეტ ინფორმაციას თუ არ გეკითხებიან
+
+**ეტაპი 4: პასუხის ᲓᲐᲓᲐᲡᲢᲣᲠᲔᲑᲐ**
+   - კიდევ ერთხელ შეამოწმეთ: ეხება თუ არა თქვენი პასუხი კითხვას?
+   - დარწმუნდით რომ არ გამოგრჩათ მნიშვნელოვანი დეტალები
+   - თუ ვერ პოულობთ პასუხს, უთხარით "ვერ ვიპოვე ამის შესახებ ინფორმაცია კანონებში"
 
 4. **თუ კითხვა არის "როდის შემიძლია...":**
    - უპასუხეთ კონკრეტულად რა პირობებში შეიძლება
@@ -215,10 +266,13 @@ English translation:"""
             return all_laws[:max_laws]  # Fallback: return first few laws
 
         try:
-            # Create a compact list of laws with their titles and summaries
+            # Create a detailed list of laws with their titles, summaries, and keywords
             laws_list = []
             for i, law in enumerate(all_laws, 1):
-                laws_list.append(f"{i}. {law.filename} - {law.law_name[:50]}... (EN: {law.summary_en[:100]}...)")
+                # Include more of the summary (500 chars) and keywords for better selection
+                summary_preview = law.summary_en[:500] if law.summary_en else "No summary"
+                keywords_preview = law.keywords_en[:300] if hasattr(law, 'keywords_en') and law.keywords_en else "No keywords"
+                laws_list.append(f"{i}. {law.filename} - {law.law_name[:80]}...\n   Summary: {summary_preview}...\n   Keywords: {keywords_preview}...")
 
             laws_text = "\n".join(laws_list)
 
@@ -227,11 +281,20 @@ English translation:"""
 Given this Georgian legal question:
 "{georgian_question}"
 
-Select the {max_laws} MOST RELEVANT laws from this list that would help answer the question:
+Select the {max_laws} MOST RELEVANT laws/rules from this list that would help answer the question.
+
+**SELECTION INSTRUCTIONS:**
+1. Read the question carefully and identify the main topic/keywords
+2. Match the question against the Summary and Keywords provided for each document
+3. Prioritize documents where the Summary or Keywords contain terms related to the question
+4. Use the English summaries and keywords to understand what each document covers
+5. Select documents that directly contain information to answer the question
+
+**AVAILABLE DOCUMENTS:**
 
 {laws_text}
 
-**CRITICAL KEYWORD MATCHING RULES:**
+**CRITICAL KEYWORD MATCHING RULES (for common cases):**
 - Questions about "ორდერი/ორდერ" (warrant/order) → MUST include "dokumentebis.txt" (contains AR, SA, FB, AW, FW, IW warrant types)
 - Questions about "დაკავების ორდერი" or "AW" (arrest warrant) → MUST include "dokumentebis.txt"
 - Questions about "გუბერნატორი" (governor) powers + warrants → MUST include "dokumentebis.txt" AND "mtavrob.txt"
@@ -248,6 +311,11 @@ Select the {max_laws} MOST RELEVANT laws from this list that would help answer t
 - Questions about who can enter specific locations (LSPD cells, FIB territory, etc.) → MUST include "teritoriebis.txt"
 - Questions about crimes/penalties: "ისჯება/სასჯელი/დანაშაული/შეურაცხყოფა/თავდასხმა" (punished/penalty/crime/insult/attack) → MUST include "sisxlissamartali.txt"
 - Questions about "შეურაცხყოფა" (insult/disrespect) → MUST include "sisxlissamartali.txt" (NOT same as "თავდასხმა" attack)
+
+**SERVER RULES KEYWORD MATCHING (if dealing with serverrules/):**
+- Questions asking "რა არის/what is" + ANY RP TERM abbreviation (PG/DM/MG/RK/SK/etc.) → prioritize "zogadi.txt" (contains ALL RP term definitions)
+- Questions about basic RP rules, account rules, communication rules, RP term definitions → prioritize "zogadi.txt"
+- Otherwise, TRUST THE METADATA - use the Summary and Keywords to select the most relevant files
 
 Return ONLY the numbers of the selected laws, separated by commas (e.g., "1,5,12,3,7").
 Choose laws that directly contain information about the question's topic."""

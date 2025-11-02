@@ -37,14 +37,6 @@
             <div class="law-card-header">
                 <h3 class="law-title">{{ law.law_name }}</h3>
             </div>
-            <div class="law-card-body">
-                <p class="law-summary">{{ law.summary_en }}</p>
-                <div class="law-keywords">
-                    {% for keyword in law.keywords_en.split(',')[:5] %}
-                    <span class="keyword-tag">{{ keyword.strip() }}</span>
-                    {% endfor %}
-                </div>
-            </div>
             <div class="law-card-footer">
                 <a href="/law/{{ law.filename }}" class="btn btn-secondary">სრული ტექსტი →</a>
             </div>

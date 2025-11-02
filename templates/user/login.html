@@ -12,24 +12,27 @@
     }
     .auth-left {
         flex: 1;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        background: #1a1f36;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 60px;
         color: white;
+        border-right: 3px solid #f4b740;
     }
     .auth-left-content {
         max-width: 500px;
     }
     .auth-left h1 {
+        font-family: 'Playfair Display', Georgia, serif;
         font-size: 48px;
         margin-bottom: 20px;
         font-weight: 700;
+        color: #f4b740;
     }
     .auth-left p {
         font-size: 18px;
-        opacity: 0.95;
+        color: #e2e8f0;
         line-height: 1.6;
     }
     .stats-grid {
@@ -39,19 +42,22 @@
         margin-top: 40px;
     }
     .stat-card {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(244, 183, 64, 0.3);
+        border-top: 3px solid #f4b740;
         padding: 20px;
-        border-radius: 12px;
         text-align: center;
     }
     .stat-number {
+        font-family: 'Playfair Display', Georgia, serif;
         font-size: 32px;
         font-weight: 700;
         margin-bottom: 5px;
+        color: #f4b740;
     }
     .stat-label {
         font-size: 14px;
-        opacity: 0.9;
+        color: #e2e8f0;
     }
     .auth-right {
         flex: 1;
@@ -59,27 +65,28 @@
         align-items: center;
         justify-content: center;
         padding: 60px;
-        background: #f8f9fa;
+        background: #fafafa;
     }
     .auth-form-container {
         width: 100%;
         max-width: 450px;
         background: white;
         padding: 50px;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+        border-top: 4px solid #f4b740;
     }
     .auth-form-header {
         text-align: center;
         margin-bottom: 40px;
     }
     .auth-form-header h2 {
+        font-family: 'Playfair Display', Georgia, serif;
         font-size: 32px;
-        color: #2c3e50;
+        color: #1a1f36;
         margin-bottom: 10px;
     }
     .auth-form-header p {
-        color: #7f8c8d;
+        color: #718096;
         font-size: 14px;
     }
     .form-group {
@@ -89,38 +96,35 @@
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1a1f36;
         font-size: 14px;
     }
     .form-group input {
         width: 100%;
         padding: 14px 16px;
-        border: 2px solid #e1e8ed;
-        border-radius: 10px;
+        border: 2px solid #e2e8f0;
         font-size: 15px;
         transition: all 0.3s;
         font-family: inherit;
     }
     .form-group input:focus {
         outline: none;
-        border-color: #4facfe;
-        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        border-color: #f4b740;
     }
     .btn-submit {
         width: 100%;
         padding: 16px;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
+        background: transparent;
+        border: 2px solid #f4b740;
+        color: #f4b740;
         font-size: 16px;
         font-weight: 600;
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: all 0.3s;
     }
     .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        background: #f4b740;
+        color: #1a1f36;
     }
     .auth-footer {
         text-align: center;
@@ -129,7 +133,7 @@
         font-size: 14px;
     }
     .auth-footer a {
-        color: #4facfe;
+        color: #f4b740;
         text-decoration: none;
         font-weight: 600;
     }
@@ -267,6 +271,9 @@
             {% endwith %}
 
             <form method="POST" action="{{ url_for('user_login') }}">
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
                 <div class="form-group">
                     <label for="username">მომხმარებლის სახელი</label>
                     <input type="text" id="username" name="username" required autofocus

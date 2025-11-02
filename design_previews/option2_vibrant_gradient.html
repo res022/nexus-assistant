@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 2: Vibrant Gradient Modern - Nexus Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            text-shadow: 2px 2px 8px rgba(255,255,255,0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(20deg); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Stats with Glassmorphism */
+        .stats {
+            max-width: 1200px;
+            margin: -2rem auto 3rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .stat-card:nth-child(2) { animation-delay: 0.5s; }
+        .stat-card:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Features with 3D Effect */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: gradient-slide 3s ease infinite;
+        }
+
+        @keyframes gradient-slide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Gradient Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #764ba2, #f093fb);
+        }
+
+        /* Chat Preview */
+        .chat-preview {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .chat-message {
+            margin-bottom: 1.5rem;
+            padding: 1.2rem 1.8rem;
+            border-radius: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: 20%;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-message.ai {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            margin-right: 20%;
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Animated Background Blobs */
+        .blob {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: blob-float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .blob1 {
+            background: #ff6b6b;
+            top: 10%;
+            left: 10%;
+        }
+
+        .blob2 {
+            background: #4facfe;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes blob-float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🚀 Nexus Assistant</div>
+            <ul class="nav-links">
+                <li><a href="#">მთავარი</a></li>
+                <li><a href="#">კანონები</a></li>
+                <li><a href="#">AI ასისტენტი</a></li>
+                <li><a href="#">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Nexus Assistant</h1>
+        <p>Next-generation Georgian law education powered by AI</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">38</div>
+            <div class="stat-label">Georgian Laws</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Assistant</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Quiz Questions</div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Browse Laws</h3>
+            <p>Explore comprehensive Georgian legal database with smart search and instant filtering.</p>
+            <br>
+            <button class="btn">Explore Now</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h3>AI Assistant</h3>
+            <p>Ask anything about Georgian law and get instant AI-powered answers with citations.</p>
+            <br>
+            <button class="btn">Ask Question</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✨</div>
+            <h3>Test Knowledge</h3>
+            <p>Master Georgian law with interactive quizzes and track your progress in real-time.</p>
+            <br>
+            <button class="btn">Start Learning</button>
+        </div>
+    </div>
+
+    <!-- Chat Preview -->
+    <div class="chat-preview">
+        <h2 class="section-title">AI Chat Interface</h2>
+        <div class="chat-container">
+            <div class="chat-message user">
+                რა არის სამოქალაქო კოდექსი?
+            </div>
+            <div class="chat-message ai">
+                სამოქალაქო კოდექსი არის საქართველოს ძირითადი კანონმდებლობა, რომელიც არეგულირებს სამოქალაქო სამართლებრივ ურთიერთობებს...
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 3rem; color: white;">
+        <h3 style="font-size: 2rem; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Design Concept: Vibrant Gradient Modern</h3>
+        <p style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">Bold • Energetic • Glassmorphism • Animated • Student-Friendly</p>
+    </div>
+</body>
+</html>

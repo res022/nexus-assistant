@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 1: Modern Minimalist Legal - Nexus Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1a1f36;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #f4b740;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #f4b740;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #1a1f36;
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid #f4b740;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #f4b740;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #e2e8f0;
+        }
+
+        /* Stats */
+        .stats {
+            max-width: 1200px;
+            margin: -3rem auto 3rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #f4b740;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1f36;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Features */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #f4b740;
+            box-shadow: 0 5px 20px rgba(244, 183, 64, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1f36;
+        }
+
+        .feature-card p {
+            color: #718096;
+            line-height: 1.8;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border: 2px solid #f4b740;
+            background: transparent;
+            color: #f4b740;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #f4b740;
+            color: #1a1f36;
+        }
+
+        /* Chat Preview */
+        .chat-preview {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .chat-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+        }
+
+        .chat-message {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+        }
+
+        .chat-message.user {
+            background: #1a1f36;
+            color: white;
+            border-left: 4px solid #f4b740;
+        }
+
+        .chat-message.ai {
+            background: #f7fafc;
+            border-left: 4px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1a1f36;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">⚖️ Nexus Assistant</div>
+            <ul class="nav-links">
+                <li><a href="#">მთავარი</a></li>
+                <li><a href="#">კანონები</a></li>
+                <li><a href="#">AI ასისტენტი</a></li>
+                <li><a href="#">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Georgian Law Education Platform</h1>
+        <p>Professional legal research powered by AI technology</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">38</div>
+            <div class="stat-label">Georgian Laws</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Assistant</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Quiz Questions</div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Browse Laws</h3>
+            <p>Access comprehensive Georgian legal database with advanced search and filtering capabilities.</p>
+            <br>
+            <button class="btn">Explore Laws</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h3>AI Assistant</h3>
+            <p>Get instant answers to legal questions with AI-powered research and citation support.</p>
+            <br>
+            <button class="btn">Ask Question</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✓</div>
+            <h3>Test Knowledge</h3>
+            <p>Practice with curated quiz questions and track your progress over time.</p>
+            <br>
+            <button class="btn">Start Quiz</button>
+        </div>
+    </div>
+
+    <!-- Chat Preview -->
+    <div class="chat-preview">
+        <h2 class="section-title">AI Chat Interface Preview</h2>
+        <div class="chat-container">
+            <div class="chat-message user">
+                რა არის სამოქალაქო კოდექსი?
+            </div>
+            <div class="chat-message ai">
+                სამოქალაქო კოდექსი არის საქართველოს ძირითადი კანონმდებლობა, რომელიც არეგულირებს სამოქალაქო სამართლებრივ ურთიერთობებს...
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 3rem; color: #718096;">
+        <h3 style="font-family: 'Playfair Display', serif; color: #1a1f36; margin-bottom: 1rem;">Design Concept: Modern Minimalist Legal</h3>
+        <p>Professional • Clean • Trustworthy • Serif Typography • Gold Accents</p>
+    </div>
+</body>
+</html>

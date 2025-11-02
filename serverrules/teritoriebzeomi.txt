@@ -1,0 +1,6 @@
+
+
+---METADATA---
+SUMMARY_EN: Rules for territory capture and turf wars: attack scheduling (must declare war 24h advance), defense requirements (minimum defenders present), war duration (maximum time limits), capture mechanics (point control, flag system), valid attack reasons, peace treaty rules, truce agreements, territory benefits (bonuses, resources), war zones (fighting areas, safe zones), alliance restrictions, mercenary rules, war declaration format, victory conditions, penalties for rule breaking during wars.
+
+KEYWORDS_EN: territory, turf, war, capture, attack, defense, gang war, turf war, declaration, scheduling, 24 hour notice, defenders, duration, time limit, capture points, flags, attack reasons, peace treaty, truce, benefits, bonuses, resources, war zones, fighting areas, safe zones, alliances, mercenary, victory, penalties

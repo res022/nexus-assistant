@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}ქვიზი უკვე გავლილი - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="already-attempted-container">
+        <div class="already-attempted-card">
+            <div class="icon-large">⛔</div>
+            <h1>ქვიზი უკვე გავლილია</h1>
+
+            <div class="attempt-info">
+                <p class="info-message">თქვენ უკვე გაიარეთ ეს ტესტი და ვეღარ შეძლებთ მეორედ გავლას.</p>
+
+                <div class="completion-indicator">
+                    <div class="completion-icon">✓</div>
+                    <div class="completion-text">ტესტი გავლილია</div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>📅 გავლის თარიღი:</strong> {{ completed_at.split('T')[0] if 'T' in completed_at else completed_at.split()[0] if completed_at != 'N/A' else 'N/A' }}</p>
+                    <p><strong>📊 შედეგები:</strong> თქვენი შედეგები ხილულია მხოლოდ ადმინისტრატორისთვის.</p>
+                    <p><strong>ℹ️ შენიშვნა:</strong> მხოლოდ ადმინისტრატორს შეუძლია თქვენთვის თავიდან გავლის უფლების მიცემა.</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary btn-large">
+                    🏠 მთავარ გვერდზე დაბრუნება
+                </a>
+                <a href="/chat" class="btn btn-secondary btn-large">
+                    💬 AI ასისტენტი
+                </a>
+                <a href="/quiz" class="btn btn-secondary btn-large">
+                    🎯 სხვა ქვიზები
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.already-attempted-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+}
+
+.already-attempted-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 60px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.icon-large {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.already-attempted-card h1 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.attempt-info {
+    margin: 30px 0;
+}
+
+.info-message {
+    font-size: 16px;
+    color: #718096;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.completion-indicator {
+    background: #f0f9f4;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    padding: 40px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.completion-icon {
+    font-size: 64px;
+    color: #28a745;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.completion-text {
+    font-size: 20px;
+    color: #1a1f36;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-box {
+    background: #fff8e6;
+    border: 1px solid #f4b740;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.info-box p {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+.info-box strong {
+    color: #1a1f36;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.btn-large {
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .already-attempted-card {
+        padding: 40px 20px;
+    }
+
+    .already-attempted-card h1 {
+        font-size: 24px;
+    }
+
+    .completion-icon {
+        font-size: 48px;
+    }
+
+    .completion-text {
+        font-size: 16px;
+    }
+}
+</style>
+{% endblock %}

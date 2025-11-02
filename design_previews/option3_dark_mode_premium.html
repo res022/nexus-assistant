@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 3: Dark Mode Premium - Nexus Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f1419;
+            color: #c9d1d9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1c2128;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #30363d;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: #58a6ff;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #c9d1d9;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #58a6ff, #bc8cff);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #58a6ff;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0d1117 0%, #1c2128 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid #30363d;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #58a6ff, transparent);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #8b949e;
+        }
+
+        /* Stats with Neon Glow */
+        .stats {
+            max-width: 1200px;
+            margin: -2rem auto 3rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: #1c2128;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #bc8cff);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.2),
+                        0 0 30px rgba(88, 166, 255, 0.1);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        /* Features */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #1c2128;
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid #30363d;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.05), rgba(188, 140, 255, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #58a6ff;
+            box-shadow: 0 15px 40px rgba(88, 166, 255, 0.15);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(88, 166, 255, 0.5));
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #58a6ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card p {
+            color: #8b949e;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Neon Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            background: transparent;
+            border: 2px solid #58a6ff;
+            color: #58a6ff;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: #58a6ff;
+            color: #0f1419;
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.5),
+                        0 0 40px rgba(88, 166, 255, 0.3);
+        }
+
+        /* Chat Preview - Terminal Style */
+        .chat-preview {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .chat-container {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chat-message {
+            margin-bottom: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .chat-message.user {
+            background: rgba(88, 166, 255, 0.1);
+            border-left-color: #58a6ff;
+            color: #c9d1d9;
+        }
+
+        .chat-message.ai {
+            background: rgba(188, 140, 255, 0.1);
+            border-left-color: #bc8cff;
+            color: #c9d1d9;
+        }
+
+        .chat-label {
+            font-size: 0.75rem;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #c9d1d9;
+            font-weight: 600;
+        }
+
+        /* Glow effect */
+        .glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.15), transparent);
+            pointer-events: none;
+            filter: blur(60px);
+            z-index: -1;
+        }
+
+        .glow1 {
+            top: 10%;
+            left: 5%;
+        }
+
+        .glow2 {
+            bottom: 10%;
+            right: 5%;
+            background: radial-gradient(circle, rgba(188, 140, 255, 0.15), transparent);
+        }
+    </style>
+</head>
+<body>
+    <div class="glow glow1"></div>
+    <div class="glow glow2"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">⚡ NEXUS_ASSISTANT</div>
+            <ul class="nav-links">
+                <li><a href="#">მთავარი</a></li>
+                <li><a href="#">კანონები</a></li>
+                <li><a href="#">AI ასისტენტი</a></li>
+                <li><a href="#">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Nexus Assistant</h1>
+        <p>Advanced Georgian law platform powered by AI intelligence</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">38</div>
+            <div class="stat-label">Georgian Laws</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Assistant</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1K+</div>
+            <div class="stat-label">Quiz Questions</div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Browse Laws</h3>
+            <p>Access comprehensive Georgian legal database with advanced search capabilities and intelligent filtering.</p>
+            <br>
+            <button class="btn">Explore Database</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h3>AI Assistant</h3>
+            <p>Get instant answers powered by advanced AI with accurate citations and contextual understanding.</p>
+            <br>
+            <button class="btn">Start Chat</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Test Knowledge</h3>
+            <p>Master Georgian law with intelligent quizzes that adapt to your knowledge level and track progress.</p>
+            <br>
+            <button class="btn">Begin Testing</button>
+        </div>
+    </div>
+
+    <!-- Chat Preview -->
+    <div class="chat-preview">
+        <h2 class="section-title">AI Chat Interface</h2>
+        <div class="chat-container">
+            <div class="chat-message user">
+                <div class="chat-label">User Query</div>
+                რა არის სამოქალაქო კოდექსი?
+            </div>
+            <div class="chat-message ai">
+                <div class="chat-label">AI Response</div>
+                სამოქალაქო კოდექსი არის საქართველოს ძირითადი კანონმდებლობა, რომელიც არეგულირებს სამოქალაქო სამართლებრივ ურთიერთობებს...
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 3rem; color: #8b949e;">
+        <h3 style="color: #58a6ff; margin-bottom: 1rem; font-size: 1.8rem;">Design Concept: Dark Mode Premium</h3>
+        <p>Sophisticated • Modern • Eye-Friendly • Neon Accents • Tech-Forward</p>
+    </div>
+</body>
+</html>

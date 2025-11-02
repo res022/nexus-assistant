@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chatForm');
     const questionInput = document.getElementById('questionInput');
+    const sourceSelect = document.getElementById('sourceSelect');
     const submitBtn = document.getElementById('submitBtn');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     const chatMessages = document.getElementById('chatMessages');
@@ -22,9 +23,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Update loading message based on source selection
+    sourceSelect.addEventListener('change', function() {
+        if (sourceSelect.value === 'rules') {
+            loadingIndicator.innerHTML = '<span class="spinner"></span> AI ფიქრობს და ეძებს რელევანტურ წესებს...';
+        } else {
+            loadingIndicator.innerHTML = '<span class="spinner"></span> AI ფიქრობს და ეძებს რელევანტურ კანონებს...';
+        }
+    });
+
     chatForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const question = questionInput.value.trim();
+        const source = sourceSelect.value;
         if (!question) return;
 
         submitBtn.disabled = true;
@@ -38,13 +49,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/api/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: question })
+                body: JSON.stringify({
+                    question: question,
+                    source: source
+                })
             });
             const data = await response.json();
             if (data.error) {
                 addMessage('ai', '❌ შეცდომა: ' + (data.message || 'დაფიქსირდა შეცდომა'));
             } else {
-                addMessage('ai', data.answer, data.sources);
+                addMessage('ai', data.answer, data.sources, data.source_type);
             }
         } catch (error) {
             addMessage('ai', '❌ შეცდომა კავშირში');
@@ -63,15 +77,11 @@ document.addEventListener('DOMContentLoaded', function() {
         location.reload();
     });
 
-    function addMessage(type, content, sources) {
+    function addMessage(type, content, sources, sourceType) {
         const div = document.createElement('div');
         div.className = 'message ' + type + '-message';
         let html = '<div class="message-content">' + content + '</div>';
-        if (sources) {
-            html += '<div class="message-sources"><strong>გამოყენებული კანონები:</strong><ul>';
-            sources.forEach(s => html += '<li>' + s + '</li>');
-            html += '</ul></div>';
-        }
+        // Sources removed - don't display them
         div.innerHTML = html;
         const empty = chatMessages.querySelector('.empty-chat');
         if (empty) empty.remove();

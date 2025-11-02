@@ -1,0 +1,219 @@
+{% extends "admin/base.html" %}
+
+{% block title %}გაზიარებადი ქვიზები{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+    <div>
+        <h2>🎯 გაზიარებადი ქვიზები</h2>
+        <p>მართეთ და თვალყური ადევნეთ გაზიარებად ქვიზებს</p>
+    </div>
+    <a href="/admin/quiz/create" class="btn btn-primary">
+        ➕ ახალი ქვიზის შექმნა
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_quizzes }}</div>
+        <div class="stat-label">სულ ქვიზები</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ active_quizzes }}</div>
+        <div class="stat-label">აქტიური ქვიზები</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_attempts }}</div>
+        <div class="stat-label">სულ მცდელობები</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ unique_users }}</div>
+        <div class="stat-label">უნიკალური მომხმარებლები</div>
+    </div>
+</div>
+
+<div class="quizzes-table-container">
+    {% if quizzes %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>სათაური</th>
+                <th>კითხვები</th>
+                <th>მცდელობები</th>
+                <th>შექმნის თარიღი</th>
+                <th>სტატუსი</th>
+                <th>მოქმედებები</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+            <tr>
+                <td><code>{{ quiz.quiz_id[:8] }}...</code></td>
+                <td>
+                    <strong>{{ quiz.title }}</strong>
+                    {% if quiz.description %}
+                    <br><small style="color: #718096;">{{ quiz.description[:50] }}...</small>
+                    {% endif %}
+                </td>
+                <td>{{ quiz.question_count }} კითხვა</td>
+                <td>{{ quiz.attempt_count }} მცდელობა</td>
+                <td>{{ quiz.created_at.split('.')[0] if '.' in quiz.created_at else quiz.created_at }}</td>
+                <td>
+                    <span class="status-badge status-{{ 'active' if quiz.is_active else 'inactive' }}">
+                        {{ 'აქტიური' if quiz.is_active else 'გათიშული' }}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action btn-view" onclick="viewQuiz('{{ quiz.quiz_id }}')"
+                                title="ნახვა">👁️</button>
+                        <button class="btn-action btn-results" onclick="viewResults('{{ quiz.quiz_id }}')"
+                                title="შედეგები">📊</button>
+                        <button class="btn-action btn-copy" onclick="copyQuizLink('{{ quiz.quiz_id }}')"
+                                title="ბმულის კოპირება">🔗</button>
+                        <button class="btn-action btn-toggle"
+                                onclick="toggleQuiz('{{ quiz.quiz_id }}', {{ 1 if quiz.is_active else 0 }})"
+                                title="{{ 'გათიშვა' if quiz.is_active else 'გააქტიურება' }}">
+                            {{ '⏸️' if quiz.is_active else '▶️' }}
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <h3>ქვიზები არ არის შექმნილი</h3>
+        <p>შექმენით თქვენი პირველი გაზიარებადი ქვიზი!</p>
+        <a href="/admin/quiz/create" class="btn btn-primary">➕ ქვიზის შექმნა</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.admin-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1a1f36;
+    font-family: 'Playfair Display', Georgia, serif;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: #718096;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.quizzes-table-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    padding: 6px 10px;
+    border: none;
+    background: #f4b740;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.btn-action:hover {
+    transform: scale(1.1);
+    background: #1a1f36;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #718096;
+    margin-bottom: 25px;
+}
+</style>
+
+<script>
+function viewQuiz(quizId) {
+    window.open('/quiz/shared/' + quizId, '_blank');
+}
+
+function viewResults(quizId) {
+    window.location.href = '/admin/quiz/' + quizId + '/results';
+}
+
+function copyQuizLink(quizId) {
+    const url = window.location.origin + '/quiz/shared/' + quizId;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('📋 ბმული დაკოპირდა: ' + url);
+    });
+}
+
+async function toggleQuiz(quizId, currentStatus) {
+    const action = currentStatus ? 'გათიშვა' : 'გააქტიურება';
+    if (!confirm(`დარწმუნებული ხართ რომ გსურთ ამ ქვიზის ${action}?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/admin/api/quiz/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quiz_id: quizId })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

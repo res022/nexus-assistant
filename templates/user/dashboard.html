@@ -35,41 +35,6 @@
         </div>
     </div>
 
-    <!-- Performance by Category -->
-    {% if stats.categories %}
-    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <h2 style="margin-top: 0;">📊 შედეგები კატეგორიების მიხედვით</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                    <th style="padding: 12px; text-align: left;">კატეგორია</th>
-                    <th style="padding: 12px; text-align: center;">სულ</th>
-                    <th style="padding: 12px; text-align: center;">სწორი</th>
-                    <th style="padding: 12px; text-align: center;">სიზუსტე</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cat in stats.categories %}
-                <tr style="border-bottom: 1px solid #dee2e6;">
-                    <td style="padding: 12px;">{{ cat.name }}</td>
-                    <td style="padding: 12px; text-align: center;">{{ cat.total }}</td>
-                    <td style="padding: 12px; text-align: center;">{{ cat.correct }}</td>
-                    <td style="padding: 12px; text-align: center;">
-                        <span style="padding: 4px 8px; border-radius: 4px; font-weight: 600;
-                                     {% set acc = (cat.correct / cat.total * 100) if cat.total > 0 else 0 %}
-                                     {% if acc >= 80 %}background: #d4edda; color: #155724;
-                                     {% elif acc >= 60 %}background: #fff3cd; color: #856404;
-                                     {% else %}background: #f8d7da; color: #721c24;{% endif %}">
-                            {{ "%.1f"|format(acc) }}%
-                        </span>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-
     <!-- Performance by Difficulty -->
     {% if stats.difficulties %}
     <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
@@ -97,33 +62,6 @@
                         {% set acc = (diff.correct / diff.total * 100) if diff.total > 0 else 0 %}
                         {{ "%.1f"|format(acc) }}%
                     </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-
-    <!-- Recent Quiz Sessions -->
-    {% if stats.recent_sessions %}
-    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h2 style="margin-top: 0;">📝 ბოლო ქვიზები</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                    <th style="padding: 12px; text-align: left;">თარიღი</th>
-                    <th style="padding: 12px; text-align: center;">კითხვები</th>
-                    <th style="padding: 12px; text-align: center;">სწორი</th>
-                    <th style="padding: 12px; text-align: center;">სიზუსტე</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for session in stats.recent_sessions %}
-                <tr style="border-bottom: 1px solid #dee2e6;">
-                    <td style="padding: 12px;">{{ session.completed_at[:16] if session.completed_at else 'In Progress' }}</td>
-                    <td style="padding: 12px; text-align: center;">{{ session.total }}</td>
-                    <td style="padding: 12px; text-align: center;">{{ session.correct }}</td>
-                    <td style="padding: 12px; text-align: center;">{{ session.accuracy }}%</td>
                 </tr>
                 {% endfor %}
             </tbody>

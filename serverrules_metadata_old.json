@@ -1,0 +1,134 @@
+{
+  "zogadi": {
+    "english_title": "General Server Rules",
+    "summary": "Core server rules including RP basics, account usage, gameplay process, and communication guidelines. Covers bans, account restrictions, RP etiquette, and definitions of common terms like DM, PG, MG, Fear RP, etc.",
+    "category": "Core Rules",
+    "tags": ["general", "basics", "roleplay", "communication", "definitions"]
+  },
+  "administraciis": {
+    "english_title": "Administration Rules",
+    "summary": "Rules for server administrators including their duties, restrictions, player interaction guidelines, and disciplinary procedures. Covers admin responsibilities, warning systems, and administrative conduct.",
+    "category": "Administration",
+    "tags": ["admin", "staff", "moderation", "duties"]
+  },
+  "saxelmwifoorganizaciis": {
+    "english_title": "Government Organization Rules",
+    "summary": "Rules for government factions (LSPD, FIB, EMS, etc.). Covers hiring procedures, patrol requirements, arrest protocols, search and seizure, jurisdiction, equipment usage, and inter-agency cooperation.",
+    "category": "Factions",
+    "tags": ["government", "police", "law enforcement", "state organizations"]
+  },
+  "kriminaluriorganizaciebis": {
+    "english_title": "Criminal Organization Rules",
+    "summary": "Rules for criminal factions (gangs, mafia). Covers territory control, robberies, kidnapping, gang wars, turf wars, recruitment, and criminal RP guidelines.",
+    "category": "Factions",
+    "tags": ["criminal", "gangs", "mafia", "crime"]
+  },
+  "teritoriebzeomi": {
+    "english_title": "Territory War Rules",
+    "summary": "Rules governing territory capture, turf wars between gangs, attack/defense procedures, war schedules, zone control mechanics, and victory conditions.",
+    "category": "Events",
+    "tags": ["territory", "war", "capture", "turf", "gangs"]
+  },
+  "reidis": {
+    "english_title": "Raid Rules",
+    "summary": "Guidelines for raiding houses, businesses, and faction bases. Covers raid initiation, police involvement, loot rules, raid duration, and valid reasons for raids.",
+    "category": "Events",
+    "tags": ["raid", "attack", "police", "criminal"]
+  },
+  "dzarcvagataceba": {
+    "english_title": "Robbery & Kidnapping Rules",
+    "summary": "Rules for robbing players, stores, and kidnapping. Covers victim limits, robbery locations, ransom guidelines, hostage safety, and prohibited robbery targets.",
+    "category": "Crime",
+    "tags": ["robbery", "kidnapping", "hostage", "crime"]
+  },
+  "lideriswesebi": {
+    "english_title": "Leader Rules",
+    "summary": "Rules for faction leaders including recruitment, member management, faction funds, storage management, activity requirements, and leader responsibilities.",
+    "category": "Leadership",
+    "tags": ["leader", "faction", "management"]
+  },
+  "ojaxis": {
+    "english_title": "Family Rules",
+    "summary": "Rules for family system including family creation, member limits, family houses, family business, leveling, ranks, and family activities.",
+    "category": "Social",
+    "tags": ["family", "clan", "group"]
+  },
+  "satamashozonebi": {
+    "english_title": "Game Zones (Green/Red Zones)",
+    "summary": "Defines safe zones (green) where crime is forbidden and red zones where special rules apply. Lists specific locations and their restrictions.",
+    "category": "Locations",
+    "tags": ["zones", "safe zones", "locations"]
+  },
+  "fortzacundo": {
+    "english_title": "Fort Zancudo Rules",
+    "summary": "Special rules for the military base (Fort Zancudo) including entry requirements, restricted areas, combat rules, and military vehicle access.",
+    "category": "Locations",
+    "tags": ["military", "fort zancudo", "restricted area"]
+  },
+  "rpstreli": {
+    "english_title": "RP Shooting Rules",
+    "summary": "Rules for gunfights, combat RP, weapon usage, healing during combat, reviving, shooting from vehicles, and valid reasons to shoot.",
+    "category": "Combat",
+    "tags": ["shooting", "combat", "weapons", "gunfight"]
+  },
+  "rpgamodzieba": {
+    "english_title": "RP Search Rules",
+    "summary": "Guidelines for searching players, vehicles, and properties. Covers search commands, legal basis, evidence collection, and police search procedures.",
+    "category": "Procedures",
+    "tags": ["search", "police", "investigation"]
+  },
+  "poligrafis": {
+    "english_title": "Polygraph (Lie Detector) Rules",
+    "summary": "Rules for using polygraph tests in RP situations. Covers when polygraphs can be used, who can administer them, and their RP validity.",
+    "category": "Procedures",
+    "tags": ["polygraph", "lie detector", "investigation"]
+  },
+  "softcheck": {
+    "english_title": "Soft Check Rules",
+    "summary": "Rules for checking player software to prevent cheating. Covers anti-cheat procedures, screen sharing requirements, and refusal consequences.",
+    "category": "Security",
+    "tags": ["anticheat", "check", "security"]
+  },
+  "weazelnews": {
+    "english_title": "Weazel News Rules",
+    "summary": "Rules for news organization including journalist conduct, reporting guidelines, live streaming rules, event coverage, and journalist protections.",
+    "category": "Factions",
+    "tags": ["news", "media", "journalism"]
+  },
+  "teroristuliaqtis": {
+    "english_title": "Terrorist Act Rules",
+    "summary": "Rules for terrorist RP scenarios including planning requirements, execution guidelines, hostage situations, government response, and prohibited actions.",
+    "category": "Events",
+    "tags": ["terrorist", "events", "special RP"]
+  },
+  "grafitiwar": {
+    "english_title": "Graffiti War Rules",
+    "summary": "Rules for gang graffiti battles including spray mechanics, territory marking, graffiti wars, scoring system, and valid spray locations.",
+    "category": "Events",
+    "tags": ["graffiti", "gangs", "territory"]
+  },
+  "airdrop": {
+    "english_title": "Airdrop Event Rules",
+    "summary": "Rules for airdrop events where supplies/weapons drop from sky. Covers event timing, combat rules, loot distribution, and participation requirements.",
+    "category": "Events",
+    "tags": ["airdrop", "event", "loot"]
+  },
+  "momarageba": {
+    "english_title": "Supply Rules",
+    "summary": "Rules for faction supply system including material gathering, crafting, supply deliveries, storage management, and resource distribution.",
+    "category": "Economy",
+    "tags": ["supplies", "materials", "crafting"]
+  },
+  "fck": {
+    "english_title": "FCK (Faction Conflict/Kill) Rules",
+    "summary": "Rules governing conflicts and kills between factions. Covers valid reasons for faction wars, kill rules, conflict initiation, and resolution.",
+    "category": "Combat",
+    "tags": ["faction war", "conflict", "kills"]
+  },
+  "vzh": {
+    "english_title": "VZH (Wanted/Hostage) Rules",
+    "summary": "Rules for wanted system and hostage situations. Covers wanted levels, police pursuit, negotiation rules, and hostage RP protocols.",
+    "category": "Procedures",
+    "tags": ["wanted", "hostage", "police"]
+  }
+}

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 4: Classic Academic - Nexus Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: #f9f6f0;
+            color: #3e2723;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #8b1538 0%, #6d1028 100%);
+            padding: 1.2rem 2rem;
+            border-bottom: 4px solid #b8860b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'EB Garamond', serif;
+            font-size: 1.8rem;
+            color: #b8860b;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .seal {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #b8860b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #f9f6f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: #b8860b;
+            border-bottom-color: #b8860b;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #8b1538 0%, #6d1028 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 4px solid #b8860b;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(184, 134, 11, 0.03) 50px,
+                    rgba(184, 134, 11, 0.03) 100px
+                );
+            pointer-events: none;
+        }
+
+        .hero-crest {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: radial-gradient(circle, #b8860b, #8b6914);
+            border-radius: 50%;
+            border: 4px solid #f9f6f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 {
+            font-family: 'EB Garamond', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #f9f6f0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #f9f6f0;
+            font-style: italic;
+        }
+
+        .latin-motto {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #b8860b;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* Stats with Seals */
+        .stats {
+            max-width: 1200px;
+            margin: -3rem auto 3rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border: 3px solid #8b1538;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #8b1538, #b8860b, #8b1538);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 21, 56, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #8b1538;
+            font-family: 'EB Garamond', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #5d4037;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Features */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: #fff;
+            padding: 2.5rem;
+            border: 2px solid #8b1538;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, #b8860b, transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(139, 21, 56, 0.2);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'EB Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #8b1538;
+            font-weight: 700;
+            border-bottom: 2px solid #e0d4c0;
+            padding-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #5d4037;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* Classic Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2.5rem;
+            background: #8b1538;
+            color: #f9f6f0;
+            text-decoration: none;
+            font-weight: 700;
+            border: 3px solid #b8860b;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background: #b8860b;
+            color: #3e2723;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.4);
+        }
+
+        /* Chat Preview - Book Style */
+        .chat-preview {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .chat-container {
+            background: #fff;
+            border: 3px solid #8b1538;
+            padding: 3rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: repeating-linear-gradient(
+                90deg,
+                #8b1538,
+                #8b1538 10px,
+                #b8860b 10px,
+                #b8860b 20px
+            );
+        }
+
+        .chat-message {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 5px solid;
+            background: #faf8f5;
+        }
+
+        .chat-message.user {
+            border-left-color: #8b1538;
+            font-style: italic;
+        }
+
+        .chat-message.ai {
+            border-left-color: #2d5016;
+            text-align: justify;
+        }
+
+        .chat-label {
+            font-size: 0.8rem;
+            color: #8b6914;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-family: 'EB Garamond', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #8b1538;
+            font-weight: 700;
+            border-bottom: 3px solid #b8860b;
+            padding-bottom: 1rem;
+        }
+
+        /* Decorative Element */
+        .divider {
+            max-width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #b8860b, transparent);
+            margin: 3rem auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="seal">⚖️</div>
+                Nexus Assistant
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">მთავარი</a></li>
+                <li><a href="#">კანონები</a></li>
+                <li><a href="#">AI ასისტენტი</a></li>
+                <li><a href="#">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-crest">🏛️</div>
+        <h1>Nexus Assistant</h1>
+        <p>Georgian Law Education Platform</p>
+        <div class="latin-motto">"Scientia Potentia Est" — Knowledge is Power</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">38</div>
+            <div class="stat-label">Georgian Laws</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Assistant</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Quiz Questions</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Features -->
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Browse Laws</h3>
+            <p>Access our comprehensive collection of Georgian legal texts, carefully curated and organized for scholarly research and professional reference.</p>
+            <br>
+            <button class="btn">Explore Library</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📜</div>
+            <h3>AI Assistant</h3>
+            <p>Engage with our advanced AI scholar to receive well-researched answers to your legal inquiries, complete with proper citations and references.</p>
+            <br>
+            <button class="btn">Consult Assistant</button>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h3>Test Knowledge</h3>
+            <p>Evaluate your understanding through rigorous examinations designed to assess and enhance your mastery of Georgian legal principles.</p>
+            <br>
+            <button class="btn">Begin Examination</button>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Chat Preview -->
+    <div class="chat-preview">
+        <h2 class="section-title">AI Consultation Interface</h2>
+        <div class="chat-container">
+            <div class="chat-message user">
+                <div class="chat-label">Student Inquiry</div>
+                რა არის სამოქალაქო კოდექსი?
+            </div>
+            <div class="chat-message ai">
+                <div class="chat-label">Scholarly Response</div>
+                სამოქალაქო კოდექსი არის საქართველოს ძირითადი კანონმდებლობა, რომელიც არეგულირებს სამოქალაქო სამართლებრივ ურთიერთობებს. ეს ფუნდამენტური დოკუმენტი მოიცავს სამოქალაქო სამართლის ძირითად პრინციპებს და ნორმებს...
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 4rem 2rem; background: #fff; border-top: 3px solid #8b1538; margin-top: 4rem;">
+        <h3 style="font-family: 'EB Garamond', serif; color: #8b1538; margin-bottom: 1rem; font-size: 2rem;">Design Concept: Classic Academic</h3>
+        <p style="color: #5d4037;">Traditional • Trustworthy • Institutional • Serif Typography • Timeless Elegance</p>
+        <div class="divider"></div>
+        <p style="font-style: italic; color: #8b6914;">"Where tradition meets innovation in legal education"</p>
+    </div>
+</body>
+</html>

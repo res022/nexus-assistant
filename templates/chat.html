@@ -2,6 +2,28 @@
 
 {% block title %}AI ასისტენტი{% endblock %}
 
+{% block extra_styles %}
+<style>
+    .source-selector-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px solid #e1e8ed;
+    }
+    .source-selector-wrapper select {
+        flex: 1;
+    }
+    .source-selector-wrapper select:focus {
+        outline: none;
+        border-color: #4facfe;
+        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="page-header">
@@ -18,16 +40,6 @@
                 </div>
                 <div class="message ai-message">
                     <div class="message-content">{{ entry.answer }}</div>
-                    {% if entry.sources %}
-                    <div class="message-sources">
-                        <strong>გამოყენებული კანონები:</strong>
-                        <ul>
-                            {% for source in entry.sources %}
-                            <li>{{ source }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
                 </div>
                 {% endfor %}
             {% else %}
@@ -39,6 +51,13 @@
 
         <div class="chat-input-container">
             <form id="chatForm">
+                <div class="source-selector-wrapper">
+                    <label for="sourceSelect" style="font-weight: 600; margin-right: 10px; color: #2c3e50;">ძებნა:</label>
+                    <select id="sourceSelect" name="source" style="padding: 8px 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 15px; background: white; cursor: pointer; min-width: 200px;">
+                        <option value="laws">📜 კანონები (Laws)</option>
+                        <option value="rules">🎮 წესები (Server Rules)</option>
+                    </select>
+                </div>
                 <div class="input-wrapper">
                     <textarea
                         id="questionInput"

@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+
+{% block title %}მატჩი - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="match-header">
+        <h1>⚔️ მრავალმოთამაშიანი დუელი</h1>
+        <div class="players-info">
+            <div class="player-card me">
+                <span class="player-icon">👤</span>
+                <span class="player-name">{{ current_user_name }}</span>
+            </div>
+            <div class="vs">VS</div>
+            <div class="player-card opponent">
+                <span class="player-icon">👤</span>
+                <span class="player-name" id="opponentName">{{ opponent_name or '⏳ მოლოდინში...' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div id="waitingScreen" class="waiting-screen" {% if match.status != 'waiting' %}style="display:none;"{% endif %}>
+        <div class="waiting-card">
+            <div class="loading-spinner"></div>
+            <h2>⏳ მოლოდინი მოწინააღმდეგისთვის...</h2>
+            <p>გააზიარეთ ეს ლინკი თქვენს მეგობართან:</p>
+            <div class="share-link">
+                <input type="text" id="shareLink" value="{{ share_url }}" readonly>
+                <button onclick="copyLink()" class="btn btn-secondary">📋 კოპირება</button>
+            </div>
+            <p class="match-details">📝 {{ match.num_questions }} კითხვა | 🎯 {{ match.difficulty }} | 📚 {{ match.source_type }}</p>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="quiz-screen" {% if match.status == 'waiting' %}style="display:none;"{% endif %}>
+        <div class="quiz-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info">
+                <span id="progressText">კითხვა 1 / {{ questions|length }}</span>
+                <span id="timer">⏱️ 0:00</span>
+            </div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-difficulty" id="questionDifficulty"></div>
+            <h3 class="question-text" id="questionText"></h3>
+            <div class="question-options" id="questionOptions"></div>
+        </div>
+
+        <div class="quiz-feedback" id="quizFeedback" style="display:none;"></div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;">
+                შემდეგი კითხვა →
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Results Screen -->
+    <div id="loadingResults" class="loading-results" style="display:none;">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h2>⏳ მოლოდინი მოწინააღმდეგის შედეგებისთვის...</h2>
+            <p>თქვენ დაასრულეთ ქვიზი! მოლოდინი სხვა მოთამაშისთვის...</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.match-header {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.match-header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.players-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.player-card.me {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: 2px solid #1976d2;
+}
+
+.player-card.opponent {
+    background: #fce4ec;
+    color: #c2185b;
+    border: 2px solid #c2185b;
+}
+
+.player-icon {
+    font-size: 24px;
+}
+
+.vs {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f4b740;
+}
+
+.waiting-screen,
+.loading-results {
+    min-height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.waiting-card,
+.loading-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 50px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #e2e8f0;
+    border-top: 6px solid #f4b740;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 30px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.waiting-card h2,
+.loading-card h2 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.share-link {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.share-link input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.match-details {
+    color: #718096;
+    margin-top: 20px;
+}
+
+.quiz-screen {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+}
+
+.quiz-progress {
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f4b740, #f39c12);
+    transition: width 0.3s;
+    width: 0%;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    color: #718096;
+    font-size: 14px;
+}
+
+#timer {
+    font-weight: 600;
+    color: #f4b740;
+}
+
+.question-card {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #f4b740;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.question-difficulty {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff3cd;
+    color: #856404;
+    margin-bottom: 15px;
+}
+
+.question-text {
+    color: #1a1f36;
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.question-options {
+    display: grid;
+    gap: 12px;
+}
+
+.option-btn {
+    background: white;
+    border: 2px solid #e2e8f0;
+    padding: 15px;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.option-btn:hover {
+    border-color: #f4b740;
+    background: #fffbf0;
+}
+
+.option-btn.selected {
+    border-color: #1a1f36;
+    background: #1a1f36;
+    color: white;
+}
+
+.option-btn.correct {
+    border-color: #28a745;
+    background: #d4edda;
+    color: #155724;
+}
+
+.option-btn.incorrect {
+    border-color: #dc3545;
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.quiz-feedback {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.quiz-navigation {
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .players-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .vs {
+        transform: rotate(90deg);
+    }
+}
+</style>
+
+<script>
+const questions = {{ questions_json|safe }};
+const matchId = '{{ match.match_id }}';
+let currentQuestionIndex = 0;
+let userAnswers = [];
+let questionTimes = [];
+let startTime = Date.now();
+let questionStartTime = Date.now();
+let timerInterval;
+
+// Start timer
+function startTimer() {
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+function displayQuestion(index) {
+    if (index >= questions.length) {
+        finishQuiz();
+        return;
+    }
+
+    const question = questions[index];
+    questionStartTime = Date.now();
+
+    // Update progress
+    const progress = ((index + 1) / questions.length) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `კითხვა ${index + 1} / ${questions.length}`;
+
+    // Display question
+    document.getElementById('questionDifficulty').textContent = question.difficulty;
+    document.getElementById('questionText').textContent = question.question;
+
+    // Display options
+    const optionsContainer = document.getElementById('questionOptions');
+    optionsContainer.innerHTML = question.options.map(option => `
+        <button class="option-btn" onclick="selectAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>
+    `).join('');
+
+    // Hide feedback and next button
+    document.getElementById('quizFeedback').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(answer) {
+    const question = questions[currentQuestionIndex];
+    const timeTaken = Math.floor((Date.now() - questionStartTime) / 1000);
+
+    // Record answer and time
+    userAnswers.push(answer);
+    questionTimes.push(timeTaken);
+
+    // Mark selected option
+    const options = document.querySelectorAll('.option-btn');
+    options.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === answer) {
+            if (answer === question.correct_answer) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('incorrect');
+            }
+        }
+        if (btn.textContent === question.correct_answer) {
+            btn.classList.add('correct');
+        }
+    });
+
+    // Show feedback
+    const isCorrect = answer === question.correct_answer;
+    const feedbackEl = document.getElementById('quizFeedback');
+    feedbackEl.innerHTML = `
+        <div style="color: ${isCorrect ? '#155724' : '#721c24'}; font-weight: 600; margin-bottom: 10px;">
+            ${isCorrect ? '✅ სწორია!' : '❌ არასწორია'}
+        </div>
+        <p>${question.explanation}</p>
+        <p style="color: #718096; font-size: 14px; margin-top: 10px;">📚 ${question.law_reference}</p>
+    `;
+    feedbackEl.style.display = 'block';
+
+    // Show next button
+    document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    displayQuestion(currentQuestionIndex);
+}
+
+async function finishQuiz() {
+    clearInterval(timerInterval);
+
+    // Calculate score
+    let score = 0;
+    for (let i = 0; i < userAnswers.length; i++) {
+        if (userAnswers[i] === questions[i].correct_answer) {
+            score++;
+        }
+    }
+
+    // Submit results
+    try {
+        const response = await fetch('/api/multiplayer/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                match_id: matchId,
+                answers: userAnswers,
+                times: questionTimes,
+                score: score
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Show loading screen
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('loadingResults').style.display = 'flex';
+
+            // Poll for opponent's completion
+            pollForResults();
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+async function pollForResults() {
+    const checkResults = async () => {
+        try {
+            const response = await fetch(`/api/multiplayer/check-results/${matchId}`);
+            const data = await response.json();
+
+            if (data.both_finished) {
+                // Both players finished, redirect to results
+                window.location.href = `/multiplayer/results/${matchId}`;
+            } else {
+                // Keep polling
+                setTimeout(checkResults, 2000);
+            }
+        } catch (error) {
+            console.error('Polling error:', error);
+            setTimeout(checkResults, 2000);
+        }
+    };
+
+    checkResults();
+}
+
+function copyLink() {
+    const linkInput = document.getElementById('shareLink');
+    linkInput.select();
+    document.execCommand('copy');
+    alert('📋 ლინკი დაკოპირდა!');
+}
+
+// Check if match started (for waiting screen)
+{% if match.status == 'waiting' %}
+function checkMatchStatus() {
+    fetch(`/api/multiplayer/status/${matchId}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'in_progress') {
+                location.reload();
+            } else {
+                setTimeout(checkMatchStatus, 2000);
+            }
+        });
+}
+checkMatchStatus();
+{% endif %}
+
+// Initialize quiz if in progress
+{% if match.status == 'in_progress' %}
+document.addEventListener('DOMContentLoaded', () => {
+    startTimer();
+    displayQuestion(0);
+});
+{% endif %}
+</script>
+{% endblock %}

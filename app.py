@@ -6,6 +6,7 @@ Main Flask Application
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from law_parser import LawParser
+from serverrules_parser import ServerRulesParser
 from gemini_helper import GeminiHelper
 from database import QuizDatabase
 from config import Config
@@ -16,20 +17,28 @@ from datetime import datetime
 import uuid
 import json
 import codecs
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
 # Initialize components
 law_parser = LawParser()
+serverrules_parser = ServerRulesParser()
 gemini_helper = GeminiHelper()
 quiz_db = QuizDatabase()
 user_manager = UserManager()
 
-# Load all laws on startup
+# Load all laws and server rules on startup
 print("[INFO] Loading all law documents...")
 law_parser.load_all_laws()
 print(f"[INFO] Loaded {len(law_parser.laws)} laws successfully")
+
+print("[INFO] Loading server rules...")
+serverrules_parser.load_metadata()
+serverrules_parser.parse_all_rules()
+print(f"[INFO] Loaded {len(serverrules_parser.rules)} server rules successfully")
+
 print(f"[INFO] Quiz questions available: {quiz_db.get_question_count()}")
 
 
@@ -93,14 +102,15 @@ def api_ask():
 
     Request JSON:
     {
-        "question": "Georgian question text"
+        "question": "Georgian question text",
+        "source": "laws" or "rules" (optional, defaults to "laws")
     }
 
     Response JSON:
     {
         "answer": "Georgian answer text",
         "sources": ["Law 1", "Law 2"],
-        "relevant_laws": [{law details}],
+        "relevant_items": [{item details}],
         "error": false
     }
     """
@@ -111,9 +121,10 @@ def api_ask():
 
         data = request.get_json()
         georgian_question = data.get('question', '').strip()
+        source_type = data.get('source', 'laws').lower()  # 'laws' or 'rules'
 
         # Don't print Georgian text to console to avoid encoding errors
-        print(f"[DEBUG] Question received (length: {len(georgian_question)} chars)", flush=True)
+        print(f"[DEBUG] Question received (length: {len(georgian_question)} chars, source: {source_type})", flush=True)
         sys.stdout.flush()
 
         if not georgian_question:
@@ -122,24 +133,56 @@ def api_ask():
                 'message': 'გთხოვთ შეიყვანოთ კითხვა'
             }), 400
 
-        # Use Gemini AI to intelligently select the most relevant laws
-        print(f"[INFO] Using AI to select relevant laws...", flush=True)
-        sys.stdout.flush()
+        # Choose source based on user selection
+        if source_type == 'rules':
+            # Use server rules
+            print(f"[INFO] Using AI to select relevant server rules...", flush=True)
+            sys.stdout.flush()
 
-        relevant_laws = gemini_helper.select_relevant_laws(
-            georgian_question,
-            law_parser.laws,
-            max_laws=Config.MAX_LAWS_TO_SEND
-        )
+            # Convert rules to law-like format for compatibility
+            rules_as_laws = []
+            for rule in serverrules_parser.rules:
+                # Create a simple object with needed attributes
+                class RuleAsLaw:
+                    def __init__(self, rule_data):
+                        self.filename = rule_data['filename']
+                        self.law_name = rule_data['title']
+                        self.content = rule_data['content']
+                        self.georgian_text = rule_data['content']  # Same as content
+                        self.summary_en = rule_data.get('summary_en', '')
+                        self.keywords_en = rule_data.get('keywords_en', '')
 
-        print(f"[INFO] Selected {len(relevant_laws)} relevant laws", flush=True)
+                rules_as_laws.append(RuleAsLaw(rule))
+
+            relevant_items = gemini_helper.select_relevant_laws(
+                georgian_question,
+                rules_as_laws,
+                max_laws=Config.MAX_LAWS_TO_SEND
+            )
+
+            print(f"[INFO] Selected {len(relevant_items)} relevant rules", flush=True)
+        else:
+            # Use laws (default)
+            print(f"[INFO] Using AI to select relevant laws...", flush=True)
+            sys.stdout.flush()
+
+            relevant_items = gemini_helper.select_relevant_laws(
+                georgian_question,
+                law_parser.laws,
+                max_laws=Config.MAX_LAWS_TO_SEND
+            )
+
+            print(f"[INFO] Selected {len(relevant_items)} relevant laws", flush=True)
+
         sys.stdout.flush()
 
         # Step 3: Send to Gemini for answer generation
         print("[DEBUG] Calling Gemini API...", flush=True)
         sys.stdout.flush()
 
-        result = gemini_helper.answer_question(georgian_question, relevant_laws)
+        # Update the context to indicate whether we're answering about laws or rules
+        context_prefix = "სერვერის წესები" if source_type == 'rules' else "საქართველოს კანონები"
+        result = gemini_helper.answer_question(georgian_question, relevant_items, context=context_prefix)
 
         print(f"[DEBUG] Gemini result error={result.get('error')}", flush=True)
         sys.stdout.flush()
@@ -152,24 +195,26 @@ def api_ask():
             'question': georgian_question,
             'answer': result['answer'],
             'sources': result['sources'],
+            'source_type': source_type,
             'timestamp': datetime.now().strftime('%H:%M')
         })
         session.modified = True
 
-        # Prepare response with law details
-        relevant_laws_data = [
+        # Prepare response with item details
+        relevant_items_data = [
             {
-                'filename': law.filename,
-                'law_name': law.law_name,
-                'summary_en': law.summary_en
+                'filename': item.filename,
+                'law_name': item.law_name,
+                'summary_en': item.summary_en
             }
-            for law in relevant_laws
+            for item in relevant_items
         ]
 
         return jsonify({
             'answer': result['answer'],
             'sources': result['sources'],
-            'relevant_laws': relevant_laws_data,
+            'relevant_items': relevant_items_data,
+            'source_type': source_type,
             'error': result.get('error', False)
         })
 
@@ -242,15 +287,22 @@ def quiz():
 def api_quiz_start():
     """Start a new quiz session"""
     try:
+        # Clear any existing quiz session to prevent caching issues
+        if 'current_quiz' in session:
+            session.pop('current_quiz')
+
         data = request.get_json() or {}
         num_questions = data.get('num_questions', 10)
+        source_type = data.get('source_type', 'laws')  # Get source type from request (laws or rules)
 
-        # Get random questions
-        questions = quiz_db.get_random_questions(limit=num_questions)
+        # Get random questions from specified source
+        questions = quiz_db.get_random_questions(limit=num_questions, source_type=source_type)
 
+        print(f"[DEBUG] Quiz start: source_type={source_type}, num_questions={num_questions}")
         print(f"[DEBUG] Got {len(questions)} questions from database")
         if questions:
-            print(f"[DEBUG] First question ID: {questions[0]['id']}, type: {type(questions[0]['id'])}")
+            print(f"[DEBUG] First question ID: {questions[0]['id']}, source: {questions[0].get('source_type', 'N/A')}")
+            print(f"[DEBUG] All question sources: {[q.get('source_type', 'N/A') for q in questions]}")
             print(f"[DEBUG] Question IDs: {[q['id'] for q in questions]}")
 
         if not questions:
@@ -412,17 +464,24 @@ def api_quiz_answer():
 
         print(f"[DEBUG] Quiz progress: {quiz['current_index']}/{total_questions}")
 
-        return jsonify({
+        # Security: Always send explanation for learning, but only send correct_answer when wrong
+        # This prevents users from inspecting element to see answers before submitting
+        response_data = {
             'is_correct': is_correct,
-            'correct_answer': correct_answer,
             'user_answer': user_answer,
-            'explanation': explanation,
-            'law_reference': law_reference,
             'next_question': next_question,
             'is_complete': is_complete,
             'current_index': quiz['current_index'],
-            'total_questions': total_questions
-        })
+            'total_questions': total_questions,
+            'explanation': explanation,  # Always send for learning
+            'law_reference': law_reference  # Always send for context
+        }
+
+        # Only include correct_answer if answered incorrectly (to prevent cheating)
+        if not is_correct:
+            response_data['correct_answer'] = correct_answer
+
+        return jsonify(response_data)
 
     except Exception as e:
         print(f"[ERROR] Quiz answer failed: {str(e)}")
@@ -454,6 +513,9 @@ def user_register():
     if session.get('user_id'):
         return redirect(url_for('user_dashboard'))
 
+    # Get the next URL from query parameter
+    next_url = request.args.get('next')
+
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip()
@@ -475,11 +537,14 @@ def user_register():
 
             if result['success']:
                 flash('ანგარიში წარმატებით შეიქმნა! გთხოვთ შეხვიდეთ', 'success')
+                # Pass next URL to login page
+                if next_url:
+                    return redirect(url_for('user_login', next=next_url))
                 return redirect(url_for('user_login'))
             else:
                 flash(result['error'], 'error')
 
-    return render_template('user/register.html')
+    return render_template('user/register.html', next=next_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -487,6 +552,9 @@ def user_login():
     """User login page"""
     if session.get('user_id'):
         return redirect(url_for('user_dashboard'))
+
+    # Get the next URL from query parameter
+    next_url = request.args.get('next') or request.form.get('next')
 
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -504,11 +572,15 @@ def user_login():
                 session['display_name'] = user['display_name']
 
                 flash(f'Welcome back, {user["display_name"]}!', 'success')
+
+                # Redirect to the original URL if it exists, otherwise dashboard
+                if next_url:
+                    return redirect(next_url)
                 return redirect(url_for('user_dashboard'))
             else:
                 flash(result['error'], 'error')
 
-    return render_template('user/login.html')
+    return render_template('user/login.html', next=next_url)
 
 
 @app.route('/logout')
@@ -851,6 +923,542 @@ def admin_toggle_question(question_id):
         flash(f'Error updating question: {str(e)}', 'error')
 
     return redirect(url_for('admin_questions'))
+
+
+# ============================================================================
+# SHARED QUIZ SYSTEM
+# ============================================================================
+
+@app.route('/admin/quizzes')
+@login_required
+def admin_quizzes():
+    """Admin page to manage shared quizzes"""
+    quizzes = quiz_db.get_all_shared_quizzes()
+
+    # Add question count to each quiz
+    for quiz in quizzes:
+        question_ids = json.loads(quiz['question_ids']) if isinstance(quiz['question_ids'], str) else quiz['question_ids']
+        quiz['question_count'] = len(question_ids)
+
+    total_quizzes = len(quizzes)
+    active_quizzes = len([q for q in quizzes if q['is_active']])
+    total_attempts = sum(q['attempt_count'] for q in quizzes)
+
+    # Count unique users across all quizzes
+    conn = sqlite3.connect(quiz_db.db_path)
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(DISTINCT user_id) FROM shared_quiz_attempts')
+    unique_users = cursor.fetchone()[0]
+    conn.close()
+
+    return render_template('admin/quizzes.html',
+                         quizzes=quizzes,
+                         total_quizzes=total_quizzes,
+                         active_quizzes=active_quizzes,
+                         total_attempts=total_attempts,
+                         unique_users=unique_users)
+
+
+@app.route('/admin/quiz/create')
+@login_required
+def admin_quiz_create():
+    """Admin page to create shared quiz"""
+    return render_template('admin/create_quiz.html')
+
+
+@app.route('/admin/api/questions')
+@login_required
+def admin_api_questions():
+    """API to get questions for quiz creation"""
+    source = request.args.get('source', 'laws')
+    difficulty = request.args.get('difficulty', '')
+
+    conn = sqlite3.connect(quiz_db.db_path)
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT id, question_text, options, correct_answer, explanation,
+               law_reference, category, difficulty, source_type
+        FROM quiz_questions
+        WHERE is_approved = 1 AND source_type = ?
+    '''
+    params = [source]
+
+    if difficulty:
+        query += ' AND difficulty = ?'
+        params.append(difficulty)
+
+    query += ' ORDER BY id DESC LIMIT 500'
+
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    questions = []
+    for row in rows:
+        questions.append({
+            'id': row[0],
+            'question_text': row[1],
+            'options': json.loads(row[2]),
+            'correct_answer': row[3],
+            'explanation': row[4],
+            'law_reference': row[5],
+            'category': row[6],
+            'difficulty': row[7],
+            'source_type': row[8]
+        })
+
+    return jsonify({'questions': questions})
+
+
+@app.route('/admin/api/quiz/create', methods=['POST'])
+@login_required
+def admin_api_quiz_create():
+    """API to create a new shared quiz"""
+    try:
+        data = request.get_json()
+        title = data.get('title')
+        description = data.get('description', '')
+        questions = data.get('questions', [])
+
+        if not title or len(questions) == 0:
+            return jsonify({'success': False, 'message': 'Title and questions are required'}), 400
+
+        # Generate unique quiz ID
+        import uuid
+        quiz_id = str(uuid.uuid4())
+
+        # Separate existing and custom questions
+        existing_question_ids = []
+        custom_questions_to_add = []
+
+        for q in questions:
+            if q.get('is_custom'):
+                # This is a custom question, add it to database first
+                question_data = {
+                    'question': q['question_text'],
+                    'options': q['options'],
+                    'correct_answer': q['correct_answer'],
+                    'explanation': q['explanation'],
+                    'law_reference': q['law_reference'],
+                    'category': q['category'],
+                    'difficulty': q['difficulty'],
+                    'source_type': q['source_type']
+                }
+                new_id = quiz_db.add_question(question_data)
+                existing_question_ids.append(new_id)
+            else:
+                # Existing question from database
+                existing_question_ids.append(q['id'])
+
+        # Create shared quiz
+        quiz_db.create_shared_quiz(
+            quiz_id=quiz_id,
+            title=title,
+            description=description,
+            question_ids=existing_question_ids,
+            admin_username=session.get('username')
+        )
+
+        quiz_url = f"{request.host_url}quiz/shared/{quiz_id}"
+
+        return jsonify({
+            'success': True,
+            'quiz_id': quiz_id,
+            'quiz_url': quiz_url
+        })
+
+    except Exception as e:
+        print(f"[ERROR] Quiz creation failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/api/quiz/toggle', methods=['POST'])
+@login_required
+def admin_api_quiz_toggle():
+    """API to toggle quiz active status"""
+    try:
+        data = request.get_json()
+        quiz_id = data.get('quiz_id')
+
+        quiz_db.toggle_quiz_active(quiz_id)
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/quiz/<quiz_id>/results')
+@login_required
+def admin_quiz_results(quiz_id):
+    """Admin page to view quiz results"""
+    quiz = quiz_db.get_shared_quiz(quiz_id)
+
+    if not quiz:
+        flash('Quiz not found', 'error')
+        return redirect(url_for('admin_quizzes'))
+
+    attempts = quiz_db.get_quiz_attempts(quiz_id)
+
+    # Calculate statistics
+    unique_users = len(set(a['user_id'] for a in attempts))
+    question_count = len(quiz['question_ids'])
+
+    if attempts:
+        total_score = sum(a['score'] for a in attempts)
+        total_possible = sum(a['total_questions'] for a in attempts)
+        average_score = (total_score / total_possible * 100) if total_possible > 0 else 0
+
+        passed = sum(1 for a in attempts if (a['score'] / a['total_questions'] * 100) >= 60)
+        pass_rate = int((passed / len(attempts) * 100)) if attempts else 0
+    else:
+        average_score = 0
+        pass_rate = 0
+
+    return render_template('admin/quiz_results.html',
+                         quiz=quiz,
+                         attempts=attempts,
+                         unique_users=unique_users,
+                         question_count=question_count,
+                         average_score=average_score,
+                         pass_rate=pass_rate)
+
+
+@app.route('/admin/api/quiz/allow-retake', methods=['POST'])
+@login_required
+def admin_api_allow_retake():
+    """API to allow a user to retake a quiz"""
+    try:
+        data = request.get_json()
+        quiz_id = data.get('quiz_id')
+        user_id = data.get('user_id')
+
+        success = quiz_db.allow_retake(quiz_id, user_id)
+
+        if success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'Attempt not found'}), 404
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/api/quiz/attempt/<int:attempt_id>')
+@login_required
+def admin_api_quiz_attempt(attempt_id):
+    """API to get detailed attempt information"""
+    try:
+        conn = sqlite3.connect(quiz_db.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT * FROM shared_quiz_attempts WHERE id = ?
+        ''', (attempt_id,))
+
+        attempt = cursor.fetchone()
+        conn.close()
+
+        if attempt:
+            return jsonify({
+                'success': True,
+                'attempt': dict(attempt)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Attempt not found'}), 404
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/quiz/shared/<quiz_id>')
+def shared_quiz(quiz_id):
+    """Public page to take a shared quiz"""
+    # Check if user is logged in
+    if not session.get('user_id'):
+        flash('გთხოვთ შეხვიდეთ სისტემაში ქვიზის გასავლელად', 'error')
+        return redirect(url_for('user_login', next=request.url))
+
+    quiz = quiz_db.get_shared_quiz(quiz_id)
+
+    if not quiz:
+        flash('ქვიზი ვერ მოიძებნა', 'error')
+        return redirect(url_for('index'))
+
+    if not quiz['is_active']:
+        flash('ეს ქვიზი არ არის აქტიური', 'error')
+        return redirect(url_for('index'))
+
+    # Check if user already attempted this quiz
+    user_attempt = quiz_db.check_user_attempt(quiz_id, session['user_id'])
+
+    if user_attempt['has_attempted'] and not user_attempt['can_retake']:
+        # Don't send score to user - only completion date
+        # Admin can see scores in the admin panel
+        return render_template('quiz_already_attempted.html',
+                             completed_at=user_attempt.get('completed_at', 'N/A'))
+
+    # Get questions for the quiz
+    questions = quiz_db.get_shared_quiz_questions(quiz_id)
+
+    if not questions:
+        flash('კითხვები ვერ მოიძებნა', 'error')
+        return redirect(url_for('index'))
+
+    return render_template('shared_quiz.html',
+                         quiz=quiz,
+                         questions=questions,
+                         questions_json=json.dumps(questions))
+
+
+@app.route('/api/quiz/shared/submit', methods=['POST'])
+@user_login_required
+def api_shared_quiz_submit():
+    """API to submit shared quiz answers"""
+    try:
+        if not session.get('user_id'):
+            return jsonify({'success': False, 'message': 'Not logged in'}), 401
+
+        data = request.get_json()
+        quiz_id = data.get('quiz_id')
+        answers = data.get('answers', [])
+        score = data.get('score', 0)
+        total_questions = data.get('total_questions', 0)
+
+        # Check if user already attempted (double-check)
+        user_attempt = quiz_db.check_user_attempt(quiz_id, session['user_id'])
+        if user_attempt['has_attempted'] and not user_attempt['can_retake']:
+            return jsonify({'success': False, 'message': 'Already attempted'}), 400
+
+        # Record attempt - returns True if successful, False if failed
+        success = quiz_db.record_shared_quiz_attempt(
+            quiz_id=quiz_id,
+            user_id=session['user_id'],
+            score=score,
+            total_questions=total_questions,
+            answers=answers
+        )
+
+        if not success:
+            return jsonify({'success': False, 'message': 'Failed to record attempt. You may not have permission to retake this quiz.'}), 403
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        print(f"[ERROR] Shared quiz submission failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+# ============================================================================
+# MULTIPLAYER ROUTES
+# ============================================================================
+
+# Add custom Jinja filter for JSON parsing
+@app.template_filter('from_json')
+def from_json_filter(s):
+    """Parse JSON string in templates"""
+    try:
+        return json.loads(s)
+    except:
+        return []
+
+@app.route('/multiplayer')
+@user_login_required
+def multiplayer_lobby():
+    """Multiplayer lobby page"""
+    return render_template('multiplayer_lobby.html')
+
+@app.route('/api/multiplayer/create', methods=['POST'])
+@user_login_required
+def api_create_match():
+    """API to create multiplayer match"""
+    try:
+        data = request.get_json()
+        num_questions = data.get('num_questions', 10)
+        difficulty = data.get('difficulty')
+        source_type = data.get('source_type', 'laws')
+
+        match_id = quiz_db.create_multiplayer_match(
+            creator_id=session['user_id'],
+            num_questions=num_questions,
+            difficulty=difficulty,
+            source_type=source_type
+        )
+
+        return jsonify({'success': True, 'match_id': match_id})
+
+    except Exception as e:
+        print(f"[ERROR] Create match failed: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/multiplayer/join', methods=['POST'])
+@user_login_required
+def api_join_match():
+    """API to join multiplayer match"""
+    try:
+        data = request.get_json()
+        match_id = data.get('match_id')
+
+        result = quiz_db.join_multiplayer_match(match_id, session['user_id'])
+        return jsonify(result)
+
+    except Exception as e:
+        print(f"[ERROR] Join match failed: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/multiplayer/waiting')
+@user_login_required
+def api_waiting_matches():
+    """API to get waiting matches"""
+    try:
+        matches = quiz_db.get_waiting_matches()
+        return jsonify({'matches': matches})
+
+    except Exception as e:
+        print(f"[ERROR] Get waiting matches failed: {str(e)}")
+        return jsonify({'matches': []}), 500
+
+@app.route('/api/multiplayer/my-matches')
+@user_login_required
+def api_my_matches():
+    """API to get user's recent matches"""
+    try:
+        matches = quiz_db.get_user_matches(session['user_id'])
+        return jsonify({'matches': matches})
+
+    except Exception as e:
+        print(f"[ERROR] Get user matches failed: {str(e)}")
+        return jsonify({'matches': []}), 500
+
+@app.route('/multiplayer/match/<match_id>')
+@user_login_required
+def multiplayer_match(match_id):
+    """Multiplayer match page"""
+    match = quiz_db.get_multiplayer_match(match_id)
+
+    if not match:
+        flash('მატჩი ვერ მოიძებნა', 'error')
+        return redirect(url_for('multiplayer_lobby'))
+
+    # Check if user is part of this match
+    if match['creator_id'] != session['user_id'] and match.get('opponent_id') != session['user_id']:
+        # If waiting and not creator, try to join
+        if match['status'] == 'waiting':
+            result = quiz_db.join_multiplayer_match(match_id, session['user_id'])
+            if not result['success']:
+                flash(result['message'], 'error')
+                return redirect(url_for('multiplayer_lobby'))
+            match = quiz_db.get_multiplayer_match(match_id)
+        else:
+            flash('თქვენ არ ხართ ამ მატჩის წევრი', 'error')
+            return redirect(url_for('multiplayer_lobby'))
+
+    # Get questions
+    questions = quiz_db.get_match_questions(match_id)
+
+    # Get user info
+    current_user = user_manager.get_user_by_id(session['user_id'])
+
+    # Determine opponent (the other player)
+    opponent = None
+    if match.get('opponent_id'):
+        # If current user is creator, opponent is the opponent_id
+        # If current user is opponent, opponent is the creator
+        if session['user_id'] == match['creator_id']:
+            opponent = user_manager.get_user_by_id(match['opponent_id'])
+        else:
+            opponent = user_manager.get_user_by_id(match['creator_id'])
+
+    share_url = request.host_url + f"multiplayer/match/{match_id}"
+
+    return render_template('multiplayer_match.html',
+                         match=match,
+                         questions=questions,
+                         questions_json=json.dumps(questions),
+                         current_user_name=current_user['display_name'],
+                         opponent_name=opponent['display_name'] if opponent else None,
+                         share_url=share_url)
+
+@app.route('/api/multiplayer/status/<match_id>')
+@user_login_required
+def api_match_status(match_id):
+    """API to check match status"""
+    try:
+        match = quiz_db.get_multiplayer_match(match_id)
+        if not match:
+            return jsonify({'error': 'Match not found'}), 404
+
+        return jsonify({'status': match['status']})
+
+    except Exception as e:
+        print(f"[ERROR] Get match status failed: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/multiplayer/submit', methods=['POST'])
+@user_login_required
+def api_submit_multiplayer():
+    """API to submit multiplayer results"""
+    try:
+        data = request.get_json()
+        match_id = data.get('match_id')
+        answers = data.get('answers', [])
+        times = data.get('times', [])
+        score = data.get('score', 0)
+
+        quiz_db.submit_multiplayer_result(match_id, session['user_id'], answers, times, score)
+
+        return jsonify({'success': True})
+
+    except Exception as e:
+        print(f"[ERROR] Submit multiplayer result failed: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/multiplayer/check-results/<match_id>')
+@user_login_required
+def api_check_results(match_id):
+    """API to check if both players finished"""
+    try:
+        match = quiz_db.get_multiplayer_match(match_id)
+        if not match:
+            return jsonify({'error': 'Match not found'}), 404
+
+        both_finished = match['status'] == 'completed'
+
+        return jsonify({'both_finished': both_finished})
+
+    except Exception as e:
+        print(f"[ERROR] Check results failed: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/multiplayer/results/<match_id>')
+@user_login_required
+def multiplayer_results(match_id):
+    """Multiplayer results page"""
+    match = quiz_db.get_multiplayer_match(match_id)
+
+    if not match:
+        flash('მატჩი ვერ მოიძებნა', 'error')
+        return redirect(url_for('multiplayer_lobby'))
+
+    # Check if user is part of this match
+    if match['creator_id'] != session['user_id'] and match.get('opponent_id') != session['user_id']:
+        flash('თქვენ არ ხართ ამ მატჩის წევრი', 'error')
+        return redirect(url_for('multiplayer_lobby'))
+
+    # Get results
+    results = quiz_db.get_multiplayer_results(match_id)
+    questions = quiz_db.get_match_questions(match_id)
+
+    return render_template('multiplayer_results.html',
+                         match=match,
+                         results=results,
+                         questions=questions)
 
 
 # ============================================================================

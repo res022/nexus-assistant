@@ -13,22 +13,9 @@
     </div>
 
     <div class="law-detail-content">
-        <div class="english-summary">
-            <h3>Summary (English):</h3>
-            <p>{{ law.summary_en }}</p>
-            <div class="keywords">
-                {% for kw in law.keywords_en.split(',') %}
-                <span class="keyword-tag">{{ kw.strip() }}</span>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="georgian-text">
-            <h3>სრული ტექსტი (ქართული):</h3>
-            <div class="law-text-content">
-                {{ law.georgian_text | replace('
+        <div class="law-text-content">
+            {{ law.georgian_text | replace('
 ', '<br>') | safe }}
-            </div>
         </div>
     </div>
 </div>

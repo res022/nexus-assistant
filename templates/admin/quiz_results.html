@@ -1,0 +1,352 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ quiz.title }} - შედეგები{% endblock %}
+
+{% block content %}
+<div class="results-header">
+    <div>
+        <a href="/admin/quizzes" class="back-link">← ქვიზების სია</a>
+        <h2>📊 {{ quiz.title }}</h2>
+        <p>{{ quiz.description }}</p>
+        <div class="quiz-info-badges">
+            <span class="info-badge">🔗 {{ quiz.quiz_id[:12] }}...</span>
+            <span class="info-badge">❓ {{ question_count }} კითხვა</span>
+            <span class="info-badge">📅 {{ quiz.created_at.split('.')[0] if '.' in quiz.created_at else quiz.created_at }}</span>
+        </div>
+    </div>
+    <button class="btn btn-secondary" onclick="copyQuizLink()">🔗 ბმულის კოპირება</button>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ attempts|length }}</div>
+        <div class="stat-label">მცდელობები</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ unique_users }}</div>
+        <div class="stat-label">მომხმარებლები</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ "%.1f"|format(average_score) }}%</div>
+        <div class="stat-label">საშუალო ქულა</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ pass_rate }}%</div>
+        <div class="stat-label">წარმატების %</div>
+    </div>
+</div>
+
+<div class="attempts-container">
+    <h3>მომხმარებლების მცდელობები</h3>
+
+    {% if attempts %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>მომხმარებელი</th>
+                <th>ქულა</th>
+                <th>პროცენტი</th>
+                <th>თარიღი</th>
+                <th>დეტალები</th>
+                <th>მოქმედებები</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in attempts %}
+            <tr>
+                <td>
+                    <strong>{{ attempt.display_name or attempt.username }}</strong>
+                    <br><small style="color: #718096;">@{{ attempt.username }}</small>
+                </td>
+                <td>
+                    <strong style="font-size: 18px;">{{ attempt.score }}</strong> / {{ attempt.total_questions }}
+                </td>
+                <td>
+                    <span class="score-badge score-{{ 'high' if (attempt.score / attempt.total_questions * 100) >= 80 else ('medium' if (attempt.score / attempt.total_questions * 100) >= 60 else 'low') }}">
+                        {{ "%.1f"|format(attempt.score / attempt.total_questions * 100) }}%
+                    </span>
+                </td>
+                <td>{{ attempt.completed_at.split('.')[0] if '.' in attempt.completed_at else attempt.completed_at }}</td>
+                <td>
+                    <button class="btn-action" onclick="viewDetails({{ attempt.id }})">
+                        📋 ნახვა
+                    </button>
+                </td>
+                <td>
+                    {% if attempt.can_retake %}
+                    <span class="status-badge status-active">შეუძლია თავიდან</span>
+                    {% else %}
+                    <button class="btn btn-secondary btn-sm"
+                            onclick="allowRetake({{ attempt.user_id }}, '{{ quiz.quiz_id }}')">
+                        🔄 თავიდან ნებართვა
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <h3>მცდელობები არ არის</h3>
+        <p>ჯერ არცერთმა მომხმარებელმა არ გაიარა ეს ქვიზი</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Details Modal -->
+<div id="detailsModal" class="modal" style="display:none;">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3>დეტალური პასუხები</h3>
+            <button class="modal-close" onclick="closeDetailsModal()">×</button>
+        </div>
+        <div id="detailsContent" class="modal-body">
+            <!-- Details will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<style>
+.results-header {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.results-header h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 10px;
+}
+
+.results-header p {
+    color: #718096;
+    margin-bottom: 15px;
+}
+
+.quiz-info-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.info-badge {
+    background: #f4b740;
+    color: #1a1f36;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.attempts-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 30px;
+}
+
+.attempts-container h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.score-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.score-high {
+    background: #d4edda;
+    color: #155724;
+}
+
+.score-medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.score-low {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.modal-large {
+    max-width: 800px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.modal-header h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #1a1f36;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #718096;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+}
+
+.modal-close:hover {
+    color: #1a1f36;
+}
+
+.modal-body {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.answer-item {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #f4b740;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.answer-item.correct {
+    border-left-color: #28a745;
+    background: #f0f9f4;
+}
+
+.answer-item.incorrect {
+    border-left-color: #dc3545;
+    background: #fef5f5;
+}
+
+.answer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.question-number {
+    font-weight: 700;
+    color: #1a1f36;
+}
+
+.answer-text {
+    margin: 10px 0;
+    color: #2d3748;
+}
+
+.user-answer {
+    margin-top: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+}
+</style>
+
+<script>
+function copyQuizLink() {
+    const url = window.location.origin + '/quiz/shared/{{ quiz.quiz_id }}';
+    navigator.clipboard.writeText(url).then(() => {
+        alert('📋 ბმული დაკოპირდა: ' + url);
+    });
+}
+
+async function allowRetake(userId, quizId) {
+    if (!confirm('დარწმუნებული ხართ რომ გსურთ ამ მომხმარებელს მისცეთ ნებართვა თავიდან გაიაროს ქვიზი?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/admin/api/quiz/allow-retake', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                quiz_id: quizId,
+                user_id: userId
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('✅ მომხმარებელს ახლა შეუძლია თავიდან გაიაროს ქვიზი');
+            location.reload();
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+async function viewDetails(attemptId) {
+    try {
+        const response = await fetch('/admin/api/quiz/attempt/' + attemptId);
+        const data = await response.json();
+
+        if (data.success) {
+            displayDetails(data.attempt);
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+function displayDetails(attempt) {
+    const answers = JSON.parse(attempt.answers_json);
+    let html = '';
+
+    answers.forEach((answer, index) => {
+        const isCorrect = answer.is_correct;
+        html += `
+            <div class="answer-item ${isCorrect ? 'correct' : 'incorrect'}">
+                <div class="answer-header">
+                    <span class="question-number">კითხვა ${index + 1}</span>
+                    <span>${isCorrect ? '✅ სწორია' : '❌ არასწორია'}</span>
+                </div>
+                <div class="answer-text">
+                    <strong>კითხვა:</strong> ${answer.question}
+                </div>
+                <div class="user-answer">
+                    <strong>მომხმარებლის პასუხი:</strong> ${answer.user_answer}
+                    ${!isCorrect ? `<br><strong style="color: #28a745;">სწორი პასუხი:</strong> ${answer.correct_answer}` : ''}
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById('detailsContent').innerHTML = html;
+    document.getElementById('detailsModal').style.display = 'flex';
+}
+
+function closeDetailsModal() {
+    document.getElementById('detailsModal').style.display = 'none';
+}
+</script>
+{% endblock %}

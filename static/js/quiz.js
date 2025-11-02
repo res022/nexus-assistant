@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startQuizBtn = document.getElementById('startQuizBtn');
     const retakeQuizBtn = document.getElementById('retakeQuizBtn');
     const numQuestionsSelect = document.getElementById('numQuestions');
+    const quizSourceSelect = document.getElementById('quizSource');
 
     let currentQuiz = null;
     let currentQuestionIndex = 0;
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start Quiz
     startQuizBtn.addEventListener('click', async function() {
         const numQuestions = parseInt(numQuestionsSelect.value);
+        const sourceType = quizSourceSelect.value;
 
         try {
             startQuizBtn.disabled = true;
@@ -23,7 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('/api/quiz/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ num_questions: numQuestions })
+                body: JSON.stringify({
+                    num_questions: numQuestions,
+                    source_type: sourceType
+                })
             });
 
             const data = await response.json();
@@ -65,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('progressText').textContent = `კითხვა ${currentQuestionIndex} / ${totalQuestions}`;
 
         // Update question
-        document.getElementById('questionCategory').textContent = question.category;
         document.getElementById('questionDifficulty').textContent = getDifficultyBadge(question.difficulty);
         document.getElementById('questionText').textContent = question.question;
 
@@ -132,18 +136,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const feedback = document.getElementById('quizFeedback');
         const isCorrect = data.is_correct;
 
-        feedback.innerHTML = `
+        // Build feedback HTML - always show explanation for learning
+        // Only show correct_answer if user got it wrong (to prevent cheating)
+        let feedbackHTML = `
             <div class="feedback-${isCorrect ? 'correct' : 'wrong'}">
                 <div class="feedback-icon">${isCorrect ? '✅' : '❌'}</div>
                 <div class="feedback-title">${isCorrect ? 'სწორია!' : 'არასწორია'}</div>
-                ${!isCorrect ? `<div class="feedback-answer">სწორი პასუხი: <strong>${data.correct_answer}</strong></div>` : ''}
-                <div class="feedback-explanation">
-                    <strong>${data.law_reference}</strong><br>
-                    ${data.explanation}
-                </div>
-            </div>
+                ${!isCorrect && data.correct_answer ? `<div class="feedback-answer">სწორი პასუხი: <strong>${data.correct_answer}</strong></div>` : ''}
         `;
 
+        // Always show explanation and law reference for learning (whether correct or wrong)
+        if (data.law_reference || data.explanation) {
+            feedbackHTML += `
+                <div class="feedback-explanation">
+                    ${data.law_reference ? `<strong>${data.law_reference}</strong><br>` : ''}
+                    ${data.explanation || ''}
+                </div>
+            `;
+        }
+
+        feedbackHTML += `</div>`;
+        feedback.innerHTML = feedbackHTML;
         feedback.style.display = 'block';
 
         // Show next button at top with appropriate text
@@ -152,12 +165,15 @@ document.addEventListener('DOMContentLoaded', function() {
         nextBtn.textContent = nextButtonText;
         document.getElementById('nextButtonContainer').style.display = 'block';
 
-        // Highlight correct/wrong option
+        // Highlight correct/wrong option (only highlight wrong answer since we don't know correct one)
         const optionBtns = document.querySelectorAll('.option-btn');
         optionBtns.forEach(btn => {
-            if (btn.textContent === data.correct_answer) {
+            // Only highlight correct answer if we have it (when answer was wrong)
+            if (data.correct_answer && btn.textContent === data.correct_answer) {
                 btn.classList.add('option-correct');
-            } else if (btn.textContent === data.user_answer && !isCorrect) {
+            }
+            // Always highlight wrong answer if answer was incorrect
+            if (btn.textContent === data.user_answer && !isCorrect) {
                 btn.classList.add('option-wrong');
             }
         });

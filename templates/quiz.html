@@ -38,13 +38,23 @@
                 <p>AI-გენერირებული კითხვები რეალურ კანონებიდან</p>
 
                 <div class="quiz-options">
-                    <label for="numQuestions">კითხვების რაოდენობა:</label>
-                    <select id="numQuestions">
-                        <option value="5">5 კითხვა (სწრაფი)</option>
-                        <option value="10" selected>10 კითხვა (სტანდარტული)</option>
-                        <option value="15">15 კითხვა (გრძელი)</option>
-                        <option value="20">20 კითხვა (სრული)</option>
-                    </select>
+                    <div class="quiz-option-group">
+                        <label for="quizSource">ტესტის წყარო:</label>
+                        <select id="quizSource">
+                            <option value="laws">📜 კანონები (Laws)</option>
+                            <option value="rules">🎮 წესები (Server Rules)</option>
+                        </select>
+                    </div>
+
+                    <div class="quiz-option-group">
+                        <label for="numQuestions">კითხვების რაოდენობა:</label>
+                        <select id="numQuestions">
+                            <option value="5">5 კითხვა (სწრაფი)</option>
+                            <option value="10" selected>10 კითხვა (სტანდარტული)</option>
+                            <option value="15">15 კითხვა (გრძელი)</option>
+                            <option value="20">20 კითხვა (სრული)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button class="btn btn-primary btn-large" id="startQuizBtn">
@@ -68,7 +78,6 @@
             </div>
 
             <div class="question-card" id="questionCard">
-                <div class="question-category" id="questionCategory"></div>
                 <div class="question-difficulty" id="questionDifficulty"></div>
                 <h3 class="question-text" id="questionText"></h3>
 
@@ -97,23 +106,6 @@
         </div>
     </div>
 
-    {% if stats.by_category %}
-    <!-- Category Performance -->
-    <div class="category-performance">
-        <h3>შესრულება კატეგორიების მიხედვით</h3>
-        <div class="category-grid">
-            {% for category, cat_stats in stats.by_category.items() %}
-            <div class="category-card">
-                <div class="category-name">{{ category }}</div>
-                <div class="category-stats">
-                    <span>{{ cat_stats.correct }} / {{ cat_stats.total }}</span>
-                    <span class="category-accuracy">{{ "%.0f"|format(cat_stats.accuracy) }}%</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
 

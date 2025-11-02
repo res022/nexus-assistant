@@ -1,0 +1,26 @@
+Graffiti War არის IC ღონისძიება, რომელიც ტარდება ყოველდღე. ღონისძიების არსი არის გრაფიტის ხელახლა დახატვა, რომელთაგან თითოეულს ფული ეძლევა. ზოგადი წესები:​
+
+
+
+1.1 ღონისძიების დრო:
+
+10:00 - 11:00;
+
+16:00 - 17:00;
+
+21:00 - 22:00;
+
+1.2 ღონისძიებაზე მოქმედებს ყველა ზოგადი წესი
+1.3 'მხოლოდ ბანდებს შეუძლიათ ღონისძიებაში მონაწილეობის მიღება. | სპეც.ციხე 120 წუთი.
+1.4 მონაწილე წევრებს უნდა ეცვათ ბანდის ფერის მიხედვით | სპეც.ციხე 120 წუთი აკრძალვები.
+1.5 აკრძალულია მოკავშირეობა (საიუზი). | სიტყვიერი გაფრთხილება ლიდერს.
+1.6 აკრძალულია გრაფიტი ომის გამიზნულად წაგება. | სპეც.ციხე 180 წუთი ან სიტყვიერი გაფრთხილება ლიდერს.
+
+1.7 აკრძალულია RK
+დაზუსტება: სადაც მოკვდით იქ არ შეგიძლიათ დაბრუნება
+1.8 აკრძალულია ტრანსპორტით გრაფიტის გამიზნულად დამალვა. | სპეც.ციხე 120 წუთი.
+
+---METADATA---
+SUMMARY_EN: Rules for gang graffiti battles: spray mechanics (how to spray graffiti), territory marking (where can spray, gang zones), graffiti wars (competing for spray count), scoring system (points per spray), valid spray locations (walls, buildings, not random), graffiti removal (opposing gangs can remove), time limits for wars, rewards for winning, cleanup requirements, prohibited locations (no spray in green zones).
+
+KEYWORDS_EN: graffiti, graffiti war, spray, tagging, gang spray, territory marking, mechanics, spray locations, walls, graffiti battle, scoring, points, spray count, removal, cleanup, time limit, rewards, prohibited spray, green zone spray, gang graffiti

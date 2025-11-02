@@ -1,0 +1,134 @@
+{
+  "zogadi": {
+    "english_title": "General Server Rules",
+    "summary": "Core server rules covering ALL roleplay fundamentals: account management (no multi-accounting, no account selling, one business per account), gameplay rules (no cheating, no provoking admins, mask required for crimes), RP gameplay with /me /do /try commands, communication rules (Georgian language only in RP, no caps, no insults), and COMPLETE DEFINITIONS of all RP terms: PG (PowerGaming - unrealistic character abilities, no fear for life), MG (MetaGaming - using OOC info in IC), DM (Death Match - killing without IC reason), Fear RP (must show fear when life threatened), RK (Revenge Kill), SK (Spawn Kill), NonRP Action, RP AVOID, LEAVE RP, BU (BugUse), TK (Team Kill), LOOT RP, AR (Amoral Rule), PA (Provocative Actions), NRD (NonRp Drive), DB (Drive By), CR (Car Ramming), SP (SoundPad). Penalties range from spec jail 60-300 min, MUTE 30-300 min, to BAN 3-90 days or permanent.",
+    "category": "Core Rules",
+    "tags": ["general rules", "basics", "roleplay definitions", "PG", "PowerGaming", "MG", "MetaGaming", "DM", "Death Match", "Fear RP", "fear roleplay", "RK", "Revenge Kill", "SK", "Spawn Kill", "NonRP Action", "RP AVOID", "LEAVE RP", "BugUse", "BU", "TK", "Team Kill", "LOOT RP", "AR", "Amoral Rule", "PA", "Provocative Actions", "NRD", "NonRp Drive", "DB", "Drive By", "CR", "Car Ramming", "SP", "SoundPad", "account rules", "multi-accounting", "business ownership", "mask requirement", "crime rules", "/me command", "/do command", "/try command", "communication", "Georgian language", "insults ban", "caps lock", "OOC", "IC", "spec jail", "BAN penalties", "MUTE", "what is PG", "what is DM", "what is MG", "what is Fear RP", "RP term definitions", "roleplay abbreviations", "server penalties", "punishment list"]
+  },
+  "administraciis": {
+    "english_title": "Administration Rules",
+    "summary": "Rules for server administrators and staff: admin cannot play on other RP servers, must maintain 4-hour daily online minimum, admin is always OOC character (not IC), uses two-warning system (strict/verbal), must give penalties according to server rules based on violation severity, cannot interfere with RP process, required to help players, control game economy, review forum complaints, supervise organizations, know all server rules thoroughly, cannot abuse admin powers, must save proof of punishments for 3 days, cannot spawn faction vehicles without reason, cannot delete cars without cause, cannot give skins without reason (dog/cat/deer skins for events/videos only), cannot remove/change other admin's punishment without head admin approval, cannot punish based on private DM/Discord/Facebook evidence (only from admin video recording or forum complaints except project team/head admin), admin caught using bugs/selling currency/transferring property faces criminal liability.",
+    "category": "Administration",
+    "tags": ["admin", "administration", "staff", "moderator", "admin rules", "admin duties", "admin restrictions", "online requirement", "4 hour minimum", "warning system", "strict warning", "verbal warning", "admin punishment", "admin abuse", "OOC character", "RP interference", "player help", "economy control", "forum complaints", "organization supervision", "faction vehicles", "car deletion", "skin spawning", "punishment removal", "evidence requirements", "video proof", "forum evidence", "Discord evidence", "admin misconduct", "bug abuse by admin", "admin responsibility"]
+  },
+  "saxelmwifoorganizaciis": {
+    "english_title": "Government Organization Rules",
+    "summary": "Rules for all government/state factions (LSPD, FIB, USSS, NG, EMS, Weazel News): hiring procedures (interview, training, probation period), patrol requirements (minimum 2 officers, regular patrols mandatory), arrest protocols (Miranda rights, handcuffing procedure, transport to police station), search and seizure (warrant required except exigent circumstances, proper documentation), jurisdiction (LSPD city, FIB federal crimes, USSS protection, NG military), equipment usage (weapons, vehicles, radios), inter-agency cooperation, corruption prohibition, use of force policy (proportional response), evidence handling, court testimony requirements. Special: NonRP COP punishment 120-360 min spec jail + warning for unrealistic cop behavior or breaking state structure rules.",
+    "category": "Factions",
+    "tags": ["government", "state", "police", "LSPD", "FIB", "USSS", "NG", "National Guard", "EMS", "Weazel News", "law enforcement", "cop rules", "arrest", "Miranda rights", "handcuffing", "search warrant", "seizure", "patrol", "jurisdiction", "city police", "federal crimes", "protection detail", "military", "weapons", "vehicles", "radios", "cooperation", "corruption", "use of force", "evidence", "court testimony", "NonRP COP", "cop hiring", "training", "probation", "realistic cop RP"]
+  },
+  "kriminaluriorganizaciebis": {
+    "english_title": "Criminal Organization Rules",
+    "summary": "Rules for criminal factions (gangs, mafia): territory control and defense, robbery limitations (locations, victim count, ransom amounts), kidnapping rules (max duration, hostage safety, negotiation), gang wars (declaration required, war zones, time limits), turf wars and graffiti battles, recruitment (minimum requirements, induction process), criminal RP guidelines (realistic crime, consequences, no random violence), mask requirement for ALL crimes (except in ghetto - no mask needed in ghetto), drug dealing, weapons trafficking, money laundering, faction storage (materials for org use only, cannot store in house/car/bag, cannot gift, cannot use for family personal purposes - BAN 3-31 days + inventory wipe if violated), faction arsenal storage allowed in inventory if used later for organization interests.",
+    "category": "Factions",
+    "tags": ["criminal", "crime", "gangs", "gang", "mafia", "criminal organization", "territory", "turf control", "robbery", "kidnapping", "hostage", "ransom", "gang war", "turf war", "graffiti", "spray", "recruitment", "criminal RP", "mask requirement", "ghetto mask rule", "no mask in ghetto", "drugs", "weapons trafficking", "money laundering", "faction storage", "materials", "arsenal", "faction inventory", "storage rules", "cannot store in house", "cannot gift faction items", "family use prohibition", "inventory wipe", "realistic crime", "violence rules"]
+  },
+  "teritoriebzeomi": {
+    "english_title": "Territory War Rules",
+    "summary": "Rules for territory capture and turf wars: attack scheduling (must declare war 24h advance), defense requirements (minimum defenders present), war duration (maximum time limits), capture mechanics (point control, flag system), valid attack reasons, peace treaty rules, truce agreements, territory benefits (bonuses, resources), war zones (fighting areas, safe zones), alliance restrictions, mercenary rules, war declaration format, victory conditions, penalties for rule breaking during wars.",
+    "category": "Events",
+    "tags": ["territory", "turf", "war", "capture", "attack", "defense", "gang war", "turf war", "declaration", "scheduling", "24 hour notice", "defenders", "duration", "time limit", "capture points", "flags", "attack reasons", "peace treaty", "truce", "benefits", "bonuses", "resources", "war zones", "fighting areas", "safe zones", "alliances", "mercenary", "victory", "penalties"]
+  },
+  "reidis": {
+    "english_title": "Raid Rules",
+    "summary": "Rules for raiding houses, businesses, faction bases: raid initiation (valid reasons required, cannot raid without cause), police involvement (how many cops needed online), loot rules (what can be taken, limits), raid duration (time limits, cannot camp indefinitely), valid targets (houses, businesses, gang bases), raid announcement requirements, defender rights, attacker limitations, hostage rules during raid, evidence collection, property damage limits.",
+    "category": "Events",
+    "tags": ["raid", "raiding", "house raid", "business raid", "base raid", "attack", "loot", "police", "cops online", "raid reason", "valid target", "duration", "time limit", "camping", "announcement", "defender", "attacker", "hostage in raid", "evidence", "property damage"]
+  },
+  "dzarcvagataceba": {
+    "english_title": "Robbery & Kidnapping Rules",
+    "summary": "Rules for robbing players, stores, and kidnapping: victim limits (how many victims per robbers), robbery locations (where allowed, green zones prohibited), ransom guidelines (maximum amounts, payment methods), hostage safety (cannot harm without reason), prohibited targets (EMS on duty in uniform except PG, Weazel News on duty, bus drivers, taxi drivers during work hours - spec jail 180 min + warning for crime against them), time limits (max kidnapping duration), negotiation rules, police response protocol, release requirements, store robbery mechanics, ATM robbery rules.",
+    "category": "Crime",
+    "tags": ["robbery", "rob", "kidnapping", "kidnap", "hostage", "ransom", "victim", "victim limit", "robber count", "locations", "green zone", "prohibited targets", "EMS immunity", "Weazel News immunity", "bus driver immunity", "taxi immunity", "cannot rob EMS", "cannot rob news", "store robbery", "ATM", "negotiation", "police response", "release", "max duration", "payment", "safety"]
+  },
+  "lideriswesebi": {
+    "english_title": "Leader Rules",
+    "summary": "Rules for faction leaders: recruitment responsibilities (interview process, background checks, training new members), member management (rank system, promotions, demotions, kicks), faction funds management (deposits, withdrawals, budgeting, cannot embezzle), storage management (arsenal, materials, supplies), activity requirements (leader must be active, delegation when absent), faction rules creation (internal regulations, punishment system), meeting requirements (regular meetings with members), reporting to administration (faction reports, incident reports), leader replacement procedure (resignation, removal for inactivity), cannot kick member without IC reason (if you recruit someone you're responsible - cannot kick without IC cause: warning for violation), rank editing (leader can ONLY edit permissions, CANNOT edit rank names or locations - warning for violation). Leader can be fired for not following General Prosecutor orders (Prosecutor rules 14.1).",
+    "category": "Leadership",
+    "tags": ["leader", "leadership", "faction leader", "gang leader", "mafia leader", "recruitment", "hiring", "interview", "member management", "ranks", "promotions", "demotions", "kick", "cannot kick without IC reason", "faction funds", "budget", "embezzlement", "storage", "arsenal management", "materials", "activity requirement", "delegation", "internal rules", "meetings", "reports", "admin reports", "resignation", "removal", "inactivity", "rank editing", "permissions", "cannot edit rank names", "cannot edit locations", "faction responsibility"]
+  },
+  "ojaxis": {
+    "english_title": "Family Rules",
+    "summary": "Rules for family system: family creation requirements (minimum members, application process), member limits (maximum family size), family houses (purchase, upgrades, permissions), family business (shared income, expenses), leveling system (family XP, levels, perks), rank structure (family hierarchy, promotions), family activities (events, missions, bonuses), family storage (shared vault), inheritance rules, family wars (inter-family conflicts), alliance system, family reputation, benefits per level.",
+    "category": "Social",
+    "tags": ["family", "clan", "group", "family system", "family creation", "member limit", "family house", "upgrades", "family business", "income sharing", "leveling", "family XP", "levels", "perks", "ranks", "hierarchy", "family events", "missions", "storage", "vault", "inheritance", "family war", "alliance", "reputation", "benefits"]
+  },
+  "satamashozonebi": {
+    "english_title": "Game Zones (Green/Red Zones)",
+    "summary": "Defines safe zones (green zones) where crime is FORBIDDEN and red zones with special rules: Green Zones (no crime allowed, no DM, no robbery, no kidnapping): hospital, city hall, DMV, all shops/stores, gas stations, parking lots, job centers, spawn points. DM in Green Zone: spec jail 240 min + warning. Red Zones (special rules apply): gang territories, military base Fort Zancudo, drug lab areas, warehouse district. Specific locations and their restrictions listed.",
+    "category": "Locations",
+    "tags": ["zones", "green zone", "red zone", "safe zone", "GZ", "no crime zone", "DM in GZ", "hospital", "city hall", "DMV", "shops", "stores", "gas station", "parking", "job center", "spawn", "spawn point", "gang territory", "Fort Zancudo", "military base", "drug lab", "warehouse", "location restrictions", "where crime forbidden", "safe areas"]
+  },
+  "fortzacundo": {
+    "english_title": "Fort Zancudo Rules",
+    "summary": "Special rules for military base (Fort Zancudo): entry requirements (military personnel only, NG faction), restricted areas (no trespassing without permission), combat rules inside base, military vehicle access (who can use military vehicles), response to trespassers (warnings, arrest, force), military exercises (scheduled events), security protocols, airspace restrictions (no fly zones), checkpoint procedures.",
+    "category": "Locations",
+    "tags": ["Fort Zancudo", "military", "military base", "army base", "NG", "National Guard", "restricted area", "trespassing", "entry", "military vehicles", "military cars", "military helicopters", "tanks", "combat", "trespassers", "arrest", "force", "exercises", "security", "airspace", "no fly zone", "checkpoint"]
+  },
+  "rpstreli": {
+    "english_title": "RP Shooting Rules",
+    "summary": "Rules for gunfights and combat RP: weapon usage (when can shoot, valid reasons), healing during combat (forbidden to heal/revive during active shooting - spec jail 120 min for reviving/robbing during shootout), shooting from vehicles (when allowed, restrictions), valid reasons to shoot (IC justification required), combat zones, crossfire rules, surrender option (must give chance to surrender before shooting), shooting at cops (additional rules), drive-by rules, suppressive fire limitations.",
+    "category": "Combat",
+    "tags": ["shooting", "combat", "gunfight", "weapons", "guns", "shoot", "fight", "healing in combat", "revive during fight", "rob during fight", "cannot revive in shootout", "cannot rob in shootout", "shooting from car", "drive by", "DB", "valid reason", "IC reason", "combat zone", "crossfire", "surrender", "shooting cops", "police shootout", "suppressive fire"]
+  },
+  "rpgamodzieba": {
+    "english_title": "RP Search Rules",
+    "summary": "Rules for searching players, vehicles, properties: search commands (/search, /frisk), legal basis for search (warrant, probable cause, consent), police search procedures (proper RP required, cannot just /search without RP), evidence collection during search, search documentation (must record what found), property searches (house, car, business), illegal items (contraband, weapons, drugs), search limitations (what can/cannot search), body search vs vehicle search, witness rights during search.",
+    "category": "Procedures",
+    "tags": ["search", "frisk", "pat down", "/search command", "warrant", "probable cause", "consent", "police search", "cop search", "search procedure", "search RP", "evidence", "documentation", "property search", "house search", "car search", "vehicle search", "business search", "contraband", "weapons found", "drugs found", "illegal items", "body search", "witness rights"]
+  },
+  "poligrafis": {
+    "english_title": "Polygraph (Lie Detector) Rules",
+    "summary": "Rules for using polygraph/lie detector in RP: when polygraph can be used (investigation, interrogation), who can administer polygraph (qualified personnel only), polygraph procedure (proper RP required), RP validity (results are RP tool, not absolute proof), refusal rights (can refuse polygraph), admissibility in court, false positives (RP consideration), questioning limits, documentation of results.",
+    "category": "Procedures",
+    "tags": ["polygraph", "lie detector", "investigation", "interrogation", "questioning", "test", "qualified personnel", "procedure", "RP validity", "proof", "refusal", "can refuse", "court", "admissibility", "false positive", "documentation", "results"]
+  },
+  "softcheck": {
+    "english_title": "Soft Check Rules",
+    "summary": "Rules for checking player software to prevent cheating: anti-cheat procedures (when admin can request software check), screen sharing requirements (TeamViewer, Discord, AnyDesk), refusal consequences (refusing software check = punishment), what admin checks for (mods, cheats, overlays, prohibited software), player rights during check, false accusation protection, compliance procedure, evidence collection.",
+    "category": "Security",
+    "tags": ["soft check", "software check", "anticheat", "anti-cheat", "cheat detection", "screen share", "TeamViewer", "Discord", "AnyDesk", "refusal", "refuse check", "punishment", "mods", "cheats", "overlays", "prohibited software", "player rights", "false accusation", "compliance", "evidence", "admin check"]
+  },
+  "weazelnews": {
+    "english_title": "Weazel News Rules",
+    "summary": "Rules for news organization and journalists: journalist conduct (professional behavior, unbiased reporting), reporting guidelines (fact-checking, sources), live streaming rules (when can stream, privacy), event coverage (access to scenes, police cooperation), journalist protections (cannot harm journalist on duty - spec jail 180 min + warning), interview procedures, camera crew rules, press credentials, restricted areas (where journalists cannot go), ethical standards.",
+    "category": "Factions",
+    "tags": ["Weazel News", "news", "journalist", "reporter", "media", "press", "conduct", "reporting", "unbiased", "fact-checking", "sources", "live stream", "streaming", "privacy", "event coverage", "access", "police cooperation", "journalist immunity", "cannot harm journalist", "interview", "camera crew", "press credentials", "restricted areas", "ethics", "professional"]
+  },
+  "teroristuliaqtis": {
+    "english_title": "Terrorist Act Rules",
+    "summary": "Rules for terrorist RP scenarios: planning requirements (detailed plan submitted to admins), execution guidelines (must have admin approval before starting), hostage situations (safety rules, negotiation required), government response (police, FIB, military), prohibited actions (no real harm, no forced /me), terrorist demands (realistic limits), resolution procedures, consequences for participants, documentation requirements, special event rules.",
+    "category": "Events",
+    "tags": ["terrorist", "terrorism", "terrorist act", "special event", "planning", "admin approval", "execution", "hostage situation", "negotiation", "government response", "police response", "FIB", "military", "prohibited actions", "demands", "realistic demands", "resolution", "consequences", "documentation", "special RP", "event"]
+  },
+  "grafitiwar": {
+    "english_title": "Graffiti War Rules",
+    "summary": "Rules for gang graffiti battles: spray mechanics (how to spray graffiti), territory marking (where can spray, gang zones), graffiti wars (competing for spray count), scoring system (points per spray), valid spray locations (walls, buildings, not random), graffiti removal (opposing gangs can remove), time limits for wars, rewards for winning, cleanup requirements, prohibited locations (no spray in green zones).",
+    "category": "Events",
+    "tags": ["graffiti", "graffiti war", "spray", "tagging", "gang spray", "territory marking", "mechanics", "spray locations", "walls", "graffiti battle", "scoring", "points", "spray count", "removal", "cleanup", "time limit", "rewards", "prohibited spray", "green zone spray", "gang graffiti"]
+  },
+  "airdrop": {
+    "english_title": "Airdrop Event Rules",
+    "summary": "Rules for airdrop events where supplies/weapons drop from sky: event timing (when airdrops occur, announcement), combat rules during airdrop (free for all, everyone can fight), loot distribution (first come first serve), participation requirements (anyone can participate), airdrop zones (where drops land), fighting allowed (no green zone rules during airdrop), teamwork allowed, vehicle usage, reward contents (weapons, armor, money, items).",
+    "category": "Events",
+    "tags": ["airdrop", "air drop", "event", "supplies", "weapons drop", "loot", "timing", "announcement", "combat", "free for all", "fight", "loot distribution", "first come", "participation", "anyone can join", "drop zone", "fighting allowed", "team", "vehicles", "rewards", "contents", "armor", "money", "items"]
+  },
+  "momarageba": {
+    "english_title": "Supply Rules",
+    "summary": "Rules for faction supply system: material gathering (where to get materials, how to gather), crafting system (what can craft, requirements), supply deliveries (faction deliveries, schedules), storage management (where to store supplies, limits), resource distribution (sharing among faction), supply runs (organized trips), trading restrictions (cannot sell faction supplies), depletion mechanics, supply points.",
+    "category": "Economy",
+    "tags": ["supplies", "supply", "materials", "gathering", "crafting", "craft", "deliveries", "storage", "resources", "distribution", "supply runs", "trading", "cannot sell", "depletion", "supply points", "faction supplies", "material gathering", "crafting system"]
+  },
+  "fck": {
+    "english_title": "FCK (Faction Conflict/Kill) Rules",
+    "summary": "Rules for conflicts and kills between factions: valid reasons for faction wars (IC justification required), kill rules (when can kill enemy faction), conflict initiation (how to start war), resolution procedures (ending conflicts, peace agreements), faction vs faction combat, territory disputes, retaliation rules, war declaration requirements.",
+    "category": "Combat",
+    "tags": ["FCK", "faction conflict", "faction kill", "faction war", "conflict", "inter-faction", "valid reasons", "IC justification", "kill rules", "enemy faction", "initiation", "resolution", "peace agreement", "faction combat", "territory dispute", "retaliation", "war declaration", "faction vs faction"]
+  },
+  "vzh": {
+    "english_title": "VZH (Wanted/Hostage) Rules",
+    "summary": "Rules for wanted system and hostage situations: wanted levels (how wanted stars work, 1-5 stars), police pursuit (chase rules, when can chase), negotiation rules for hostages (demands, payment, release), hostage RP protocols (safety, treatment), wanted player rights (can evade, can negotiate), VZH zone special rules (3.2 PG is ALLOWED in VZH situations - means you can fight even with bad odds during hostage/wanted scenarios), arrest procedures, bail system.",
+    "category": "Procedures",
+    "tags": ["VZH", "wanted", "wanted system", "wanted stars", "hostage", "hostage situation", "police pursuit", "chase", "negotiation", "demands", "payment", "release", "hostage RP", "safety", "treatment", "wanted rights", "evade", "PG allowed in VZH", "can fight in VZH", "hostage fight", "arrest", "bail"]
+  }
+}

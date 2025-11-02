@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+
+{% block title %}მრავალმოთამაშიანი რეჟიმი - Nexus Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="multiplayer-header">
+        <h1>🎮 მრავალმოთამაშიანი რეჟიმი</h1>
+        <p>შეჯიბრეთ სხვა მოთამაშეებთან რეალურ დროში!</p>
+    </div>
+
+    <!-- Create Match Section -->
+    <div class="create-match-section">
+        <h2>📝 შექმენით მატჩი</h2>
+        <div class="match-form">
+            <div class="form-group">
+                <label>კითხვების რაოდენობა:</label>
+                <select id="numQuestions">
+                    <option value="5">5 კითხვა (სწრაფი)</option>
+                    <option value="10" selected>10 კითხვა (სტანდარტული)</option>
+                    <option value="15">15 კითხვა (გრძელი)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>სირთულე:</label>
+                <select id="difficulty">
+                    <option value="">შერეული</option>
+                    <option value="easy">მარტივი</option>
+                    <option value="medium">საშუალო</option>
+                    <option value="hard">რთული</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>წყარო:</label>
+                <select id="sourceType">
+                    <option value="laws">კანონები</option>
+                    <option value="rules">სერვერის წესები</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary btn-large" onclick="createMatch()">
+                🎯 შექმენით მატჩი
+            </button>
+        </div>
+    </div>
+
+    <!-- Waiting Matches Section -->
+    <div class="waiting-matches-section">
+        <h2>⏳ მოლოდინში მყოფი მატჩები</h2>
+        <div id="waitingMatches">
+            <p class="loading">იტვირთება...</p>
+        </div>
+    </div>
+
+    <!-- Your Recent Matches -->
+    <div class="recent-matches-section">
+        <h2>📊 თქვენი ბოლო მატჩები</h2>
+        <div id="recentMatches">
+            <p class="loading">იტვირთება...</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.multiplayer-header {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f4b740;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.multiplayer-header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin-bottom: 10px;
+}
+
+.multiplayer-header p {
+    color: #718096;
+    font-size: 16px;
+}
+
+.create-match-section,
+.waiting-matches-section,
+.recent-matches-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.create-match-section h2,
+.waiting-matches-section h2,
+.recent-matches-section h2 {
+    font-family: 'Playfair Display', serif;
+    color: #1a1f36;
+    margin-bottom: 20px;
+}
+
+.match-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.form-group select {
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.match-card {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #f4b740;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.match-info h3 {
+    color: #1a1f36;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.match-details {
+    display: flex;
+    gap: 15px;
+    color: #718096;
+    font-size: 14px;
+}
+
+.match-details span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.match-status {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.match-status.waiting {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.match-status.in-progress {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.match-status.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.loading {
+    text-align: center;
+    color: #718096;
+    padding: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #718096;
+}
+
+.btn-join {
+    background: transparent;
+    border: 2px solid #f4b740;
+    color: #1a1f36;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-join:hover {
+    background: #f4b740;
+    color: white;
+}
+
+.btn-view {
+    background: transparent;
+    border: 2px solid #1a1f36;
+    color: #1a1f36;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-view:hover {
+    background: #1a1f36;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .match-card {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .match-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+</style>
+
+<script>
+async function createMatch() {
+    const numQuestions = document.getElementById('numQuestions').value;
+    const difficulty = document.getElementById('difficulty').value;
+    const sourceType = document.getElementById('sourceType').value;
+
+    try {
+        const response = await fetch('/api/multiplayer/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                num_questions: parseInt(numQuestions),
+                difficulty: difficulty || null,
+                source_type: sourceType
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            window.location.href = `/multiplayer/match/${data.match_id}`;
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+async function joinMatch(matchId) {
+    try {
+        const response = await fetch('/api/multiplayer/join', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ match_id: matchId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            window.location.href = `/multiplayer/match/${matchId}`;
+        } else {
+            alert('შეცდომა: ' + data.message);
+        }
+    } catch (error) {
+        alert('შეცდომა: ' + error.message);
+    }
+}
+
+async function loadWaitingMatches() {
+    try {
+        const response = await fetch('/api/multiplayer/waiting');
+        const data = await response.json();
+
+        const container = document.getElementById('waitingMatches');
+
+        if (data.matches && data.matches.length > 0) {
+            container.innerHTML = data.matches.map(match => `
+                <div class="match-card">
+                    <div class="match-info">
+                        <h3>👤 ${match.creator_name || 'Unknown'}</h3>
+                        <div class="match-details">
+                            <span>📝 ${match.num_questions} კითხვა</span>
+                            <span>🎯 ${getDifficultyText(match.difficulty)}</span>
+                            <span>📚 ${getSourceText(match.source_type)}</span>
+                        </div>
+                    </div>
+                    <button class="btn-join" onclick="joinMatch('${match.match_id}')">
+                        ⚔️ დაპარვა
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="empty-state">🎮 მოლოდინში მყოფი მატჩები არ არის<br>შექმენით ახალი მატჩი!</div>';
+        }
+    } catch (error) {
+        console.error('Failed to load waiting matches:', error);
+    }
+}
+
+async function loadRecentMatches() {
+    try {
+        const response = await fetch('/api/multiplayer/my-matches');
+        const data = await response.json();
+
+        const container = document.getElementById('recentMatches');
+
+        if (data.matches && data.matches.length > 0) {
+            container.innerHTML = data.matches.map(match => `
+                <div class="match-card">
+                    <div class="match-info">
+                        <h3>${getOpponentName(match)}</h3>
+                        <div class="match-details">
+                            <span>📝 ${match.num_questions} კითხვა</span>
+                            <span class="match-status ${match.status}">${getStatusText(match.status)}</span>
+                            <span>📅 ${formatDate(match.created_at)}</span>
+                        </div>
+                    </div>
+                    ${match.status === 'completed' ?
+                        `<button class="btn-view" onclick="viewResults('${match.match_id}')">📊 შედეგები</button>` :
+                        match.status === 'in_progress' ?
+                        `<button class="btn-join" onclick="continueMatch('${match.match_id}')">▶️ გაგრძელება</button>` :
+                        `<button class="btn-join" onclick="joinMatch('${match.match_id}')">⏳ ლოდინი</button>`
+                    }
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="empty-state">📊 ჯერ არცერთი მატჩი არ გაქვთ გავლილი</div>';
+        }
+    } catch (error) {
+        console.error('Failed to load recent matches:', error);
+    }
+}
+
+function getDifficultyText(difficulty) {
+    const map = {
+        'easy': 'მარტივი',
+        'medium': 'საშუალო',
+        'hard': 'რთული',
+        'mixed': 'შერეული'
+    };
+    return map[difficulty] || difficulty;
+}
+
+function getSourceText(source) {
+    return source === 'laws' ? 'კანონები' : 'სერვერის წესები';
+}
+
+function getStatusText(status) {
+    const map = {
+        'waiting': 'მოლოდინი',
+        'in_progress': 'მიმდინარე',
+        'completed': 'დასრულებული'
+    };
+    return map[status] || status;
+}
+
+function getOpponentName(match) {
+    // Show opponent name or "waiting for opponent"
+    return match.opponent_name || '⏳ მოლოდინში...';
+}
+
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('ka-GE');
+}
+
+function viewResults(matchId) {
+    window.location.href = `/multiplayer/results/${matchId}`;
+}
+
+function continueMatch(matchId) {
+    window.location.href = `/multiplayer/match/${matchId}`;
+}
+
+// Load matches on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadWaitingMatches();
+    loadRecentMatches();
+
+    // Refresh waiting matches every 5 seconds
+    setInterval(loadWaitingMatches, 5000);
+});
+</script>
+{% endblock %}
