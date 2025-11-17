@@ -22,15 +22,20 @@ class ServerRulesParser:
         if os.path.exists(self.metadata_file):
             with codecs.open(self.metadata_file, 'r', encoding='utf-8') as f:
                 self.metadata = json.load(f)
+        else:
+            print(f"[WARN] Metadata file not found: {self.metadata_file}")
         return self.metadata
 
     def parse_all_rules(self):
-        """Parse all server rules files"""
+        """Parse all server rules files with metadata integration"""
         if not os.path.exists(self.rules_dir):
             print(f"[WARNING] Server rules directory not found: {self.rules_dir}")
             return []
 
-        files = [f for f in os.listdir(self.rules_dir) if f.endswith('.txt')]
+        # Load metadata first
+        self.load_metadata()
+
+        files = sorted([f for f in os.listdir(self.rules_dir) if f.endswith('.txt')])
 
         for filename in files:
             try:
@@ -40,48 +45,42 @@ class ServerRulesParser:
             except Exception as e:
                 print(f"[ERROR] Failed to parse {filename}: {str(e)}")
 
-        print(f"[INFO] Loaded {len(self.rules)} server rules")
+        print(f"[INFO] Loaded {len(self.rules)} server rules with metadata")
         return self.rules
 
     def parse_rule_file(self, filename):
-        """Parse a single server rules file"""
+        """Parse a single server rules file and integrate metadata from JSON"""
         filepath = os.path.join(self.rules_dir, filename)
 
         with codecs.open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Split into Georgian text and metadata
+        # Remove the ---METADATA--- section if it exists (we use JSON metadata instead)
         if '---METADATA---' in content:
-            parts = content.split('---METADATA---')
-            georgian_text = parts[0].strip()
-            metadata_section = parts[1].strip()
-        else:
-            # No metadata found - use content as is
-            print(f"[WARN] No metadata found in {filename}")
-            georgian_text = content.strip()
-            metadata_section = ""
+            content = content.split('---METADATA---')[0].strip()
 
         # Extract title (first line)
-        lines = georgian_text.split('\n')
+        lines = content.split('\n')
         title = lines[0].strip() if lines else filename.replace('.txt', '').replace('_', ' ').title()
 
-        # Parse metadata
-        summary_en = ""
-        keywords_en = ""
+        # Get metadata from JSON file using filename without extension as key
+        file_key = filename.replace('.txt', '')
+        metadata_entry = self.metadata.get(file_key, {})
 
-        if metadata_section:
-            for line in metadata_section.split('\n'):
-                if line.startswith('SUMMARY_EN:'):
-                    summary_en = line.replace('SUMMARY_EN:', '').strip()
-                elif line.startswith('KEYWORDS_EN:'):
-                    keywords_en = line.replace('KEYWORDS_EN:', '').strip()
+        # Extract metadata fields
+        summary_en = metadata_entry.get('summary', '')
+        keywords_en = ', '.join(metadata_entry.get('tags', []))  # Join tags into keywords string
+        english_title = metadata_entry.get('english_title', '')
+        category = metadata_entry.get('category', 'Rules')
 
         return {
             'filename': filename,
             'title': title,
-            'content': georgian_text,  # Georgian text without metadata
+            'content': content,  # Georgian text without metadata
             'summary_en': summary_en,
-            'keywords_en': keywords_en
+            'keywords_en': keywords_en,
+            'english_title': english_title,
+            'category': category
         }
 
     def get_rule_by_filename(self, filename):

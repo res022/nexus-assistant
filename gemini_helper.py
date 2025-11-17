@@ -94,39 +94,73 @@ class GeminiHelper:
 
 **CRITICAL: როგორ უპასუხოთ კითხვებს (გაძლიერებული ინსტრუქციები):**
 
-**ეტაპი 1: კითხვის ᲦᲠᲛᲐ ანალიზი (დაუთმეთ დრო!)**
+**ეტაპი 1: კითხვის ᲦᲠᲛᲐ ანალიზი**
    - წაიკითხეთ კითხვა რამდენჯერმე და გაიაზრეთ რა ᲖᲣᲡᲢᲐᲓ გეკითხებიან
-   - გამოყავით კითხვის მთავარი თემა (მაგ. პოლიგრაფი, დაკითხვა, სიცრუის აღმოჩენა)
-   - გამოყავით კითხვის კონტექსტი (მაგ. "რა ვქნა როცა...", "როგორ ვაკეთო...", "რა არის...")
-   - თუ კითხვა არის სიტუაციური (მაგ. "გავაკეთე X, ახლა რა ვქნა?"), იპოვეთ სწორედ იმ სიტუაციის შემდეგი ნაბიჯები
+   - **"რა არის..." კითხვები** → ეძებეთ DEFINITION/განმარტება სექცია წესებში
+   - **"შემიძლია თუ არა..." კითხვები** → ეძებეთ დაშვებულია/აკრძალულია სტატუსი + სასჯელი
+   - **"რა ვქნა როცა..." კითხვები** → ეძებეთ პროცედურა და შემდეგი ნაბიჯები
+   - **"რა სასჯელია..." კითხვები** → ეძებეთ | BAN/სპეც.ციხე/MUTE/გაფრთხილება ნაწილი
 
-**ეტაპი 2: წესების ᲡᲠᲣᲚᲘ და ᲧᲣᲠᲐᲓᲦᲔᲑᲘᲗ წაკითხვა**
-   - წაიკითხეთ ᲗᲘᲗᲝᲔᲣᲚᲘ მოცემული წესის ტექსტი ᲡᲠᲣᲚᲐᲓ, ᲮᲐᲖ-ბა-ხაზ
-   - ნუ გამოტოვებთ არცერთ წესს, არცერთ ნომერს
-   - იპოვეთ ᲧᲕᲔᲚᲐ რელევანტური ნაწილი რომელიც ეხება კითხვას
-   - განსაკუთრებით ყურადღება მიაქციეთ "განმარტება:", "შენიშვნა:", "მითითება:" სექციებს
-   - იპოვეთ როგორც მთავარი წესი, ასევე დამატებითი დეტალები
+**ეტაპი 2: წესების ᲡᲠᲣᲚᲘ წაკითხვა**
+   - წაიკითხეთ ᲗᲘᲗᲝᲔᲣᲚᲘ მოცემული წესი ᲡᲠᲣᲚᲐᲓ, ხაზ-ბა-ხაზ
+   - **ᲒᲐᲜᲡᲐᲙᲣᲗᲠᲔᲑᲘᲗ ყურადღება მიაქციეთ:**
+     * "განმარტება:" სექციებს (განმარტავს რას ნიშნავს)
+     * "შენიშვნა:" სექციებს (დამატებითი დეტალები)
+     * "მითითება:" სექციებს (კონკრეტული ინსტრუქციები)
+     * "გამონაკლისი:" სექციებს (სპეციალური შემთხვევები)
+     * "მაგალითად:" სექციებს (კონკრეტული მაგალითები)
+   - იპოვეთ ᲧᲕᲔᲚᲐ რელევანტური ნაწილი წესიდან
 
-**ეტაპი 3: პასუხის ᲡᲠᲣᲚᲘ ᲙᲝᲜᲡᲢᲠᲣᲥᲪᲘᲐ**
-   - დაიწყეთ მთავარი პასუხით (მაგ. "დიახ, შეგიძლიათ...", "არა, აკრძალულია...", "ამ შემთხვევაში უნდა...")
-   - დაასახელეთ კონკრეტული წესი და ნომერი
-   - გააკეთეთ ᲞᲘᲠᲓᲐᲞᲘᲠ ᲪᲘᲢᲘᲠᲔᲑᲐ რელევანტური ნაწილის (" " ნიშნებში)
-   - თუ არის "განმარტება:" სექცია, ᲐᲣᲪᲘᲚᲔᲑᲚᲐᲓ ჩართეთ იგი
-   - თუ კითხვა არის "რა ვქნა შემდეგ?", მიუთითეთ კონკრეტული ნაბიჯები
-   - მიუთითეთ სასჯელი თუ წესი დარღვეულია (BAN, სპეც.ციხე, MUTE და ა.შ.)
+**ეტაპი 3: სპეციალური სიტუაციები**
 
-**ეტაპი 4: პასუხის ᲓᲐᲓᲐᲡᲢᲣᲠᲔᲑᲐ**
-   - კიდევ ერთხელ შეამოწმეთ: ეხება თუ არა თქვენი პასუხი კითხვას?
-   - დარწმუნდით რომ არ გამოგრჩათ მნიშვნელოვანი დეტალები
-   - თუ ვერ პოულობთ პასუხს, უთხარით "ვერ ვიპოვე ამის შესახებ ინფორმაცია წესებში"
+A) **RP ტერმინების გამარტივება (PG, DM, MG, RK, SK, და ა.შ.):**
+   - ᲞᲘᲠᲕᲔᲚ ᲠᲘᲒᲨᲘ მოიძიეთ ზოგადი წესები (zogadi.txt) - იქ არის ᲧᲕᲔᲚᲐ ტერმინის განმარტება
+   - დაიწყეთ: "**[ტერმინი]** ნიშნავს:"
+   - მოკლედ ახსენით რას ნიშნავს (1-2 წინადადება)
+   - ᲞᲘᲠᲓᲐᲞᲘᲠ ᲪᲘᲢᲘᲠᲔᲑᲐ წესიდან (" " ნიშნებში)
+   - მიუთითეთ სასჯელი (BAN, სპეც.ციხე, MUTE)
+   - მაგალითი თუ არის წესებში, ჩართეთ
+
+B) **სასჯელის კითხვები:**
+   - იპოვეთ კონკრეტული წესი რომელიც დარღვეულია
+   - ᲪᲘᲢᲘᲠᲔᲑᲐ წესის (ნომერით)
+   - მიუთითეთ სასჯელი: "| BAN X დღე" ან "| სპეც.ციხე X წუთი" ან "| MUTE X წუთი"
+   - თუ არის ინტერვალი (მაგ. "3-14 დღე"), მიუთითეთ რომ დამოკიდებულია დარღვევის სიმძიმეზე
+
+C) **"შემიძლია/შეიძლება" კითხვები:**
+   - პასუხი: "✅ დიახ, დაშვებულია" ან "🚫 არა, აკრძალულია"
+   - ᲪᲘᲢᲘᲠᲔᲑᲐ წესიდან
+   - პირობები თუ არის რაიმე (მაგ. "მხოლოდ თუ...", "გარდა...")
+   - განმარტება/შენიშვნა თუ არის
+
+D) **"როგორ ვაკეთო/რა ვქნა" კითხვები:**
+   - ჩამოწერეთ ნაბიჯ-ნაბიჯ ინსტრუქციები
+   - თითოეულ ნაბიჯს მიამაგრეთ წესის ნომერი
+   - მიუთითეთ დრო თუ არის შეზღუდვა
+   - გააფრთხილეთ რისი გაკეთება არ შეიძლება
+
+**ეტაპი 4: პასუხის ᲙᲝᲜᲡᲢᲠᲣᲥᲪᲘᲐ**
+   - დაიწყეთ მთავარი პასუხით (მაგ. "PG (PowerGaming) ნიშნავს...", "არა, აკრძალულია...", "ამ შემთხვევაში უნდა...")
+   - წესის ნომერი (მაგ. "წესი 3.1", "ზოგადი წესები 4.1")
+   - ᲞᲘᲠᲓᲐᲞᲘᲠ ᲪᲘᲢᲘᲠᲔᲑᲐ (" " ნიშნებში)
+   - განმარტება/შენიშვნა თუ არის
+   - სასჯელი თუ არის
+   - მაგალითი თუ არის
+
+**ეტაპი 5: ᲓᲐᲓᲐᲡᲢᲣᲠᲔᲑᲐ**
+   - შეამოწმეთ: ეხება თუ არა თქვენი პასუხი კითხვას?
+   - ნამდვილად იპოვეთ სწორი წესი?
+   - არ გამოგრჩათ სასჯელი?
+   - თუ ვერ პოულობთ, უთხარით "ვერ ვიპოვე ამის შესახებ ინფორმაცია წესებში"
 
 **ფორმატირება:**
    - 🚫 აკრძალულია
    - ✅ დაშვებულია/სავალდებულოა
-   - ⏱️ ვადები
+   - ⏱️ ვადები/დრო
    - ⚠️ სასჯელები
+   - 📋 პირობები
 
-**პასუხობთ მხოლოდ ქართულ ენაზე**"""
+**პასუხობთ მხოლოდ ქართულ ენაზე. იყავით კონკრეტული და ზუსტი.**"""
         else:
             # Georgian laws prompt - ENHANCED for better accuracy
             prompt = """თქვენ ხართ გამოცდილი იურიდიული ასისტენტი სან ანდრეასის შტატის პოლიციისთვის და პროკურატურისთვის.
@@ -259,24 +293,40 @@ English translation:"""
 
     def select_relevant_laws(self, georgian_question, all_laws, max_laws=5):
         """
-        Use Gemini to intelligently select the most relevant laws for a question
-        Returns list of selected law filenames
+        Use hybrid approach: keyword matching + AI selection for better accuracy
+        Returns list of selected law/rule documents
         """
         if not self.model:
             return all_laws[:max_laws]  # Fallback: return first few laws
 
         try:
-            # Create a detailed list of laws with their titles, summaries, and keywords
+            # STEP 1: Pre-filter with keyword matching (hybrid approach)
+            keyword_matches = self._keyword_prefilter(georgian_question, all_laws)
+
+            # If keyword matching found strong matches, use those + AI selection
+            if len(keyword_matches) >= 3:
+                # Use keyword matches as priority, then fill with AI selection
+                candidate_pool = keyword_matches[:max_laws * 2]  # Top keyword matches
+                print(f"[INFO] Keyword pre-filter found {len(keyword_matches)} matches, using top {len(candidate_pool)} as candidates")
+            else:
+                # Not enough keyword matches, use all documents
+                candidate_pool = all_laws
+                print(f"[INFO] Keyword pre-filter found {len(keyword_matches)} matches, using all {len(candidate_pool)} documents")
+
+            # STEP 2: AI selection from candidate pool
+            # Create a detailed list of documents with full summaries and keywords
             laws_list = []
-            for i, law in enumerate(all_laws, 1):
-                # Include more of the summary (500 chars) and keywords for better selection
-                summary_preview = law.summary_en[:500] if law.summary_en else "No summary"
-                keywords_preview = law.keywords_en[:300] if hasattr(law, 'keywords_en') and law.keywords_en else "No keywords"
-                laws_list.append(f"{i}. {law.filename} - {law.law_name[:80]}...\n   Summary: {summary_preview}...\n   Keywords: {keywords_preview}...")
+            for i, law in enumerate(candidate_pool, 1):
+                # Include FULL summary and keywords for better selection
+                summary_full = law.summary_en if law.summary_en else "No summary"
+                keywords_full = law.keywords_en if hasattr(law, 'keywords_en') and law.keywords_en else "No keywords"
+                english_title = getattr(law, 'english_title', 'N/A')
+
+                laws_list.append(f"{i}. {law.filename} | {english_title}\n   Georgian Title: {law.law_name[:100]}\n   Summary: {summary_full}\n   Keywords: {keywords_full}\n")
 
             laws_text = "\n".join(laws_list)
 
-            prompt = f"""You are a legal assistant for San Andreas State (Georgia-based roleplay server).
+            prompt = f"""You are a legal/rules assistant for San Andreas State (Georgia-based GTA roleplay server).
 
 Given this Georgian legal question:
 "{georgian_question}"
@@ -294,31 +344,69 @@ Select the {max_laws} MOST RELEVANT laws/rules from this list that would help an
 
 {laws_text}
 
-**CRITICAL KEYWORD MATCHING RULES (for common cases):**
-- Questions about "ორდერი/ორდერ" (warrant/order) → MUST include "dokumentebis.txt" (contains AR, SA, FB, AW, FW, IW warrant types)
-- Questions about "დაკავების ორდერი" or "AW" (arrest warrant) → MUST include "dokumentebis.txt"
-- Questions about "გუბერნატორი" (governor) powers + warrants → MUST include "dokumentebis.txt" AND "mtavrob.txt"
-- Questions about "პროკურორი/პროკურატურა/გენერალური პროკურორი" (prosecutor/attorney general) → prioritize "prokuraturis.txt"
-- Questions about "პოლიცია/LSPD/ოფიცერი" (police/officer) → prioritize "policiis.txt"
-- Questions about "დაკავება/დააკავოს" (arrest/detention) procedures → prioritize "saproceso.txt"
-- Questions about "იარაღი" (weapon/firearm) → prioritize "sisxlissamartali.txt" AND "iaragis.txt"
-- Questions about "ბრონი/ჟილეტი" (armor/vest) → MUST include "sisxlissamartali.txt"
-- Questions about "ადვოკატი/ადვოკატის უფლება" (lawyer/attorney) → prioritize "saproceso.txt" AND "saadvokato.txt"
-- Questions about "რამდენი ხანი/ვადა/წუთი" (how long/timeframe/minutes) → prioritize "saproceso.txt"
-- Questions about "საკნები/საკანი/ჩასვლა საკნებში/საკნებთან" (cells/cell access/entering cells) → MUST include "teritoriebis.txt"
-- Questions about "FIB/ფედერალური ბიურო" access to cells or territories → MUST include "teritoriebis.txt"
-- Questions about "ტერიტორია/დახურული/დაცული/ზონა/წითელი ზონა" (territory/closed/protected/zone/red zone) → MUST include "teritoriebis.txt"
-- Questions about who can enter specific locations (LSPD cells, FIB territory, etc.) → MUST include "teritoriebis.txt"
-- Questions about crimes/penalties: "ისჯება/სასჯელი/დანაშაული/შეურაცხყოფა/თავდასხმა" (punished/penalty/crime/insult/attack) → MUST include "sisxlissamartali.txt"
-- Questions about "შეურაცხყოფა" (insult/disrespect) → MUST include "sisxlissamartali.txt" (NOT same as "თავდასხმა" attack)
+**CRITICAL SELECTION RULES:**
 
-**SERVER RULES KEYWORD MATCHING (if dealing with serverrules/):**
-- Questions asking "რა არის/what is" + ANY RP TERM abbreviation (PG/DM/MG/RK/SK/etc.) → prioritize "zogadi.txt" (contains ALL RP term definitions)
-- Questions about basic RP rules, account rules, communication rules, RP term definitions → prioritize "zogadi.txt"
-- Otherwise, TRUST THE METADATA - use the Summary and Keywords to select the most relevant files
+**For LAWS (laws/ directory):**
+- "ორდერი/ორდერ" (warrant) → dokumentebis.txt
+- "დაკავების ორდერი/AW" (arrest warrant) → dokumentebis.txt
+- "გუბერნატორი" (governor) + warrants → dokumentebis.txt + mtavrob.txt
+- "პროკურორი/პროკურატურა" (prosecutor) → prokuraturis.txt
+- "პოლიცია/LSPD/ოფიცერი" (police/officer) → policiis.txt
+- "დაკავება/დააკავოს" (arrest) → saproceso.txt
+- "იარაღი" (weapon) → sisxlissamartali.txt + iaragis.txt
+- "ბრონი/ჟილეტი" (armor/vest) → sisxlissamartali.txt
+- "ადვოკატი" (lawyer) → saproceso.txt + saadvokato.txt
+- "რამდენი ხანი/ვადა" (how long/timeframe) → saproceso.txt
+- "საკნები/საკანი/ჩასვლა საკნებში" (cells/cell access) → teritoriebis.txt
+- "FIB access/ჩასვლა" (FIB access) → teritoriebis.txt
+- "ტერიტორია/ზონა/წითელი ზონა" (territory/zone) → teritoriebis.txt
+- "დანაშაული/სასჯელი/ისჯება" (crime/penalty) → sisxlissamartali.txt
+- "შეურაცხყოფა" (insult) → sisxlissamartali.txt
+- "თავდასხმა" (attack/assault) → sisxlissamartali.txt
 
-Return ONLY the numbers of the selected laws, separated by commas (e.g., "1,5,12,3,7").
-Choose laws that directly contain information about the question's topic."""
+**For SERVER RULES (serverrules/ directory):**
+- "რა არის PG/DM/MG/RK/SK/BU/TK/AR/PA/NRD/DB/CR/SP" (what is [RP term]) → zogadi.txt (has ALL definitions)
+- "PowerGaming/MetaGaming/DeathMatch/Fear RP" → zogadi.txt
+- "ანგარიში/მულტი-აქაუნთ" (account/multi-account) → zogadi.txt
+- "ბიზნესი/business ownership" → zogadi.txt
+- "ნიღაბი/mask" (mask requirement) → zogadi.txt
+- "/me /do /try commands" → zogadi.txt
+- "ადმინი/admin rules" → administraciis.txt
+- "პოლიცია/cop/LSPD/FIB/USSS/NG/EMS rules" → saxelmwifoorganizaciis.txt
+- "NonRP COP" → saxelmwifoorganizaciis.txt
+- "ბანდა/gang/მაფია/mafia" → kriminaluriorganizaciebis.txt
+- "მასალები/faction storage" → kriminaluriorganizaciebis.txt
+- "ჩხრეკა/რობერი/გატაცება/kidnap" → dzarcvagataceba.txt
+- "EMS/news immunity" → dzarcvagataceba.txt
+- "ლიდერი/leader" → lideriswesebi.txt
+- "rank editing/კიკი/kick" → lideriswesebi.txt
+- "ოჯახი/family" → ojaxis.txt
+- "green zone/red zone/ზონა" → satamashozonebi.txt
+- "პოლიგრაფი/polygraph/lie detector" → poligrafis.txt
+- "სროლა/shooting/combat" → rpstreli.txt
+- "heal/revive during fight" → rpstreli.txt
+- "ჩხრეკა/search/frisk" → rpgamodzieba.txt
+- "ტერიტორია/territory war" → teritoriebzeomi.txt
+- "რეიდი/raid" → reidis.txt
+- "graffiti/spray" → grafitiwar.txt
+- "airdrop" → airdrop.txt
+- "supplies/მომარაგება" → momarageba.txt
+- "VZH/wanted/hostage" → vzh.txt
+- "Fort Zancudo/military base" → fortzacundo.txt
+- "Weazel News journalist" → weazelnews.txt
+- "terrorist/terror act" → teroristuliaqtis.txt
+- "FCK/faction conflict" → fck.txt
+- "soft check/anticheat" → softcheck.txt
+
+**SELECTION STRATEGY:**
+1. First check if question matches any keyword patterns above
+2. Then carefully read Summary and Keywords for each document
+3. Select documents where Summary DIRECTLY addresses the question
+4. Prioritize documents with matching keywords in the Keywords field
+5. Return the {max_laws} MOST RELEVANT documents
+
+Return ONLY the numbers of the selected documents, separated by commas (e.g., "1,5,12,3,7").
+Choose documents that DIRECTLY contain information to answer the question."""
 
             response = self.model.generate_content(prompt)
             selected_numbers = response.text.strip()
@@ -366,3 +454,119 @@ English keywords:"""
         except Exception as e:
             print(f"[ERROR] Keyword extraction failed: {str(e)}")
             return ['law', 'legal']  # Default fallback
+
+    def _keyword_prefilter(self, georgian_question, all_documents):
+        """
+        Pre-filter documents using keyword matching for better accuracy
+        Returns list of documents sorted by relevance score
+        """
+        question_lower = georgian_question.lower()
+
+        # Enhanced keyword mapping with common Georgian terms
+        keyword_patterns = {
+            # Laws keywords
+            'ორდერ': ['dokumentebis', 'warrant', 'order'],
+            'დაკავება': ['saproceso', 'arrest', 'detention'],
+            'პროკურორ': ['prokuraturis', 'prosecutor'],
+            'პოლიცი': ['policiis', 'police'],
+            'იარაღ': ['sisxlissamartali', 'iaragis', 'weapon', 'firearm'],
+            'ბრონ': ['sisxlissamartali', 'armor'],
+            'ჟილეტ': ['sisxlissamartali', 'vest'],
+            'ადვოკატ': ['saproceso', 'saadvokato', 'lawyer', 'attorney'],
+            'საკან': ['teritoriebis', 'cell'],
+            'საკნებ': ['teritoriebis', 'cell'],
+            'ტერიტორი': ['teritoriebis', 'territory'],
+            'ზონა': ['teritoriebis', 'satamashozonebi', 'zone'],
+            'დანაშაულ': ['sisxlissamartali', 'crime'],
+            'სასჯელ': ['sisxlissamartali', 'penalty'],
+            'შეურაცხყოფ': ['sisxlissamartali', 'insult'],
+            'თავდასხმ': ['sisxlissamartali', 'attack', 'assault'],
+
+            # Server rules keywords
+            'pg': ['zogadi', 'powergaming'],
+            'dm': ['zogadi', 'deathmatch'],
+            'mg': ['zogadi', 'metagaming'],
+            'fear rp': ['zogadi', 'fear'],
+            'rk': ['zogadi', 'revenge kill'],
+            'sk': ['zogadi', 'spawn kill'],
+            'რა არის': ['zogadi', 'definition'],  # "what is" - likely RP term question
+            'ანგარიშ': ['zogadi', 'account'],
+            'ბიზნეს': ['zogadi', 'business'],
+            'ნიღაბ': ['zogadi', 'kriminaluriorganizaciebis', 'mask'],
+            '/me': ['zogadi', 'command'],
+            '/do': ['zogadi', 'command'],
+            '/try': ['zogadi', 'command'],
+            'ადმინ': ['administraciis', 'admin'],
+            'ბანდ': ['kriminaluriorganizaciebis', 'gang'],
+            'მაფი': ['kriminaluriorganizaciebis', 'mafia'],
+            'მასალებ': ['kriminaluriorganizaciebis', 'momarageba', 'materials', 'supplies'],
+            'ძარცვ': ['dzarcvagataceba', 'robbery'],
+            'გატაცებ': ['dzarcvagataceba', 'kidnap'],
+            'ლიდერ': ['lideriswesebi', 'leader'],
+            'კიკ': ['lideriswesebi', 'kick'],
+            'ოჯახ': ['ojaxis', 'family'],
+            'green zone': ['satamashozonebi', 'green zone'],
+            'red zone': ['satamashozonebi', 'red zone'],
+            'პოლიგრაფ': ['poligrafis', 'polygraph'],
+            'სროლ': ['rpstreli', 'shooting'],
+            'ჩხრეკ': ['rpgamodzieba', 'dzarcvagataceba', 'search'],
+            'რეიდ': ['reidis', 'raid'],
+            'graffiti': ['grafitiwar', 'graffiti'],
+            'airdrop': ['airdrop'],
+            'vzh': ['vzh', 'wanted'],
+            'fort zancudo': ['fortzacundo', 'military'],
+            'weazel': ['weazelnews', 'news'],
+            'terrorist': ['teroristuliaqtis', 'terror'],
+            'fck': ['fck', 'faction conflict'],
+            'soft check': ['softcheck', 'anticheat'],
+            'lspd': ['policiis', 'saxelmwifoorganizaciebis', 'police'],
+            'fib': ['saxelmwifoorganizaciebis', 'federal'],
+            'ems': ['saxelmwifoorganizaciebis', 'dzarcvagataceba', 'medical'],
+        }
+
+        # Score each document
+        document_scores = []
+        for doc in all_documents:
+            score = 0
+
+            # Check Georgian question against patterns
+            for pattern, related_terms in keyword_patterns.items():
+                if pattern in question_lower:
+                    # Check if any related term appears in document filename, keywords, or summary
+                    doc_text = f"{doc.filename} {doc.keywords_en} {doc.summary_en}".lower()
+                    for term in related_terms:
+                        if term in doc_text:
+                            score += 3  # High score for pattern match
+
+            # Also check direct keyword matching in document metadata
+            if hasattr(doc, 'keywords_en') and doc.keywords_en:
+                doc_keywords_lower = doc.keywords_en.lower()
+                # Check for Georgian terms in question that might be in English keywords
+                for word in question_lower.split():
+                    if len(word) > 3:  # Ignore very short words
+                        # Check if any keyword patterns match
+                        for pattern in keyword_patterns:
+                            if pattern in word:
+                                # Look for related English terms in keywords
+                                for related in keyword_patterns[pattern]:
+                                    if related in doc_keywords_lower:
+                                        score += 2
+
+            # Check summary match
+            if hasattr(doc, 'summary_en') and doc.summary_en:
+                summary_lower = doc.summary_en.lower()
+                # Look for English equivalents of Georgian terms
+                for pattern, related_terms in keyword_patterns.items():
+                    if pattern in question_lower:
+                        for term in related_terms:
+                            if term in summary_lower:
+                                score += 1
+
+            if score > 0:
+                document_scores.append((doc, score))
+
+        # Sort by score descending
+        document_scores.sort(key=lambda x: x[1], reverse=True)
+
+        # Return documents only (without scores)
+        return [doc for doc, score in document_scores]
